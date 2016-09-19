@@ -16,6 +16,10 @@
 \usepackage{pifont}
 \usepackage{footnote}
 \makesavenoteenv{tabular}
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}
+\usetikzlibrary{matrix}
+\usepackage{booktabs}
 
 \usepackage[
 backend=biber
@@ -33,6 +37,18 @@ backend=biber
 \newcommand{\xmark}{\ding{55}}%
 \newcommand{\ymark}{\textcolor{clyes}{\cmark}}%
 \newcommand{\nmark}{\textcolor{clno}{\xmark}}%
+
+% Roman numerals
+\newcommand{\rom}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+% plots
+% https://www.sharelatex.com/learn/Pgfplots_package
+\pgfplotsset{width=10cm,compat=1.9}
+%\usepgfplotslibrary{external} 
+%\tikzexternalize
+
+% short for multicolumn-centered
+\newcommand{\mcc}[1]{\multicolumn{1}{c}{#1}}
 
 \graphicspath{ {img/} }
 
@@ -149,8 +165,36 @@ Give examples of domains where data is usually imbalanced.
 
 \section{Methodology}
 
+\subsection{Performance measures}
+
+Describe and motivate used performance measures. Reference to~\cite{powers07evaluation}.
+
+\textbf{True positive rate (TPR)}, also known as sensitivity or recall, measures share of positives that have been correctly identified:
+\begin{equation*}
+TPR = \frac{TP}{TP + FN}
+\end{equation*}
+
+\textbf{True negative rate (TNR)}, also known as specificity, measures share of negatives that have been correctly identified:
+\begin{equation*}
+TNR = \frac{TN}{TN + FP}
+\end{equation*}
+
+\textbf{Positive predicted value (PPV)}, also known as precision, measures share of correct positive predictions :
+\begin{equation*}
+PPV = \frac{TP}{TP + FP}
+\end{equation*}
+
+\textbf{Negative predicted value (NPV)}, measures share of correct negative predictions:
+\begin{equation*}
+NPV = \frac{TN}{TN + FN}
+\end{equation*}
+
 \subsection{Convolutional Neural Networks}
 Motivate use of convolutional neural networks, add a lot of references to~\cite{dl_book}
+
+\subsection{Deconvolutional Neural Networks}
+Study and discuss deconvolutional networks~\cite{DBLP:journals/corr/ZeilerF13} or other more basic visualization techniques and their use as potential aids for Vironova in deciding useful particle features to extract.
+
 \subsection{Regularization}
 
 Motivate need of regularization and describe problems that is solves. 
@@ -186,27 +230,35 @@ With weight decay many convolution kernels are equal to zero.
 \end{figure}
 
 \subsubsection{Noise injection}
+As proposed in~\cite{dl_book}, label smoothing regularizes a model based on a softmax with $k$ output values by replacing the hard 0 and 1 classification targets with targets of $\frac{\epsilon}{k}$ and $1 - \frac{k-1}{k}\epsilon$, respectively, where $\epsilon$ is an arbitrary value between 0 and 1, usually very close to 0. Label smoothing operation is summarized in equation~\ref{eq:soft_targets}.
+
 \begin{equation}
 \label{eq:soft_targets}
 x \leftarrow x \left( 1 - \epsilon \right) + \left(1 - x\right) \frac{\epsilon}{k - 1}
 \end{equation}
 
+\subsubsection{Dropout}
+
+\subsubsection{Early stopping}
+
 \subsection{Data augmentation}
 Motivate data augmentation and give references.
 
-\subsubsection{Oversampling}
-Minority classes have been oversampled in the following way:
-
+Data is augmented in the following way:
 \begin{itemize}
-\item Rotation by 90, 180 and 270 degrees
-\item Flipping
-\item Rotation of flipped image by 90, 180 and 270 degrees
+\item Rotation in range $(-180, 180)$ degrees with spline interpolation
+\item Vertical shift in range $(-10, 10)$ percent of total height
+\item Horizontal shift in range $(-10, 10)$ percent of total width
+\item Horizontal flip
+\item Vertical flip
 \end{itemize}
 
-One flipping and six rotations increase number of samples by factor 7. Rotation values have been selected as multiples of \SI{90}{\degree} for performance reasons. Rotation by multiples of \SI{90}{\degree} does not require any interpolation and can be performed efficiently.
+All transformations are applied randomly. Horizontal and vertical flips are performed with $50\%$ probability, rotation and shift values are uniform random integer values in specified ranges. 
+
+\subsubsection{Oversampling}
+Minority classes are oversampled to match number of majority class examples so the data set becomes balanced.
 
 \subsubsection{Undersampling}
-Majority class has been undersampled by 20\%. This means that during each epoch 20\% of randomly selected examples of majority class are ignored during training.
 
 \subsubsection{SMOTE}
 Synthetic Minority Over-sampling Technique (SMOTE) is an over-sampling approach in which the minority class is over-sampled by creating “synthetic” examples rather than by over-sampling with replacement~\cite{smote_chawla}. 
@@ -259,9 +311,19 @@ Figure~\ref{fig:logloss} shows log loss from a single class where predicted prob
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-  \node[inner sep=0pt] (A) {\includegraphics[width=0.8\textwidth]{log_loss}};
-  \node[LabelColor] (B) at ($(A.south)!-.05!(A.north)$) {Predicted probability};
-  \node[LabelColor,rotate=90] (C) at ($(A.west)!-.05!(A.east)$) {Log Loss};
+\begin{axis}[
+	axis lines = left,
+	xlabel = Predicted probability,
+	ylabel = Loss,
+]
+\addplot [
+	domain=0.0001:1,
+	samples=100,
+	color=red,
+]
+{-ln(x)};
+\addlegendentry{$f(x) = -log(x)$}
+\end{axis}
 \end{tikzpicture}
 \caption{\label{fig:logloss} Log loss of a single class where predicted probability ranges from 0 to 1. }
 \end{figure}
@@ -277,33 +339,101 @@ Consider an example of a binary classifier and let us take a look at the effect 
 
 In other words, the log loss function encourages moderate predictions. It is better to make all classifications neutral rather than make 50\% correct classifications and 50\% completely wrong predictions.
 
-
-\subsubsection{Dropout}
-
-\subsubsection{Early stopping}
-
-
 \section{Implementation of CNN}
 
-\subsection{Network visualization}
+\subsection{Convolutional layer network}
+
+Model configuration:
+\begin{itemize}
+\item Convolutional layer, 32 kernels, relu activation
+\item Convolutional layer, 32 kernels, relu activation
+\item Max pooling
+\item Dropout
+\item Convolutional layer, 64 kernels, relu activation
+\item Convolutional layer, 64 kernels, relu activation
+\item Max pooling
+\item Dropout
+\item Dense layer, 512 nodes, relu ctivation
+\item Dropout
+\item Dense layer, 3 nodes, softmax activation
+
+\end{itemize}
+
+\subsubsection{K-fold cross validation}
+
+\begin{landscape}
+\begin{table}
+\caption{5-fold cross validation, CNN, Lamellarity problem.} \label{t:kfold-cnn-lamellarity}
+
+\smallskip
+\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+                                 *{4}{S[table-format=2.1]} @{}}
+\toprule
+ & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
+         & \multicolumn{4}{c}{Uncertain}  \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+\midrule
+1 & 0.8634 & 0.9972 & 0.9995 & 0.5158 & 0.9797 & 0.9542 & 0.7472 & 0.9971 & 0.5294 & 0.9155 & 0.0364 & 0.9969\\
+2 & 0.9107 & 0.9917 & 0.9987 & 0.6183 & 0.9913 & 0.9683 & 0.8119 & 0.9988 & 0.4706 & 0.9464 & 0.0503 & 0.9966\\
+3 & 0.9798 & 0.9945 & 0.9992 & 0.8778 & 1.0000 & 0.9912 & 0.9399 & 1.0000 & 0.4706 & 0.9876 & 0.1860 & 0.9968\\
+4 & 0.9915 & 0.9945 & 0.9992 & 0.9447 & 0.9884 & 0.9972 & 0.9798 & 0.9984 & 0.8235 & 0.9933 & 0.4242 & 0.9989\\
+5 & 0.8956 & 0.9972 & 0.9995 & 0.5798 & 0.9707 & 0.9803 & 0.8711 & 0.9959 & 0.7500 & 0.9211 & 0.0513 & 0.9985\\
+\midrule
+Avg & 0.9282 & 0.9950 & 0.9992 & 0.7073 & 0.9860 & 0.9782 & 0.8700 & 0.9980 & 0.6088 & 0.9528 & 0.1497 & 0.9975\\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{table}
+\caption{5-fold cross validation, CNN, Encapsulation problem.} \label{t:kfold-cnn-encapsulation}
+
+\smallskip
+\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+                                 *{4}{S[table-format=2.1]} @{}}
+\toprule
+ & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
+         & \multicolumn{4}{c}{Uncertain}  \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+\midrule
+1 & 0.3030 & 0.9917 & 0.1961 & 0.9953 & 0.8194 & 0.8358 & 0.9945 & 0.1134 & 0.7624 & 0.8239 & 0.0822 & 0.9941\\
+2 & 0.3030 & 0.9861 & 0.1266 & 0.9953 & 0.9019 & 0.7761 & 0.9932 & 0.1793 & 0.5149 & 0.9081 & 0.1038 & 0.9891\\
+3 & 0.4545 & 0.9849 & 0.1667 & 0.9963 & 0.8992 & 0.8955 & 0.9968 & 0.1970 & 0.7030 & 0.9083 & 0.1368 & 0.9933\\
+4 & 0.6061 & 0.9895 & 0.2778 & 0.9974 & 0.9427 & 0.7836 & 0.9937 & 0.2742 & 0.6139 & 0.9490 & 0.1994 & 0.9917\\
+5 & 0.8276 & 0.9861 & 0.2581 & 0.9990 & 0.9258 & 0.9291 & 0.9980 & 0.2469 & 0.5510 & 0.9322 & 0.1403 & 0.9904\\
+\midrule
+Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.6290 & 0.9043 & 0.1325 & 0.9917\\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\end{landscape}
+
+\subsubsection{Visualization, Lamellarity problem}
 
 \begin{figure}[H]
 \begin{tabular}{cc}
-	\includegraphics[scale=0.4]{conv_layers/filters1.png} & \includegraphics[scale=0.4]{conv_layers/conv1.png} \\
-	Convolution kernels & Output \\[6pt]
-
+	\includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_1-0.png} & \includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_2-23.png} \\
+	\rom{1} & \rom{2}, channel 24 \\[6pt]
+	\includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_3-3.png} & \includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_4-58.png} \\
+	\rom{3}, channel 4 & \rom{4}, channel 59 \\[6pt]
 \end{tabular}
-\caption{First convolutional layer}
+\caption{Visualization of convolution kernels}
 \end{figure}
 
 \begin{figure}[H]
 \begin{tabular}{cc}
-	\includegraphics[scale=0.4]{conv_layers/filters2.png} & \includegraphics[scale=0.4]{conv_layers/conv2.png} \\
-	Convolution kernels, first channel & Output \\[6pt]
+	\includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_1.png} & \includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_2.png} \\
+	\rom{1} & \rom{2} \\[6pt]
+		\includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_3.png} & \includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_4.png} \\
+	\rom{3} & \rom{4} \\[6pt]
 
 \end{tabular}
-\caption{Second convolutional layer}
+\caption{Visualization of convolutional layers outputs}
 \end{figure}
+
+
 
 \subsection{Review of deep learning software libraries}
 
@@ -319,7 +449,7 @@ Deep learning software tool have been benchmarked in~\cite{benchmarking_dl_tools
 \hline 
 Caffe & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & BSD 2\\ 
 cntk & \ymark & \ymark & \ymark & \ymark & \nmark & \nmark & \ymark & \ymark & Custom\footnote{Allows commercial use \textcolor{red}{reference}} \\ 
-Keras & \ymark & \ymark & \nmark & \nmark & \ymark & \nmark & \ymark & \nmark & MIT \\ 
+Keras & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
 Lasagne & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
 mxnet & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & Apache 2.0 \\ 
 nolearn & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
@@ -350,43 +480,233 @@ Theano & 251 & 4475 & 1609 & 424 & 1436 \\
 
 \end{landscape}
 
-\section{Evaluation}
-
-\subsection{ROC}
+\section{Results}
 
 \subsection{Confusion matrix}
 
 \begin{warning}
-Problem with \textbf{Uncertain} class.
+Average confusion matrix from k-fold cross validation. Does it make sense? 
 \end{warning}
 
+% CNN
 \begin{center}
-\captionof{table}{Lamellarity problem}
+\captionof{table}{Lamellarity problem, fold 5, CNN}
 \begin{tabular}{lrrr}
 \hline
  & Unilamellar & Uncertain & Multilamellar \\ 
 \hline 
-Unilamellar & 0.97 & 0.00 & 0.03 \\ 
-Uncertain & 0.29 & 0.00 & 0.71 \\ 
-Multilamellar & 0.04 & 0.00 & 0.96 \\ 
+Unilamellar & 0.90 & 0.01 & 0.09 \\ 
+Multilamellar & 0.00 & 0.97 & 0.03 \\ 
+Uncertain & 0.00 & 0.25 & 0.75 \\ 
 \end{tabular} 
 \end{center}
 
+% SVM
 \begin{center}
-\captionof{table}{Packiging problem}
+\captionof{table}{Lamellarity problem, fold 5, SVM}
+\begin{tabular}{lrrr}
+\hline
+ & Unilamellar & Uncertain & Multilamellar \\ 
+\hline 
+Unilamellar & 0.87 & 0.03 & 0.10 \\ 
+Multilamellar & 0.02 & 0.95 & 0.03 \\ 
+Uncertain & 0.03 & 0.00 & 0.97 \\ 
+\end{tabular} 
+\end{center}
+
+% CNN
+\begin{center}
+\captionof{table}{Encapsulation problem, fold 5, CNN}
 \begin{tabular}{lrrr}
 \hline
  & Empty & Full & Uncertain \\ 
 \hline 
-Empty & 0.41 & 0.41 & 0.18 \\ 
-Packed & 0.00 & 0.95 & 0.05 \\ 
-Uncertain & 0.20 & 0.11 & 0.69 \\ 
+Empty & 0.83 & 0.07 & 0.10 \\ 
+Packed & 0.01 & 0.93 & 0.06 \\ 
+Uncertain & 0.38 & 0.07 & 0.55 \\ 
+\end{tabular} 
+\end{center}
+
+% SVM
+\begin{center}
+\captionof{table}{Encapsulation problem, fold 5, SVM}
+\begin{tabular}{lrrr}
+\hline
+ & Empty & Full & Uncertain \\ 
+\hline 
+Empty & 0.93 & 0.01 & 0.06 \\ 
+Packed & 0.04 & 0.87 & 0.09 \\ 
+Uncertain & 0.25 & 0.12 & 0.63 \\ 
 \end{tabular} 
 \end{center}
 
 \subsection{K-fold cross validation}
 
-\section{Results}
+\subsection{SVM}
+
+\begin{landscape}
+
+\begin{table}
+\caption{5-fold cross validation, SVM, Lamellarity problem.} \label{t:kfold-svm-lamellarity}
+
+\smallskip
+\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+                                 *{4}{S[table-format=2.1]} @{}}
+\toprule
+ & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
+         & \multicolumn{4}{c}{Uncertain}  \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+\midrule
+1 & 0.8659 & 0.9812 & 0.9969 & 0.5157 & 0.9527 & 0.9736 & 0.8326 & 0.9933 & 0.9851 & 0.9021 & 0.0565 & 0.9999 \\
+2 & 0.8578 & 0.9826 & 0.9971 & 0.5014 & 0.9432 & 0.9719 & 0.8222 & 0.9920 & 0.9701 & 0.8951 & 0.0521 & 0.9998 \\
+3 & 0.8404 & 0.9806 & 0.9966 & 0.4721 & 0.9432 & 0.9671 & 0.7979 & 0.9920 & 0.9701 & 0.8844 & 0.0475 & 0.9998  \\
+4 & 0.8742 & 0.9757 & 0.9960 & 0.5302 & 0.9315 & 0.9721 & 0.8215 & 0.9904 & 0.9851 & 0.9088 & 0.0604 & 0.9999\\
+5 & 0.8651 & 0.9806 & 0.9967 & 0.5147 & 0.9477 & 0.9695 & 0.8109 & 0.9926 & 0.9706 & 0.9045 & 0.0577 & 0.9998\\
+\midrule
+Avg & 0.8607 & 0.9801 & 0.9967 & 0.5068 & 0.9436 & 0.9708 & 0.8170 & 0.9921 & 0.9762 & 0.8990 & 0.0548 & 0.9998\\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{table}
+\caption{5-fold cross validation, SVM, Encapsulation problem.} \label{t:kfold-svm-encapsulation}
+
+\smallskip
+\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+                                 *{4}{S[table-format=2.1]} @{}}
+\toprule
+ & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
+         & \multicolumn{4}{c}{Uncertain}  \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+\midrule
+1 & 0.8750 & 0.9594 & 0.1223 & 0.9992 & 0.8703 & 0.9357 & 0.9980 & 0.1644 & 0.7082 & 0.9073 & 0.1356 & 0.9934\\
+2 & 0.8984 & 0.9477 & 0.1000 & 0.9993 & 0.8625 & 0.9376 & 0.9980 & 0.1567 & 0.7681 & 0.9126 & 0.1529 & 0.9948\\
+3 & 0.8828 & 0.9576 & 0.1186 & 0.9992 & 0.8582 & 0.9149 & 0.9973 & 0.1496 & 0.7207 & 0.8979 & 0.1266 & 0.9937\\
+4 & 0.8516 & 0.9487 & 0.0969 & 0.9990 & 0.8676 & 0.9244 & 0.9976 & 0.1599 & 0.7980 & 0.9174 & 0.1655 & 0.9955\\
+5 & 0.9318 & 0.9570 & 0.1263 & 0.9995 & 0.8666 & 0.9067 & 0.9970 & 0.1580 & 0.6337 & 0.9056 & 0.1218 & 0.9917\\
+\midrule
+Avg & 0.8879 & 0.9541 & 0.1128 & 0.9992 & 0.8650 & 0.9239 & 0.9976 & 0.1577 & 0.7257 & 0.9082 & 0.1405 & 0.9938\\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\end{landscape}
+
+\subsection{ROC}
+Include ROC curves of different models.
+
+\section{Benchmarking}
+\begin{warning}
+Please comment selection of performance measures for benchmarking! 
+\end{warning}
+
+\begin{landscape}
+
+\begin{figure}[H]
+\centering
+
+% Empty
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		group name=group_encapsulation,
+		group size=3 by 2,
+		ylabels at=edge left,
+		vertical sep=2cm,
+	},
+	footnotesize,
+	width=\linewidth * 0.33,
+	%height=5cm,
+	tickpos=left,
+	ytick align=outside,
+	xtick align=outside,
+	enlarge x limits = 0.2,
+	enlarge y limits = 0.02,
+	xtick=data,
+	enlarge x limits = 0.2,
+	enlarge y limits = 0.02,
+	ymin=0,
+	ymax=1,
+	legend style={at={(0.5,-0.1)},
+	anchor=north,legend columns=-1},
+	ybar,
+	symbolic x coords={TPR, SPC, PPV, NPV},
+	grid=major,
+	xmajorgrids=false,
+]
+%
+% Lamlellarity
+%
+\nextgroupplot[title={Unilamellar}]
+% cnn
+\addplot coordinates{(TPR, 0.9282) (SPC, 0.9950) (PPV, 0.9992) (NPV, 0.7073)};\label{legend:cnn}
+% svm
+\addplot coordinates{(TPR, 0.8607) (SPC, 0.9801) (PPV, 0.9967) (NPV, 0.5068)};\label{legend:svm}
+
+\nextgroupplot[title={Multilamellar}]
+% cnn
+\addplot coordinates{(TPR, 0.9860) (SPC, 0.9782) (PPV, 0.8700) (NPV, 0.9980)};
+% svm
+\addplot coordinates{(TPR, 0.9436) (SPC, 0.9708) (PPV, 0.8170) (NPV, 0.9921)};
+
+\nextgroupplot[title={Uncertain}]
+% cnn
+\addplot coordinates{(TPR, 0.6088) (SPC, 0.9528) (PPV, 0.1497) (NPV, 0.9975)};
+% svm
+\addplot coordinates{(TPR, 0.9762) (SPC, 0.8990) (PPV, 0.0548) (NPV, 0.9998)};
+
+%
+% Encapsulation
+%
+\nextgroupplot[title={Empty}]
+% cnn
+\addplot coordinates{(TPR, 0.4989) (SPC, 0.9876) (PPV, 0.2050) (NPV, 0.9967)};
+% svm
+\addplot coordinates{(TPR, 0.8879) (SPC, 0.9541) (PPV, 0.1128) (NPV, 0.9992)};
+
+\nextgroupplot[title={Full}]
+% cnn
+\addplot coordinates{(TPR, 0.8978) (SPC, 0.8440) (PPV, 0.9952) (NPV, 0.2021)};
+% svm
+\addplot coordinates{(TPR, 0.8650) (SPC, 0.9239) (PPV, 0.9976) (NPV, 0.1577)};
+
+\nextgroupplot[title={Uncertain}]
+% cnn
+\addplot coordinates{(TPR, 0.6290) (SPC, 0.9043) (PPV, 0.1325) (NPV, 0.9917)};
+% svm
+\addplot coordinates{(TPR, 0.7257) (SPC, 0.9082) (PPV, 0.1405) (NPV, 0.9938)};
+
+\end{groupplot}
+% http://tex.stackexchange.com/questions/192424/pgfplots-single-legend-in-a-group-plot
+\path (group_encapsulation c1r1.outer north west)% plot in column 1 row 1
+    (group_encapsulation c3r1.outer south west)% plot in column 1 row 3
+;
+% legend
+\path (group_encapsulation c1r1.north west|-current bounding box.north)--
+      coordinate(legendpos)
+      (group_encapsulation c3r1.north east|-current bounding box.north);
+\matrix[
+    matrix of nodes,
+    anchor=south,
+    draw,
+    inner sep=0.2em,
+    draw
+  ]at([yshift=1ex]legendpos)
+  {
+    \ref{legend:cnn}& CNN &[5pt]
+    \ref{legend:svm}& SVM \\};
+\end{tikzpicture} 
+\caption{\label{fig:svm_vs_cnn} Comparison of SVM and CNN}
+\end{figure}
+
+\end{landscape}
+
+
+\section{Evaluation}
+
+Evaluate results.
 
 \section{Conclusion}
 

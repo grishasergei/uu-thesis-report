@@ -25,3 +25,5 @@
 *.xml
 *.bak
 *.csv
+*.md5
+*.auxlock
