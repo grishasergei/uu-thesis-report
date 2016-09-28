@@ -11,6 +11,10 @@
 \usepackage{subfig}
 \usepackage{amsmath}
 \usepackage{siunitx}
+\sisetup{
+    group-digits=true,
+    group-separator={\,},
+}
 \usepackage{caption}
 \usepackage{lscape}
 \usepackage{pifont}
@@ -50,6 +54,10 @@ backend=biber
 % short for multicolumn-centered
 \newcommand{\mcc}[1]{\multicolumn{1}{c}{#1}}
 
+% http://tex.stackexchange.com/questions/2441/how-to-add-a-forced-line-break-inside-a-table-cell
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
 \graphicspath{ {img/} }
 
 % warning environment
@@ -77,14 +85,29 @@ An abstract.
 \end{abstract}
 
 \section{Introduction}
-This is my thesis job report. 
+
+
+
+\subsection{Project Goals}
+
+The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. Different models based on CNN are compared to and benchmarked against SVM classifier. 
+
 
 \section{Background}
 
+One of Vironova's electron microscopy (EM) services is to classify types of liposomes. This includes two tasks:
+
+
+
 \subsection{Problem description}
 
+A liposome is a sperical vesicle having at least one lipid bilayer~\cite{betageri1993liposome}. Liposomes were first described in 1964 by A.D. Bangham and R.W. Thorne and G. Weissman suggested the name "liposome"~\cite{betageri1993liposome}. Liposomes can be classified into different types according to numerous features such as but not limited to size, number of lamellae, composition, shape, production method, etc. The classification of liposomes was first presented at a meeting of New York Academy of Science~\cite{liposomes1978}. This project focuses on classification of liposomes according to the number of lamellae and response to drugs encapsulation.
+
 \subsubsection{Lamellarity}
-Describe what is lamellarity and give references.
+\label{sec:lamellarity}
+
+The term lamellarity refers to the number of lamellae. Lamella, in cell biology, is used to describe numerous plate or disc-like structures at both a tissue and cellular level~\cite{cammack2006oxford}. According to number of lamellae liposomes can be unilamellar (single lamella) and multilamellar (multiple lamellae). In addition uncertain class is introduced because in some cases it is almost impossible to be certain about lamellarity class. For example liposomes can overlap each other. Another issue to keep in mind is that samples are usually delivered frozen, so liposomes may be partly covered with pieces of ice that result in large black bulbs on EM images. Figure~\ref{fig:lamellarity_problem} illustrates examples of liposomes from each class.
+
 \begin{figure}[H]
 \centering
 \begin{tabular}{ccc}
@@ -92,10 +115,28 @@ Describe what is lamellarity and give references.
 	Unilamellar & Multiilamellar & Uncertain \\[6pt]
 \end{tabular}
 \caption{Lamellarity problem, 3 classes}
+\label{fig:lamellarity_problem}
 \end{figure}
 
+Table~\ref{table:lamellarity_data_set} present lamellarity problem data set which contains $\num{14169}$ EM images.
+
+\begin{center}
+\captionof{table}{Lamellarity problem}
+\label{table:lamellarity_data_set}
+\begin{tabular}{lrr}
+\toprule
+Unilamellar & \num{12368} & 87.29\% \\ 
+Multilamellar & \num{1717} & 12,12\% \\ 
+Uncertain & \num{84} & 0,59\% \\ 
+\end{tabular} 
+\end{center}
+
+
 \subsubsection{Encapsulation}
-Describe drug delivery problem and give references.
+\label{sec:encapsulation}
+
+Liposomes can be used as vehicles for drug delivering throughout various destinations in the human body~\cite{betageri1993liposome}. A crucial part of testing this approach is to measure how many liposomes responded to drugs encapsulation and can carry them further. In encapsulation problem liposomes are classified between the following types: full, i.e. liposomes that received  drug substance, empty, i.e. liposomes that remained empty after encapsulation attempt. As in lamellarity problem uncertain class is introduced with the same motivation. Figure~\ref{fig:encapsulation_problem} illustrates different classes of encapsulation problem. Table~\ref{table:encapsulation_dataset} present encapsulation problem data set which contains $\num{24918}$ EM images.
+
 \begin{figure}[H]
 \centering
 \begin{tabular}{ccc}
@@ -103,71 +144,50 @@ Describe drug delivery problem and give references.
 	Full & Empty & Uncertain \\[6pt]
 \end{tabular}
 \caption{Encapsulation problem, 3 classes}
+\label{fig:encapsulation_problem}
 \end{figure}
 
-\subsection{The data set}
-
-\begin{center}
-\captionof{table}{Lamellarity problem}
-\begin{tabular}{lrr}
-\hline 
-Unilamellar & 12368 & 87.29\% \\ 
-Multilamellar & 1717 & 12,12\% \\ 
-Uncertain & 84 & 0,59\% \\ 
-\end{tabular} 
-\end{center}
 
 \begin{center}
 \captionof{table}{Encapsulation problem}
+\label{table:encapsulation_dataset}
 \begin{tabular}{lrr}
-\hline 
-Full & 24255 & 97.34\% \\ 
-Uncertain & 502 & 2.01\% \\ 
-Empty & 161 & 0.65\% \\ 
+\toprule
+Full & \num{24255} & 97.34\% \\ 
+Uncertain & \num{502} & 2.01\% \\ 
+Empty & \num{161} & 0.65\% \\ 
 \end{tabular} 
 \end{center}
 
-
-Here comes description of the data set. Describe images and features.
-
-\subsubsection{Principal component analysis}
-
-Features included in principal component analysis (PCA):
-\begin{itemize}
-\item Area
-\item Circularity
-\item Perimeter
-\item Length
-\item Maximum width
-\item Signal to noise
-\item M20
-\item M02
-\item M30
-\item M03
-\end{itemize}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.7]{pca/lamellarity.png}
-\caption{PCA lamellarity problem. \\ Explained variance ration by first two components: 94.78\%, 3.39\%}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.7]{pca/encapsulation.png}
-\caption{PCA encapsulation problem. \\ Explained variance ration by first two components: 66.20\%, 19.96\%}
-\end{figure}
-
-\subsection{Imbalance problem}
-
-Describe imbalance problem. Imbalance problem has been studied in~\cite{imbalanced-data}, ...
-Give examples of domains where data is usually imbalanced. 
+\section{Features}
 
 \section{Methodology}
 
 \subsection{Performance measures}
 
-Describe and motivate used performance measures. Reference to~\cite{powers07evaluation}.
+When evaluating a classification model one is almost always interested in how many predictions from all predictions made are correct. In other words we are interested in how accurate a particular model is. The accuracy of a classification system is the share of correct predictions in total number of examples. Accuracy  is one of the most frequently used performance measures in classification problems. However accuracy alone is usually not enough to describe predictive power of the model. Models with a given accuracy may have greater predictive power than models with higher accuracy. This is known as Accuracy Paradox~\cite{zhu2007knowledge}.
+
+Let's illustrate Accuracy Paradox using encapsulation problem. Table~\ref{table:encapsulation_dataset} on page~\pageref{table:encapsulation_dataset} presents distribution of three classes in encapsulation data set. Consider a model that classifies all particles as full. Such model would achieve astonishing accuracy of $97\%$ just by making the same prediction for all particles. Let's compare it to another model, that makes a random guess, i.e. predicts each class with $\frac{1}{3}$ probability. Such random guess model would have accuracy of approximately $33\%$, almost three times less than the first model. However, while the first model totally ignores two minority classes, the second one has $33\%$ chance of detecting them, so it may be preferred comparing to the first one. 
+
+Imbalanced data sets is a typical example when accuracy is misleading and fails as a performance measure. An unambiguous way to present the prediction results of a classification model is a confusion matrix~\cite{STEHMAN199777}. Confusion matrix is a table with number of rows and columns that are both equal to number of classes in the data set under consideration. Columns represent predicted classes and rows represent true classes. Each cell contains the number of predictions that corresponds to that particular category. 
+
+A table of confusion is a special case of confusion matrix that is dealing with binary classification. Table of confusion is presented in table~\ref{table:table_of_confusion} and it is usually used to illustrate performance measures that are derived from confusion matrix.
+
+\begin{center}
+\captionof{table}{Table of confusion}
+\label{table:table_of_confusion}
+\begin{tabular}{|c|c|c|}
+\hline 
+ & Predicted True & Predicted False \\ 
+\hline 
+Actual True & \specialcell{True positive \\ TP} & \specialcell{False negative \\ FN} \\ 
+\hline 
+Actual False & \specialcell{False positive \\ FP} & \specialcell{True negative \\ TN} \\ 
+\hline 
+\end{tabular} 
+\end{center}
+ 
+Different performance measures are discussed and compared in~\cite{powers07evaluation}. The rest of this section presents performance measures that are used in this project for evaluation and comparing of different classification models. 
 
 \textbf{True positive rate (TPR)}, also known as sensitivity or recall, measures share of positives that have been correctly identified:
 \begin{equation*}
@@ -188,6 +208,8 @@ PPV = \frac{TP}{TP + FP}
 \begin{equation*}
 NPV = \frac{TN}{TN + FN}
 \end{equation*}
+
+Presented above measures allow more detailed analysis of classifier performance and can clearly illustrate eventual bias of a classifier towards some class or classes. 
 
 \subsection{Convolutional Neural Networks}
 Motivate use of convolutional neural networks, add a lot of references to~\cite{dl_book}
