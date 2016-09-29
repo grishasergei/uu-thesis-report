@@ -2059,11 +2059,23 @@
     <bcf:citekey order="8">powers07evaluation</bcf:citekey>
     <bcf:citekey order="9">dl_book</bcf:citekey>
     <bcf:citekey order="10">DBLP:journals/corr/ZeilerF13</bcf:citekey>
-    <bcf:citekey order="11">dl_book</bcf:citekey>
-    <bcf:citekey order="12">smote_chawla</bcf:citekey>
-    <bcf:citekey order="13">ishaq_synthetic</bcf:citekey>
-    <bcf:citekey order="14">rosasco</bcf:citekey>
-    <bcf:citekey order="15">benchmarking_dl_tools</bcf:citekey>
+    <bcf:citekey order="11">Ling2010</bcf:citekey>
+    <bcf:citekey order="12">Lopez2013113</bcf:citekey>
+    <bcf:citekey order="13">smote_chawla</bcf:citekey>
+    <bcf:citekey order="14">ishaq_synthetic</bcf:citekey>
+    <bcf:citekey order="15">Zadrozny:2001:LMD:502512.502540</bcf:citekey>
+    <bcf:citekey order="16">smote_chawla</bcf:citekey>
+    <bcf:citekey order="17">ishaq_synthetic</bcf:citekey>
+    <bcf:citekey order="18">Perlin:1985:IS:325165.325247</bcf:citekey>
+    <bcf:citekey order="19">dl_book</bcf:citekey>
+    <bcf:citekey order="20">dl_book</bcf:citekey>
+    <bcf:citekey order="21">jim1996</bcf:citekey>
+    <bcf:citekey order="22">dl_book</bcf:citekey>
+    <bcf:citekey order="23">JMLR:v15:srivastava14a</bcf:citekey>
+    <bcf:citekey order="24">dl_book</bcf:citekey>
+    <bcf:citekey order="25">dl_book</bcf:citekey>
+    <bcf:citekey order="26">rosasco</bcf:citekey>
+    <bcf:citekey order="27">benchmarking_dl_tools</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty/global" type="entry" sortscheme="nty" sortnamekeyscheme="global">
   <bcf:sorting>

@@ -24,6 +24,7 @@
 \usetikzlibrary{pgfplots.groupplots}
 \usetikzlibrary{matrix}
 \usepackage{booktabs}
+\usepackage{csquotes}
 
 \usepackage[
 backend=biber
@@ -217,81 +218,40 @@ Motivate use of convolutional neural networks, add a lot of references to~\cite{
 \subsection{Deconvolutional Neural Networks}
 Study and discuss deconvolutional networks~\cite{DBLP:journals/corr/ZeilerF13} or other more basic visualization techniques and their use as potential aids for Vironova in deciding useful particle features to extract.
 
-\subsection{Regularization}
+\subsection{Class Imbalance Problem}
+\label{sec:class_imbalance}
+Encyclopedia of Machine Learning~\cite{Ling2010} defines Class Imbalance problem as follows:
+\blockquote{Data are said to suffer the \textit{Class Imbalance Problem} when the class distributions are highly imbalanced. In this context, many classification learning algorithms have low predictive accuracy for the infrequent class.}
 
-Motivate need of regularization and describe problems that is solves. 
-Reularization techniques that I have tried.
+It is a serious problem because most machine learning algorithms will tend to classify all examples as majority class treating examples of minority class as noise. Lamellarity and encapsulation data sets presented in sections~\ref{sec:lamellarity} and~\ref{sec:encapsulation} respectively are highly unbalanced. In lamellarity data set majority class accounts for $87\%$ of all samples and in encapsulation dataset majority class constitutes $97\%$ of all samples. Preliminary experiments showed that classifiers trained on raw unbalanced data sets are highly biased towards majority classes and do not generalize. Imbalance problem is not uncommon. In fact, data sets are highly imbalanced in many domains, for example fraud detection, medical diagnosis, anomaly detection, telecommunications, etc. 
 
-\subsubsection{Weight decay}
+Various solutions have been proposed to deal with this problem and they can be summarized into three groups~\cite{Lopez2013113}:
 
-\begin{warning}
-With weight decay many convolution kernels are equal to zero. 
-\end{warning}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{weight_decay/performance.png}
-\caption{Batch performance metrics}
-\end{figure}
-
-\begin{figure}[H]
-\begin{tabular}{cc}
-	\includegraphics[scale=0.4]{weight_decay/filters1.png} & \includegraphics[scale=0.4]{weight_decay/conv1.png} \\
-	Convolution kernels & Output \\[6pt]
-\end{tabular}
-\caption{First convolutional layer}
-\end{figure}
-
-\begin{figure}[H]
-\begin{tabular}{cc}
-	\includegraphics[scale=0.4]{weight_decay/filters2.png} & \includegraphics[scale=0.4]{weight_decay/conv2.png} \\
-	Convolution kernels, channel 27 & Output (all 32 channels applied) \\[6pt]
-
-\end{tabular}
-\caption{Second convolutional layer}
-\end{figure}
-
-\subsubsection{Noise injection}
-As proposed in~\cite{dl_book}, label smoothing regularizes a model based on a softmax with $k$ output values by replacing the hard 0 and 1 classification targets with targets of $\frac{\epsilon}{k}$ and $1 - \frac{k-1}{k}\epsilon$, respectively, where $\epsilon$ is an arbitrary value between 0 and 1, usually very close to 0. Label smoothing operation is summarized in equation~\ref{eq:soft_targets}.
-
-\begin{equation}
-\label{eq:soft_targets}
-x \leftarrow x \left( 1 - \epsilon \right) + \left(1 - x\right) \frac{\epsilon}{k - 1}
-\end{equation}
-
-\subsubsection{Dropout}
-
-\subsubsection{Early stopping}
-
-\subsection{Data augmentation}
-Motivate data augmentation and give references.
-
-Data is augmented in the following way:
 \begin{itemize}
-\item Rotation in range $(-180, 180)$ degrees with spline interpolation
-\item Vertical shift in range $(-10, 10)$ percent of total height
-\item Horizontal shift in range $(-10, 10)$ percent of total width
-\item Horizontal flip
-\item Vertical flip
+
+\item \textit{Data sampling} implies any means to produce more or less balanced data set. For example it can be oversampling, undersampling, SMOTE~\cite{smote_chawla} or generating artificial examples~\cite{ishaq_synthetic}. Data sampling method perform usually best combined with data augmentation techniques.
+
+\item \textit{Algorithm modification} this procedure is oriented towards the adaptation of base learning methods to be more attuned to class imbalance issues ~\cite{Zadrozny:2001:LMD:502512.502540}.
+
+\item \textit{Cost sensitive learning} introduces higher penalties for misclassification of minority classes making learning algorithm more sensitive to underrepresented classes. 
+
 \end{itemize}
 
-All transformations are applied randomly. Horizontal and vertical flips are performed with $50\%$ probability, rotation and shift values are uniform random integer values in specified ranges. 
+Listed above methods prevent classifiers from ignoring underrepresented classes during training phase. However this is very likely to lead to another problem --- overfitting. Overfitting and how to combat it is discussed in section~\ref{sec:regularization}. The rest of this section discusses methods that have been used to mitigate Class Imbalance Problem in lamellarity and encapsulation data sets. 
+
 
 \subsubsection{Oversampling}
-Minority classes are oversampled to match number of majority class examples so the data set becomes balanced.
+Oversampling means repeating instances of underrepresented classes. Minority classes in lamellarity data set are multilamellar and uncertain, and in encapsulation data set --- empty and uncertain. Examples of these classes are repeated to match number of training samples of majority class so training sets become balanced. Oversampling itself does not mitigate imbalance problem much, it works best combined with data augmentation which is discussed in section~\ref{sec:data_augmentation}.
 
 \subsubsection{Undersampling}
+Undersampling, as opposed to oversampling, means excluding some examples of majority class in order to make training set balanced. In practice undersampling is repeated at the beginning of each learning epoch when randomly selected examples are excluded. In such way learning algorithm can still use all samples for training, it just does not see all of them during all epochs. Proportion of excluded examples can vary and depends on the contexts. In experiments presented in this project undersampling implies dropping $20\%$ of majority class examples. 
 
 \subsubsection{SMOTE}
 Synthetic Minority Over-sampling Technique (SMOTE) is an over-sampling approach in which the minority class is over-sampled by creating “synthetic” examples rather than by over-sampling with replacement~\cite{smote_chawla}. 
 Synthetic examples are generated by combining each minority class example with its randomly selected $k$ nearest neighbors, where $k$ is a parameter that depends on amount of required over-sampling.
 
-\begin{warning}
-Add figure of some liposome, its nearest neighbors and generated synthetic examples.
-\end{warning}
-
 \subsubsection{Synthetic data}
-Synthetic and semi-synthetic alternative to real data have been discussed and evaluated in~\cite{ishaq_synthetic}. I also tried to generate synthetic data, train network on it and evaluate on real data. Performance was poor, much worse than training on over-sampled and semi-synthetic data produced by SMOTE. 
+Machine learning algorithms perform best provided large training data sets. In many domains, including medicine and biology, expert annotation is required for preparing training and test data sets. This results in high cost and effort, so size of data sets if often limited. In such case artificial synthetic data is an attractive alternative to real expert-annotated data. Training of convolutional neural network models for fluorescent spot detection on synthetic data is discussed and evaluated in~\cite{ishaq_synthetic}. 
 
 \begin{figure}[H]
 \centering
@@ -300,13 +260,74 @@ Synthetic and semi-synthetic alternative to real data have been discussed and ev
 	Unilamellar & Multiilamellar & Uncertain \\[6pt]
 \end{tabular}
 \caption{Synthetic examples, lamellarity problem}
+\label{fig:synthetic_images}
 \end{figure}
 
-\begin{warning}
-Kommentar från Max: Det kan vara svårt att motivera en syntetiseringsmetod som inte grundar sig på statistiska mått på huvuddatan. Prova gärna att göra mindre rotationer, 10 grader eller så, använd gärna Lanczos-interpolering, du kan fråga Ida-Maria om referens för det (poängen är att Lanczos bibehåller textur-statistik mycket bättre än t ex linjärinterpolering).
-\end{warning} 
+In this project synthetic data has been generated for lamellarity problem. Artificial EM images of liposomes are generated by drawing circles with carefully selected randomized distortions. Background and distortions are generated using Perlin noise~\cite{Perlin:1985:IS:325165.325247}. Figure~\ref{fig:synthetic_images} presents examples of artificially generated EM images.
 
-\subsection{Loss function}
+Note that despite visual similarity artificial images are not based on statistical measures from real data set. Histograms and image patterns are not drawn from real distributions. With limited time and effort, this experiment should be rather seen as a proof of concept.
+
+
+\section{Regularization}
+\label{sec:regularization}
+
+Let us assume that an imbalanced data set has been balanced by any combination of methods described in section~\ref{sec:class_imbalance}. This would significantly reduce training error which means that the model is able to describe data generation process of the training set. 
+
+However as the result of seeing multiple copies of minority classes learning algorithm will almost likely describe random error or noise as well. Such model would not be able to make reliable predictions on general untrained data, i. e. its generalization error would still be unacceptably high. As defined in~\cite{dl_book} \blockquote{\textit{Generalization} is any modification we make to a learning algorithm that is intended to reduce its generalization error but not its training error}.
+
+The reset of this section presents regularization techniques that have been used to reduce generalization error of models trained on lamellarity and encapsulation data sets.
+
+\subsection{Weight decay}
+Weight decay is a method of adding penalty on hidden layer weights magnitude to the loss function. In this way we express preference of smaller weights and prevent weight of some hidden nodes or convolutional filters from becoming to large. Large weights can result in undesired numerical errors such as overflow or truncation error. Usually $L^2$ norm of penalized layers multiplied by some constant $\alpha$ (typically close to zero) is added to the loss function. However other norms such as but not limited to $L^1$ can be used. 
+On the other hand weight decay can lead to other problems as described in~\cite{dl_book}. Penalties on weights can cause non-convex optimization procedures to get stuck in local minima corresponding to small values of weights. 
+
+Applied to neural networks it means that weight decay can lead to \blockquote{dead units}. These units do not contribute much to the learning process because their input and output weights are all very small. This configuration can be locally optimal even if loss value can be significantly reduced by making the wights larger. This fenomena was observed during experiments presented in this project. Applying weight decay to convolutional layers resulted in numerous dead filters which worsened classifiers performance on both training and test sets.
+
+\subsection{Noise injection}
+Noise robustness can be achieved by adding some noise to the model. Noise can be added at several places. 
+
+Firstly, noise can be added to the input, in our case to EM images. However EM images are generally quite noisy while some examples are very noisy. 
+
+Secondly, noise can be added to weights. This technique is primarily used in recurrent neural networks~\cite{jim1996}. 
+
+Thirdly, most data sets have some mistakes in the annotated labels. As shown in section~\ref{sec:loss_function}, it can be very costly to maximize $\log p(y|x)$ when label $y$ is wrong. Label smoothing technique is proposed in~\cite{dl_book}. Label smoothing regularizes a model based on a softmax with $k$ output values by replacing the hard 0 and 1 classification targets with targets of $\frac{\epsilon}{k}$ and $1 - \frac{k-1}{k}\epsilon$, respectively, where $\epsilon$ is an arbitrary value between 0 and 1, usually very close to 0. Label smoothing operation is summarized in equation~\ref{eq:soft_targets}.
+
+\begin{equation}
+\label{eq:soft_targets}
+x \leftarrow x \left( 1 - \epsilon \right) + \left(1 - x\right) \frac{\epsilon}{k - 1}
+\end{equation}
+
+Label smoothing is used in all experiments presented in this project.
+
+\subsection{Dropout}
+Dropout~\cite{JMLR:v15:srivastava14a} suggests to randomly drop non--output units (nodes) along with their connections from the network. This prevents units from co--adapting too much. Dropout is implemented as a parameter between $0$ and $1$ that describes probability of dropping each unit. It can be constant during all training epochs or some decay scheme may be used. Dropout may be more aggressive in the beginning of training and smaller later when the model becomes trained, it is the same idea as with learning rate decay. Dropout is used in all experiments presented in this project.
+
+
+\subsection{Early stopping}
+Early stopping is probably the most commonly used regularization strategy in deep learning~\cite{dl_book}. It is a simple yet powerful technique of determining optimal number of training epochs. Idea is to split training data into train set used to train the model and validation set, which is not used in training process. Errors of both sets are monitored at each epoch. Training should be stopped when validation set performance has not improved for some selected number of epochs. This prevents overfitting and improves generalization. Validation set error is more suitable than training set error because training error decreases steadily over time as model starts to overfit while validation error begins to rise again. 
+In this project early stopping is used to determine number of training epochs, that is later fixed during k-fold cross validation.
+
+\subsection{Data augmentation}
+\label{sec:data_augmentation}
+As was already mentioned in section~\ref{sec:class_imbalance} training data is often limited and additional data is hard to obtain. One way to get around this problem is to introduce additional diversity in training set by augmenting existing data. Data augmentation has proven to be especially effective for classification tasks~\cite{dl_book} which is exactly the case in this project. 
+A good classifier is invariant to a wide variety of transformations and can see true class from \blockquote{different points of view}. New $(x, y)$ pairs, where $x$ is a class example and $y$ is corresponding label, can be easily generated by applying different transformations to $x$. Choice of transformations is highly application dependent. For example, optical recognition models must recognize difference between `b' and `d' and between `6' and `9', so horizontal and vertical flips are not suitable for this task. 
+ 
+
+In this project data is augmented in the following way:
+\begin{itemize}
+\item Rotation in range $(-180, 180)$ degrees with spline interpolation
+\item Shear transformation
+\item Vertical shift in range $(-10, 10)$ percent of total height
+\item Horizontal shift in range $(-10, 10)$ percent of total width
+\item Zoom
+\item Horizontal flip
+\item Vertical flip
+\end{itemize}
+
+All transformations are applied randomly. Horizontal and vertical flips are performed with $50\%$ probability, rotation, shear, shift and zoom values are uniform random integer values in specified ranges. Data augmentation is performed in all experiments unless the opposite is stated explicitly.
+
+\section{Loss function}
+\label{sec:loss_function}
 
 \begin{warning}
 This section is taken from project report for Machine Learning course. How to cite it?
