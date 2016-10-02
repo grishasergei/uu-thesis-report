@@ -16,7 +16,6 @@
     group-separator={\,},
 }
 \usepackage{caption}
-\usepackage{lscape}
 \usepackage{pifont}
 \usepackage{footnote}
 \makesavenoteenv{tabular}
@@ -25,6 +24,8 @@
 \usetikzlibrary{matrix}
 \usepackage{booktabs}
 \usepackage{csquotes}
+\usepackage{afterpage}
+\usepackage{pdflscape}
 
 \usepackage[
 backend=biber
@@ -160,9 +161,60 @@ Empty & \num{161} & 0.65\% \\
 \end{tabular} 
 \end{center}
 
-\section{Features}
+\section{The data}
+\label{sec:dataset}
+The data for this project is provided by Vironova AB. The data consists of two data sets corresponding to lamellarity and inccpsulation problems. Both data sets contain grayscale EM images of particles and a number of computed image features.
+
+Each image depict exactly one liposome. All images are padded 50 pixels in each direction. Effect of particle surrounding on classifier performance is described later in this report. Corresponding particle masks are also provided. All images have different size. Figure~\ref{fig:img_size_scatter_plot} shows scatter plots where axes coordinates correspond to image width and height in pixels. Figure~\ref{fig:img_size_per_class} demonstrates image size distribution inside each class. 
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{cc}
+\includegraphics[scale=0.32]{img_size/lamellarity/scatter_plot_width_height.png} & \includegraphics[scale=0.32]{img_size/encapsulation/scatter_plot_width_height.png}
+\end{tabular}
+\caption{Scatter plots of images sizes (best viewed in color): lamellarity data set to the left hand side, encapsulation --- to the rights hand side. Width and height units are pixels.}
+\label{fig:img_size_scatter_plot}
+\end{figure}
+
+%\pagebreak
+Both data sets contain following features:
+\begin{itemize}
+\item \textbf{Maximum width} in nanometres. If particle is an ellipse then it is diameter along the largest axis. It particle is a polygon then it is a maximum value of distance transform of particle mask.
+
+\item \textbf{Diameter} in pixels. If particle is an ellipse then it is diameter along the largest axis. If particle is a polygon then it is the greatest distance between any two vertices. 
+
+\item \textbf{Length} is defined as diameter but it has nanometre as units.
+
+\item \textbf{Histogram} histogram of pixel intensity values, 32 bins.
+
+\item \textbf{Moments} Image moments $\mu_{20}$, $\mu_{02}$, $\mu_{30}$, $\mu_{03}$ as defined in~\cite{1057692}. 
+
+\item \textbf{Radial Density Profile} It is a 2d array, first value in each pair in pixel  is pixel intensity value and second one is distance in nanometre to the center of the particle. First entry of the array corresponds to the center of the particle, then all values are average of outward concentric rings.
+
+\item \textbf{Edge Density Profile} is defined in similar way to the radial density profile, though second value in each pair is defined in such way that it has 0 value at membrane.
+
+\item \textbf{Signal to noise} is a measure that says how much variance across the membrane is different compared to the variance along with the membrane.
+\end{itemize}
+
+
+\begin{landscape}
+\begin{figure}
+\centering
+\begin{tabular}{ccc}
+ \includegraphics[scale=0.4]{img_size/lamellarity/heatmap_multilamellar.png} & \includegraphics[scale=0.4]{img_size/lamellarity/heatmap_unilamellar.png} & \includegraphics[scale=0.4]{img_size/lamellarity/heatmap_uncertain.png} \\
+	Multilamellar & Unilamellar & Uncertain \\[6pt]
+	\includegraphics[scale=0.4]{img_size/encapsulation/heatmap_empty.png} & \includegraphics[scale=0.4]{img_size/encapsulation/heatmap_full.png} & \includegraphics[scale=0.4]{img_size/encapsulation/heatmap_uncertain.png} \\
+	Empty & Full & Uncertain \\[6pt]
+\end{tabular}
+\caption{Distribution of image sizes in each class. Upper row corresponds to lamellarity problem, lower corresponds to encapsulation problem.}
+\label{fig:img_size_per_class}
+\end{figure}
+\end{landscape}
+
 
 \section{Methodology}
+
+
 
 \subsection{Performance measures}
 
@@ -647,7 +699,7 @@ Please comment selection of performance measures for benchmarking!
 
 \begin{landscape}
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 
 % Empty
