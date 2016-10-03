@@ -214,7 +214,27 @@ Both data sets contain following features:
 
 \section{Methodology}
 
+\subsection{Support Vector Machines}
+\label{sec:svm}
+The support vector machine (SVM) is one of the most influential approaches to supervised learning~\cite{Boser:1992:TAO:130385.130401}. SVM is driven by a linear function $w^\top x + b$~\cite{dl_book}. In classification tasks SVM has the aim to determine decision boundaries that produce optimal class separation. SVM was initially designed for binary classification case but a number of modifications had been introduced for multiclass classification. On of them is "one-against-one" approach~\cite{Knerr1990}. According to this technique $n (n-1)\frac{1}{2}$, where $n$ is number of classes, classifiers are trained for each class. SVM does not provide probabilities, just a class identity~\cite{dl_book}. \texttt{LIBSVM}~\cite{CC01a} library is used for experiments in this project and it implements "one-against-one" technique.
 
+Currently automatic classification is performed by means of SVM at Vironova. Performance of SVM method has shown up to $98\%$ accuracy on lamellarity problem and up to $87\%$ on encapsulation problem. The following features are used by Vironova:
+\begin{itemize}
+\item Area
+\item Circularity
+\item Image moments $\mu_{20}$, $\mu_{02}$, $\mu_{30}$, $\mu_{03}$
+\item Edge density profile
+\item Histogram
+\item Internal segmentation variance
+\end{itemize}
+
+All named above features except internal segmentation variance are described in section~\ref{sec:dataset}. Internal segmentation variance is not available in provided data sets but its absence had insignificant impact on experiment results as shown later in this report.  
+
+\subsection{Convolutional Neural Networks}
+Motivate use of convolutional neural networks, add a lot of references to~\cite{dl_book}
+
+\subsection{Deconvolutional Neural Networks}
+Study and discuss deconvolutional networks~\cite{DBLP:journals/corr/ZeilerF13} or other more basic visualization techniques and their use as potential aids for Vironova in deciding useful particle features to extract.
 
 \subsection{Performance measures}
 
@@ -263,12 +283,6 @@ NPV = \frac{TN}{TN + FN}
 \end{equation*}
 
 Presented above measures allow more detailed analysis of classifier performance and can clearly illustrate eventual bias of a classifier towards some class or classes. 
-
-\subsection{Convolutional Neural Networks}
-Motivate use of convolutional neural networks, add a lot of references to~\cite{dl_book}
-
-\subsection{Deconvolutional Neural Networks}
-Study and discuss deconvolutional networks~\cite{DBLP:journals/corr/ZeilerF13} or other more basic visualization techniques and their use as potential aids for Vironova in deciding useful particle features to extract.
 
 \subsection{Class Imbalance Problem}
 \label{sec:class_imbalance}
