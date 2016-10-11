@@ -2086,7 +2086,18 @@
     <bcf:citekey order="35">dl_book</bcf:citekey>
     <bcf:citekey order="36">dl_book</bcf:citekey>
     <bcf:citekey order="37">rosasco</bcf:citekey>
-    <bcf:citekey order="38">benchmarking_dl_tools</bcf:citekey>
+    <bcf:citekey order="38">2016arXiv160502688short</bcf:citekey>
+    <bcf:citekey order="39">jia2014caffe</bcf:citekey>
+    <bcf:citekey order="40">tensorflow2015-whitepaper</bcf:citekey>
+    <bcf:citekey order="41">cntk</bcf:citekey>
+    <bcf:citekey order="42">Collobert_NIPSWORKSHOP_2011</bcf:citekey>
+    <bcf:citekey order="43">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="44">Mamykina:2011:DLF:1978942.1979366</bcf:citekey>
+    <bcf:citekey order="45">Thung:2013:NSS:2495256.2495709</bcf:citekey>
+    <bcf:citekey order="46">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="47">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="48">Rosen:2004:OSL:1014911</bcf:citekey>
+    <bcf:citekey order="49">chollet2015keras</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty/global" type="entry" sortscheme="nty" sortnamekeyscheme="global">
   <bcf:sorting>

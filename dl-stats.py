@@ -16,7 +16,7 @@ repos = [
 	('dnouri', 'nolearn'),
 	('dmlc', 'mxnet'),
 	('lasagne', 'lasagne'),
-	('nvidia', 'digits')
+	('torch', 'torch7')
 ]
 
 stats = dict()

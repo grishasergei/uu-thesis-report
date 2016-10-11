@@ -39,6 +39,8 @@ backend=biber
 \definecolor{linux}{RGB}{255, 186, 249}
 \definecolor{windows}{RGB}{186,215, 255}
 \definecolor{macos}{gray}{0.9}  
+\definecolor{clstackoverflow}{HTML}{FE7A15}  
+\definecolor{clgithub}{HTML}{4078C0} 
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
 \newcommand{\ymark}{\textcolor{clyes}{\cmark}}%
@@ -237,7 +239,7 @@ Employing of CNNs for this project as the main tool for performing classificatio
 
 Since introduction in~\cite{LeCun1986} in the late 1980's, CNNs have demonstrated excellent performance in object detection and recognition tasks. One of the most influential applications of CNNs is ImageNet 2012 competition that was won using a CNN model~\cite{NIPS2012_4824} with error rate of $16.4\%$ which was a breakthrough at that time. There are also examples of successful application of CNNs in microscopy images domain. For example U-Net~\cite{Ronneberger2015} has solved biomedical image segmentation task provided very limited training data set. Area of CNNs application is extensive and they are being used by all leading IT companies such as Google, Facebook, Microsoft and others. Current interest for CNNs is driven mainly by three factors~\cite{Zeiler2014}: the availability of large annotated data sets; powerful GPU hardware and better model regularization strategies. 
 
-CNNs are of great interest in image analysis domain because they allow unsupervised learning of image features. One does not need to be an image analysis specialist to build a powerful and robust image classification or object recognition system. Unlike many other methods of image analysis CNNs do not require handcrafted convolutional filters carefully designed by an image analysis specialist, even though these features can be incorporated in a CNN model. For instance, lamellarity and encapsulation problems have already been successfully solved by Vironova specialists using SVM and carefully selected image features such as area, circularity, image moments and other discussed in section~\ref{sec:svm}. This projects studies CNNs ability to achieve comparable result in fully unsupervised manner. 
+CNNs are of great interest in image analysis domain because they allow learning of image features. One does not need to be an image analysis specialist to build a powerful and robust image classification or object recognition system. Unlike many other methods of image analysis CNNs do not require handcrafted convolutional filters designed by an image analysis specialist, even though these features can be incorporated in a CNN model. For instance, lamellarity and encapsulation problems have already been successfully solved by Vironova specialists using SVM and carefully selected image features such as area, circularity, image moments and other discussed in section~\ref{sec:svm}. This projects studies CNNs ability to achieve comparable result in fully unsupervised manner. 
 
 
 \subsection{Deconvolutional Neural Networks}
@@ -551,52 +553,133 @@ Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.
 
 
 
-\subsection{Review of deep learning software libraries}
+\subsection{Review of deep learning software tools}
 
-Deep learning software tool have been benchmarked in~\cite{benchmarking_dl_tools}
+A wide variety of deep learning software tools is available to the public. Most of them are open-source and are distributed under licenses that allow commercial use. Development of deep learning frameworks is driven by Universities and leading IT companies such as Google and Microsoft with extensive help of the community. For example Theano~\cite{2016arXiv160502688short} by University of Montreal is one of the first and most influential deep learning libraries. It was initially released in 2010. Another state of the art tool is Caffe~\cite{jia2014caffe} by UC Berkeley. Google released TensorFlow~\cite{tensorflow2015-whitepaper} software library in November 2015. Microsoft made its CNTK~\cite{cntk} tool available to the public in January 2016.
+
+Mentioned above software tools together with some other are summarized in table~\ref{tbl:comparison_of_dl_lib}. 
+
+Four deep learning libraries: TensorFlow, Caffe, Torch~\cite{Collobert_NIPSWORKSHOP_2011} and CNTK have been compared and benchmarked in~\cite{DBLP:journals/corr/ShiWXC16}. Authors have concluded that \blockquote{all tested tools can make good use of GPUs to achieve significant speedup over their CPU counterparts. However, there is  no  single  software  tool  that  can  consistently  outperforms other.} Their tests of CNN models showed that Caffe and Tensorflow performed best on CPU with 4 and 16 threads respectively. On GPU Caffe, Tensorflow and CNTK were best depending on mini-batch size and GPU type. 
+
+When selecting deep learning framework one should also consider community involvement. This is an important factor as an open-source project cannot be developed and maintained well without appropriate amount of interest from the programmers community. In order to estimate popularity of a deep learning library I gathered statistics from Stackoverflow~\cite{Mamykina:2011:DLF:1978942.1979366} and GitHub~\cite{Thung:2013:NSS:2495256.2495709}. Stackoverflow is a popular on-line programming question and answer community. Github is one of the largest web-based code repository hosting service. Source code of all deep learning libraries mentioned in this project is hosted on GitHub at the time of writing. Number of questions on Stackoverflow related to each deep learning library and number of subscribers to the corresponding code repositories are compared on figure~\ref{fig:framework_popularity}. While according to~\cite{DBLP:journals/corr/ShiWXC16} there is no clear performance leader, programmers community seems to have already selected its favorite deep learning library. There are almost four times more questions about TensorFlow than about its runner ups Caffe and Theano and almost three times more people are watching its repository. On the other hand CNTK that showed good performance during tests performed in~\cite{DBLP:journals/corr/ShiWXC16} seems to be almost ignored by the community, as of October 2016 there were only 15 questions tagged CNTK on Stackoverflow. 
+
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+	xbar,
+	y axis line style = { opacity = 0 },
+	axis x line = none,
+	tickwidth = 0pt,
+	enlarge y limits = 0.2,
+	enlarge x limits = 0.02,
+	symbolic y coords = {Caffe, CNTK, Keras, Lasagne, MXNET, NOLEARN, TensorFlow, Theano, Torch},
+	ytick = data,
+	nodes near coords,
+	height = 12cm,
+	legend style={at={(1.1, 0.5)},anchor=north east}
+    ]
+
+% stackoverflow
+\addplot[color=clstackoverflow, fill=clstackoverflow] coordinates{(1161,Caffe) (15,CNTK) (571,Keras) (168,Lasagne) (29,MXNET) (45,NOLEARN) (4000,TensorFlow) (1555,Theano) (533,Torch)};
+
+% github
+\addplot[color=clgithub, fill=clgithub] coordinates{(1605,Caffe) (746,CNTK) (667,Keras) (208,Lasagne) (615,MXNET) (54,NOLEARN) (3200,TensorFlow) (446,Theano) (609,Torch)};
+
+\legend{Stackoverflow questions, Github  subscribers}
+
+\end{axis}
+\end{tikzpicture}
+
+\caption{\label{fig:framework_popularity}Popularity of deep learning frameworks as of October 2016.}
+\end{figure}
+
+Licensing is another important issue. All presented here deep learning libraries are distributed under one of the following open-source licenses~\cite{Rosen:2004:OSL:1014911}: MIT, Apache and BSD. The only exception is CNTK which has also a permissive license but has not adopted any of the more conventional licenses.
+
+One should also mention deep learning libraries that are built on top of other libraries to make more user friendly API. Lasagne and Keras~\cite{chollet2015keras} are such examples. Lasagne is built on top of Theano, Keras is built on top of both Theano and Tensorflow. It is easy to switch backend from Theano to TensorFlow and vice versa in Keras which makes it a very powerful tool. Keras PI is lightweight and simple which makes it a great prototyping tool. A clear drawback of such \blockquote{on-top} libraries is a lag between introduction of new functionality in primary libraries and in on-top libraries. Furthermore, additional layers of abstraction might reduce performance. 
+
+All experiments presented in this project have been performed using TensorFlow and Keras software tools. 
 
 \begin{landscape}
 \begin{center}
 \captionof{table}{Comparison of characteristics of deep learning frameworks}
+\label{tbl:comparison_of_dl_lib}
 \begin{tabular}{lccccccccl}
 \hline 
  & \multicolumn{2}{c}{\cellcolor{linux}Linux} & \multicolumn{2}{c}{\cellcolor{windows}Windows} & \multicolumn{2}{c}{\cellcolor{macos}Mac OS} & \multicolumn{2}{c}{Language bindings} &  \\ 
  & \cellcolor{linux}CPU & \cellcolor{linux}GPU & \cellcolor{windows}CPU & \cellcolor{windows}GPU & \cellcolor{macos}CPU & \cellcolor{macos}GPU & Python & C++ & License\\ 
 \hline 
 Caffe & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & BSD 2\\ 
-cntk & \ymark & \ymark & \ymark & \ymark & \nmark & \nmark & \ymark & \ymark & Custom\footnote{Allows commercial use \textcolor{red}{reference}} \\ 
+CNTK & \ymark & \ymark & \ymark & \ymark & \nmark & \nmark & \ymark & \ymark & Permissive \\ 
 Keras & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
 Lasagne & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
-mxnet & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & Apache 2.0 \\ 
-nolearn & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
-Tensorflow & \ymark & \ymark & \nmark & \nmark & \ymark & \nmark & \ymark & \ymark & Apache 2.0 \\ 
+MXNET & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & Apache 2.0 \\ 
+NOLEARN & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & MIT \\ 
+TensorFlow & \ymark & \ymark & \nmark & \nmark & \ymark & \nmark & \ymark & \ymark & Apache 2.0 \\ 
 Theano & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & BSD 3\\ 
+Torch & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & \ymark & BSD 3\\ 
 \end{tabular} 
 \end{center}
-
-\begin{center}
-\captionof{table}{Comparison of popularity of deep learning frameworks}
-\begin{tabular}{lrrrrr}
-\hline 
- & \multicolumn{4}{c}{Github} & Stackoverflow \\ 
- & Contributors & Stars & Forks & Subscribers & Questions \\ 
-\hline 
-Caffe & 208 & 12349 & 7513 & 1559 & 1038 \\ 
-cntk & 77 & 6181 & 1343 & 688 & 12 \\ 
-Keras & 257 & 8044 & 2470 & 639 & 444 \\ 
-Lasagne & 51 & 2452 & 673 & 202 & 153 \\ 
-mxnet & 174 & 4969 & 1887 & 559 & 22 \\ 
-nolearn & 9 & 718 & 203 & 52 & 44 \\ 
-Tensorflow & 380 & 31445 & 13414 & 2983 & 3275 \\ 
-Theano & 251 & 4475 & 1609 & 424 & 1436 \\ 
-\end{tabular} 
-\end{center}
-
 
 
 \end{landscape}
 
 \section{Results}
+
+\subsection{Experiment set-up}
+
+\subsection{Evaluation of data augmentation techniques}
+Data augmentation techniques described in section~\ref{sec:data_augmentation} have been evaluated. Results are presented on figure~\ref{fig:augmentation_evaluation}. 
+
+Evaluation is performed in the following way. All data is divided in five folds with preserved class proportion and each of them serves as a test set in turn while other four as a training set. All training sets are balanced using oversampling, test sets are not balanced. 
+
+First experiment is performed without any data augmentation, this corresponds to the first $x$ axis tick which is \textit{None}. Then experiments are repeated adding augmentation techniques successively. For example \textit{Flip} tick means that this experiment was performed using \textit{Rotation}, \textit{Shift} and \textit{Flip} techniques.
+
+$y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold average normalized true positive value for each respective class. 
+
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style = {group size = 1 by 2, vertical sep=1cm,},
+	width = 12cm,
+	height = 6cm,
+	grid=major,
+    ymin=0.0,
+    ymax=1.0,
+    %ylabel=Average normalized true positive value, 
+    legend pos=south east,
+    symbolic x coords={None, Rotation, Shift, Flip, Shear, Zoom},
+    xtick=data,
+    ]
+
+% lamellarity
+\nextgroupplot
+\addplot+ [mark=*] coordinates{(None, 0.992) (Rotation, 0.966) (Shift, 0.906) (Flip, 0.888) (Shear, 1.0) (Zoom, 1.0)};
+\addplot+ [mark=square*] coordinates{(None, 0.958) (Rotation, 0.99) (Shift, 0.986) (Flip, 0.988) (Shear, 1.0) (Zoom, 1.0)};
+\addplot+ [mark=triangle*] coordinates{(None, 0.0) (Rotation, 0.346) (Shift, 0.618) (Flip, 0.632) (Shear, 1.0) (Zoom, 1.0)};
+
+\legend{Unilamellar, Multilamellar, Uncertain}
+
+% encapsulation
+\nextgroupplot
+\addplot+ [mark=*] coordinates{(None, 0.18) (Rotation, 0.41) (Shift, 0.53) (Flip, 0.57) (Shear, 1.0) (Zoom, 1.0)};
+\addplot+ [mark=square*] coordinates{(None, 0.99) (Rotation, 0.95) (Shift, 0.89) (Flip, 0.89) (Shear, 1.0) (Zoom, 1.0)};
+\addplot+ [mark=triangle*] coordinates{(None, 0.25) (Rotation, 0.55) (Shift, 0.64) (Flip, 0.62) (Shear, 1.0) (Zoom, 1.0)};
+\legend{Empty, Full, Uncertain}
+
+\end{groupplot}
+\end{tikzpicture}
+
+\caption{\label{fig:augmentation_evaluation}Effect of combining augmentation techniques successively on average normalized true positive value. Top --- Lamellarity problem, bottom --- Encapsulation.}
+\end{figure}
+
+In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \textit{uncertain} class. Majority  class \textit{unilamellar} and the runner up \textit{unilamellar} are being classified with almost $100\%$ accuracy even without any augmentation of training data. However \textit{uncertain} class is totally misclassified when no augmentation is performed. Rotation itself raises true positive value of \textit{uncertain} to nearly $40\%$ which makes sense. Taking into account very small number (84) of examples of this class it is not an unlikely scenario when test set contains patterns that the model has not seen during training. For example train and test set contain patterns that are similar but differently oriented. In such case rotation improves result a lot which is the case in this experiment. Adding shift transformation brings further improvement to recognition of \textit{uncertain} class...
+
+\textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.8$ as more and more data augmentation techniques are added. 
+
 
 \subsection{Confusion matrix}
 
