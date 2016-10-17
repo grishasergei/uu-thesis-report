@@ -32,6 +32,13 @@ backend=biber
 ]{biblatex}
 \addbibresource{references.bib}
 
+% http://tex.stackexchange.com/questions/12703/how-to-create-fixed-width-table-columns-with-text-raggedright-centered-raggedlef
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
 \definecolor{Gray}{gray}{0.9}
 \definecolor{LabelColor}{gray}{0.0}
 \definecolor{clno}{RGB}{212, 59, 59}
@@ -481,25 +488,18 @@ Consider an example of a binary classifier and let us take a look at the effect 
 
 In other words, the log loss function encourages moderate predictions. It is better to make all classifications neutral rather than make 50\% correct classifications and 50\% completely wrong predictions.
 
-\section{Implementation of CNN}
+\section{Network Architectures}
 
-\subsection{Convolutional layer network}
+Springenberg et al. shows in~\cite{DBLP:journals/corr/SpringenbergDBR14} that max-pooling layers can successfully be replaced with convolutional layers with corresponding stride value. Stride value specifies how many pixels is the filter moved at a time. Stride values greater than 1 result in output volumes spatially. 
 
-Model configuration:
-\begin{itemize}
-\item Convolutional layer, 32 kernels, relu activation
-\item Convolutional layer, 32 kernels, relu activation
-\item Max pooling
-\item Dropout
-\item Convolutional layer, 64 kernels, relu activation
-\item Convolutional layer, 64 kernels, relu activation
-\item Max pooling
-\item Dropout
-\item Dense layer, 512 nodes, relu ctivation
-\item Dropout
-\item Dense layer, 3 nodes, softmax activation
 
-\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{lipnet_architecture.png} 
+]\caption{Network architectures used in this project.}
+\end{figure}
+
 
 \subsubsection{K-fold cross validation}
 
@@ -577,7 +577,7 @@ Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.
 
 
 
-\subsection{Review of deep learning software tools}
+\section{Review of deep learning software tools}
 
 A wide variety of deep learning software tools is available to the public. Most of them are open-source and are distributed under licenses that allow commercial use. Development of deep learning frameworks is driven by Universities and leading IT companies such as Google and Microsoft with extensive help of the community. For example Theano~\cite{2016arXiv160502688short} by University of Montreal is one of the first and most influential deep learning libraries. It was initially released in 2010. Another state of the art tool is Caffe~\cite{jia2014caffe} by UC Berkeley. Google released TensorFlow~\cite{tensorflow2015-whitepaper} software library in November 2015. Microsoft made its CNTK~\cite{cntk} tool available to the public in January 2016.
 
@@ -704,6 +704,20 @@ In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \t
 
 \textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.8$ as more and more data augmentation techniques are added. 
 
+\begin{center}
+\captionof{table}{5-fold average normalized confusion matrix, encapsulation problem, zoom only.}
+\label{table:zoom_only}
+\begin{tabular}{|L{2.5cm} |C{2cm} |C{2cm} |C{2cm}|}
+\toprule
+ & Empty & Full & Uncertain \\
+\midrule
+Empty & 0.43 & 0.13 & 0.44 \\
+Full & 0.04 & 0.90 & 0.06 \\
+Uncertain & 0.14 & 0.35 & 0.51 \\
+\bottomrule
+\end{tabular}
+
+\end{center}
 
 \subsection{Confusion matrix}
 

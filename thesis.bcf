@@ -2088,18 +2088,19 @@
     <bcf:citekey order="37">dl_book</bcf:citekey>
     <bcf:citekey order="38">dl_book</bcf:citekey>
     <bcf:citekey order="39">rosasco</bcf:citekey>
-    <bcf:citekey order="40">2016arXiv160502688short</bcf:citekey>
-    <bcf:citekey order="41">jia2014caffe</bcf:citekey>
-    <bcf:citekey order="42">tensorflow2015-whitepaper</bcf:citekey>
-    <bcf:citekey order="43">cntk</bcf:citekey>
-    <bcf:citekey order="44">Collobert_NIPSWORKSHOP_2011</bcf:citekey>
-    <bcf:citekey order="45">DBLP:journals/corr/ShiWXC16</bcf:citekey>
-    <bcf:citekey order="46">Mamykina:2011:DLF:1978942.1979366</bcf:citekey>
-    <bcf:citekey order="47">Thung:2013:NSS:2495256.2495709</bcf:citekey>
-    <bcf:citekey order="48">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="40">DBLP:journals/corr/SpringenbergDBR14</bcf:citekey>
+    <bcf:citekey order="41">2016arXiv160502688short</bcf:citekey>
+    <bcf:citekey order="42">jia2014caffe</bcf:citekey>
+    <bcf:citekey order="43">tensorflow2015-whitepaper</bcf:citekey>
+    <bcf:citekey order="44">cntk</bcf:citekey>
+    <bcf:citekey order="45">Collobert_NIPSWORKSHOP_2011</bcf:citekey>
+    <bcf:citekey order="46">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="47">Mamykina:2011:DLF:1978942.1979366</bcf:citekey>
+    <bcf:citekey order="48">Thung:2013:NSS:2495256.2495709</bcf:citekey>
     <bcf:citekey order="49">DBLP:journals/corr/ShiWXC16</bcf:citekey>
-    <bcf:citekey order="50">Rosen:2004:OSL:1014911</bcf:citekey>
-    <bcf:citekey order="51">chollet2015keras</bcf:citekey>
+    <bcf:citekey order="50">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="51">Rosen:2004:OSL:1014911</bcf:citekey>
+    <bcf:citekey order="52">chollet2015keras</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="nty/global" type="entry" sortscheme="nty" sortnamekeyscheme="global">
   <bcf:sorting>
