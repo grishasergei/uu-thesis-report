@@ -103,28 +103,23 @@ An abstract.
 \end{abstract}
 
 \section{Introduction}
+Vironova is a Swedish Biotech company that supplies hardware and software solutions for advanced electron microscopy (EM), image analysis, nano-characterization and viral clearance testing~\cite{virnonva_linkedin}. Vironova has a lot of EM images and many tasks involve classification step therefore automatic classification is of great interest. Currently automatic classification is performed by means of support vector machines (SVM)~\cite{Boser:1992:TAO:130385.130401} method and it demonstrates reasonable performance. On the other hand SVM operates on features representation of images rather than on raw pixel data. Determining a set of feature that would describe difference between classes is a non-trivial task that requires expert knowledge. This motivates interest in methods that do operate on raw pixel data and are capable of learning features themselves during training. 
 
+Convolutional neural network (CNN)~\cite{LeCun1986} is one of such methods. Since introduction in they have been successfully used for ...
 
+The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. CNN models are evaluated by benchmarking against SVM for selected problems. This project also encompasses prospecting the role of CNN technology for the Vironova EM services both as a method for automatic classification included in the software as well as being a research tool (e.g., for identifying useful particle features). This includes discussions on library licenses, operation system availability, performance and community support.
 
-\subsection{Project Goals}
+\section{Problem description}
+\label{sec:problem_description}
+One of Vironova's electron microscopy services is to classify types of liposomes\footnote{A liposome is a sperical vesicle having at least one lipid bilayer~\cite{betageri1993liposome}. Liposomes were first described in 1964 by A.D. Bangham and R.W. Thorne and G. Weissman. They suggested the name "liposome"~\cite{betageri1993liposome}. Liposomes can be classified into different types according to numerous features such as but not limited to size, number of lamellae, composition, shape, production method, etc. The classification of liposomes was first presented at a meeting of New York Academy of Science~\cite{liposomes1978}.}. This includes determining:
+\begin{itemize}
+\item Structure of liposome.
+\item Presence of liposomal encapsulation of for example adeno-associated virus or doxorubicin.
+\end{itemize}
 
-The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. Different models based on CNN are compared to and benchmarked against SVM classifier. 
+Let us call these two problems as \textit{Lamellarity} and \textit{Encapsulation}.\medskip
 
-
-\section{Background}
-
-One of Vironova's electron microscopy (EM) services is to classify types of liposomes. This includes two tasks:
-
-
-
-\subsection{Problem description}
-
-A liposome is a sperical vesicle having at least one lipid bilayer~\cite{betageri1993liposome}. Liposomes were first described in 1964 by A.D. Bangham and R.W. Thorne and G. Weissman suggested the name "liposome"~\cite{betageri1993liposome}. Liposomes can be classified into different types according to numerous features such as but not limited to size, number of lamellae, composition, shape, production method, etc. The classification of liposomes was first presented at a meeting of New York Academy of Science~\cite{liposomes1978}. This project focuses on classification of liposomes according to the number of lamellae and response to drugs encapsulation.
-
-\subsubsection{Lamellarity}
-\label{sec:lamellarity}
-
-The term lamellarity refers to the number of lamellae. Lamella, in cell biology, is used to describe numerous plate or disc-like structures at both a tissue and cellular level~\cite{cammack2006oxford}. According to number of lamellae liposomes can be unilamellar (single lamella) and multilamellar (multiple lamellae). In addition uncertain class is introduced because in some cases it is almost impossible to be certain about lamellarity class. For example liposomes can overlap each other. Another issue to keep in mind is that samples are usually delivered frozen, so liposomes may be partly covered with pieces of ice that result in large black bulbs on EM images. Figure~\ref{fig:lamellarity_problem} illustrates examples of liposomes from each class.
+\textbf{Lamellarity}. The term lamellarity refers to the number of lamellae. Lamella, in cell biology, is used to describe numerous plate or disc-like structures at both a tissue and cellular level~\cite{cammack2006oxford}. According to number of lamellae liposomes can be \textit{unilamellar} (single lamella) and \textit{multilamellar} (multiple lamellae). In addition uncertain class is introduced because in some cases it is almost impossible to be certain about lamellarity class. For example liposomes can overlap each other. Another issue to keep in mind is that samples are usually delivered frozen, so liposomes may be partly covered with pieces of ice that result in large black bulbs on EM images. Figure~\ref{fig:lamellarity_problem} illustrates examples of liposomes from each class.
 
 \begin{figure}[H]
 \centering
@@ -136,7 +131,7 @@ The term lamellarity refers to the number of lamellae. Lamella, in cell biology,
 \label{fig:lamellarity_problem}
 \end{figure}
 
-Table~\ref{table:lamellarity_data_set} present lamellarity problem data set which contains $\num{14169}$ EM images.
+Table~\ref{table:lamellarity_data_set} presents lamellarity problem data set which contains $\num{14169}$ EM images.
 
 \begin{center}
 \captionof{table}{Lamellarity problem}
@@ -150,10 +145,7 @@ Uncertain & \num{84} & 0,59\% \\
 \end{center}
 
 
-\subsubsection{Encapsulation}
-\label{sec:encapsulation}
-
-Liposomes can be used as vehicles for drug delivering throughout various destinations in the human body~\cite{betageri1993liposome}. A crucial part of testing this approach is to measure how many liposomes responded to drugs encapsulation and can carry them further. In encapsulation problem liposomes are classified between the following types: full, i.e. liposomes that received  drug substance, empty, i.e. liposomes that remained empty after encapsulation attempt. As in lamellarity problem uncertain class is introduced with the same motivation. Figure~\ref{fig:encapsulation_problem} illustrates different classes of encapsulation problem. Table~\ref{table:encapsulation_dataset} present encapsulation problem data set which contains $\num{24918}$ EM images.
+\textbf{Encapsulation}. Liposomes can be used as vehicles for drug delivering throughout various destinations in the human body~\cite{betageri1993liposome}. A crucial part of testing this approach is to measure how many liposomes responded to drugs encapsulation and can carry them further. In encapsulation problem liposomes are classified between the following classes: \textit{full}, i.e. liposomes that received  drug substance; \textit{empty}, i.e. liposomes that remained empty after encapsulation attempt. As in lamellarity problem \textit{uncertain} class is introduced with the same motivation. Figure~\ref{fig:encapsulation_problem} illustrates different classes of encapsulation problem. Table~\ref{table:encapsulation_dataset} presents encapsulation problem data set which contains $\num{24918}$ EM images.
 
 \begin{figure}[H]
 \centering
@@ -318,7 +310,7 @@ Presented above measures allow more detailed analysis of classifier performance 
 Encyclopedia of Machine Learning~\cite{Ling2010} defines Class Imbalance problem as follows:
 \blockquote{Data are said to suffer the \textit{Class Imbalance Problem} when the class distributions are highly imbalanced. In this context, many classification learning algorithms have low predictive accuracy for the infrequent class.}
 
-It is a serious problem because most machine learning algorithms will tend to classify all examples as majority class treating examples of minority class as noise. Lamellarity and encapsulation data sets presented in sections~\ref{sec:lamellarity} and~\ref{sec:encapsulation} respectively are highly unbalanced. In lamellarity data set majority class accounts for $87\%$ of all samples and in encapsulation dataset majority class constitutes $97\%$ of all samples. Preliminary experiments showed that classifiers trained on raw unbalanced data sets are highly biased towards majority classes and do not generalize. Imbalance problem is not uncommon. In fact, data sets are highly imbalanced in many domains, for example fraud detection, medical diagnosis, anomaly detection, telecommunications, etc. 
+It is a serious problem because most machine learning algorithms will tend to classify all examples as majority class treating examples of minority class as noise. Lamellarity and encapsulation data sets presented in sections~\ref{sec:problem_description} are highly unbalanced. In lamellarity data set majority class accounts for $87\%$ of all samples and in encapsulation dataset majority class constitutes $97\%$ of all samples. Preliminary experiments showed that classifiers trained on raw unbalanced data sets are highly biased towards majority classes and do not generalize. Imbalance problem is not uncommon. In fact, data sets are highly imbalanced in many domains, for example fraud detection, medical diagnosis, anomaly detection, telecommunications, etc. 
 
 Various solutions have been proposed to deal with this problem and they can be summarized into three groups~\cite{Lopez2013113}:
 
@@ -641,18 +633,24 @@ Visualizations of convolutional filters and layer outputs.
 
 \subsection{Experiment set-up}
 
-All images are resized
+LipNet networks were trained using Keras deep learning library with GPU based Tensorflow backend on a Linux machine. Keras allows to easily switch backend between Tensorflow and Theano so it is possible to run the same code in Windows environment as well. It takes between 60 and 130 seconds per epoch to train LipNet models on a machine with GeForce 940M video card. GPU utilization statistics as on figure~\ref{fig:nvidia_smi} is invoked using \texttt{nvidia-smi} command on Linux.
 
-k-fol validation. Folds are formed with stratified sampling.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{nvidia_smi.png} 
+\caption{GPU utilization statistics.}
+\label{fig:nvidia_smi}
+\end{figure}
 
-Examples are shuffled within batches
+All models are evaluated using 5-fold cross-validation~\cite{Kohavi:1995:SCB:1643031.1643047} technique. The data is split into 5 folds using stratified sampling which means that class proportions are preserved. One fold is used as test set while four other as training set and the experiment is repeated five times, each time with new fold as a test set.
 
-Training sets are balanced using oversampling, data is augmented. Test sets are left as they are, no balancing. 
+Training sets are balanced using oversampling, test sets are left unbalanced. During training training data is augmented as described in~\ref{sec:data_augmentation}. Data augmentation transformations are applied randomly to each training example, so the probability to see same training example twice is quite low. 
+
+Input samples are shuffled at the beginning of each epoch. Training data is fed in batches and model parameters are updated after each batch. Batch size is fixed to default value of 32 images. If validation set is used then one can see that at the end of some epochs validation error is less than test error. This happens because model parameters are updated after each batch, so validation which is done at the end of each epoch is performed after training on the whole training set, while test error is an average error of all batches within an epoch. 
 
 \subsection{Evaluation of data augmentation techniques}
-Data augmentation techniques described in section~\ref{sec:data_augmentation} have been evaluated. Results are presented on figure~\ref{fig:augmentation_evaluation}. 
 
-Evaluation is performed in the following way. All data is divided in five folds with preserved class proportion and each of them serves as a test set in turn while other four as a training set. All training sets are balanced using oversampling, test sets are not balanced. 
+Evaluation of data augmentation techniques is performed in the following way. All data is divided in five folds with preserved class proportion and each of them serves as a test set in turn while other four as a training set. All training sets are balanced using oversampling, test sets are not balanced. 
 
 First experiment is performed without any data augmentation, this corresponds to the first $x$ axis tick which is \textit{None}. Then experiments are repeated adding augmentation techniques successively. For example \textit{Flip} tick means that this experiment was performed using \textit{Rotation}, \textit{Shift} and \textit{Flip} techniques.
 
@@ -698,9 +696,9 @@ $y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold averag
 
 In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \textit{uncertain} class. Majority  class \textit{unilamellar} and the runner up \textit{unilamellar} are being classified with almost $100\%$ accuracy even without any augmentation of training data. However \textit{uncertain} class is totally misclassified when no augmentation is performed. Rotation itself raises true positive value of \textit{uncertain} to nearly $40\%$ which makes sense. Taking into account very small number (84) of examples of this class it is not an unlikely scenario when test set contains patterns that the model has not seen during training. For example train and test set contain patterns that are similar but differently oriented. In such case rotation improves result a lot which is the case in this experiment. Adding shift transformation brings further improvement to recognition of \textit{uncertain} class. Adding flip, shear and zoom transformations do not have any positive effect on performance. In fact, more aggressive data augmentation worsens model's ability to generalize and performance on \textit{multilamellar} and \textit{uncertain} classes drops a bit when all transformations are used.
 
-\textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.9$ as rotation and shift transformations are employed. Adding additional transformations do not improve performance and trend is quite similar to the one observed in lamellarity problem except the last point. Adding zoom transformation improves model's ability to recongnize \textit{uncertain} examples while worsens performance on \textit{full} examples. This is an unexpected result, since it would be natural to expect general performance improvement when zoom transformation is used. Zoom encourages model to focus more on the core of the liposome which is the most relevant part in encapsulation problem.
+\textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.9$ as rotation and shift transformations are employed. Adding additional transformations do not improve performance and trend is quite similar to the one observed in lamellarity problem except the last point. Adding zoom transformation improves model's ability to recognize \textit{uncertain} examples while worsens performance on \textit{full} examples. This is an unexpected result, since it would be natural to expect general performance improvement when zoom transformation is used. Zoom encourages model to focus more on the core of the liposome which is the most relevant part in encapsulation problem.
 
-In order to analyze effect of zoom transformation in more details additional experiment has been performed. This time the data is augmented using only zoom transformation. Resulst are presented in table~\ref{table:zoom_only}. Performance is approximately equal to rotation-only augmentation. 
+In order to analyze effect of zoom transformation in more details additional experiment has been performed. This time the data is augmented using only zoom transformation. Results are presented in table~\ref{table:zoom_only}. Performance is approximately equal to rotation-only augmentation. 
 
 \begin{center}
 \captionof{table}{5-fold average normalized confusion matrix, encapsulation problem, zoom only.}
@@ -770,6 +768,20 @@ Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.
 \end{landscape}
 
 \subsection{SVM}
+SVM is currently used by Vironova for automatic classification and it is included in this project for benchmarking purposes. No additional experiments were performed, just those that were necessary to replicate Vironovas result. 
+The following features are used to train SVM models.
+\begin{itemize}
+\item Area
+\item Circularity
+\item Image moments $\mu_{20}$, $\mu_{02}$, $\mu_{30}$, $\mu_{03}$
+\item Edge density profile
+\item Histogram
+\item Internal segmentation variance
+\end{itemize}
+
+Training sets are not balanced, instead class weights are adjusted inversely proportional to class frequencies in the input data.
+
+Tables~\ref{table:svm_cf_avg_encapsulation} and~\ref{table:svm_cf_avg_lamellarity} present average normalized confusion matrices for encapsulation and lamellarity problems respectively. Data sets are so unbalanced that total accuracy coincides with true positive rate of majority classes, which are \textit{empty} and \textit{unilamellar} respectively. Tables~\ref{t:kfold-svm-encapsulation} and~\ref{t:kfold-svm-lamellarity} present performance statistics for all 5 folds, average values are shown on figure~\ref{fig:svm_vs_cnn}.
 
 \begin{center}
 \captionof{table}{5-fold average normalized confusion matrix, Encapsulation problem, SVM.}
@@ -787,7 +799,7 @@ Uncertain & 0.18 & 0.10 & 0.72 \\
 
 \begin{center}
 \captionof{table}{5-fold average normalized confusion matrix, Lamellarity problem, SVM.}
-\label{table:svm_cf_avg_encapsulation}
+\label{table:svm_cf_avg_lamellarity}
 \begin{tabular}{|L{2.5cm} |C{2.5cm} |C{2.5cm} |C{2.5cm}|}
 \toprule
  & Unilamellar & Multilamellar & Uncertain \\
