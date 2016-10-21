@@ -48,6 +48,13 @@ backend=biber
 \definecolor{macos}{gray}{0.9}  
 \definecolor{clstackoverflow}{HTML}{FE7A15}  
 \definecolor{clgithub}{HTML}{4078C0} 
+
+\definecolor{lblue}{HTML}{4286F4} 
+\definecolor{lgreen}{HTML}{30A349} 
+\definecolor{lred}{HTML}{F44242} 
+\definecolor{lpurple}{HTML}{DC42F4} 
+
+
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
 \newcommand{\ymark}{\textcolor{clyes}{\cmark}}%
@@ -361,7 +368,7 @@ Note that despite visual similarity artificial images are not based on statistic
 
 Let us assume that an imbalanced data set has been balanced by any combination of methods described in section~\ref{sec:class_imbalance}. This would significantly reduce training error which means that the model is able to describe data generation process of the training set. 
 
-However as the result of seeing multiple copies of minority classes learning algorithm will almost likely describe random error or noise as well. Such model would not be able to make reliable predictions on general untrained data, i. e. its generalization error would still be unacceptably high. As defined in~\cite{dl_book} \blockquote{\textit{Generalization} is any modification we make to a learning algorithm that is intended to reduce its generalization error but not its training error}.
+However as the result of seeing multiple copies of minority classes learning algorithm will almost likely describe random error or noise as well. Such model would not be able to make reliable predictions on general untrained data, i. e. its generalization error would still be unacceptably high. As defined in~\cite{dl_book} \blockquote{\textit{Regularization} is any modification we make to a learning algorithm that is intended to reduce its generalization error but not its training error}.
 
 The reset of this section presents regularization techniques that have been used to reduce generalization error of models trained on lamellarity and encapsulation data sets.
 
@@ -388,6 +395,7 @@ x \leftarrow x \left( 1 - \epsilon \right) + \left(1 - x\right) \frac{\epsilon}{
 Label smoothing is used in all experiments presented in this project.
 
 \subsection{Dropout}
+\label{sec:dropout}
 Dropout~\cite{JMLR:v15:srivastava14a} suggests to randomly drop non--output units (nodes) along with their connections from the network. This prevents units from co--adapting too much. Dropout is implemented as a parameter between $0$ and $1$ that describes probability of dropping each unit. It can be constant during all training epochs or some decay scheme may be used. Dropout may be more aggressive in the beginning of training and smaller later when the model becomes trained, it is the same idea as with learning rate decay. Dropout is used in all experiments presented in this project.
 
 
@@ -488,95 +496,6 @@ Consider an example of a binary classifier and let us take a look at the effect 
 
 In other words, the log loss function encourages moderate predictions. It is better to make all classifications neutral rather than make 50\% correct classifications and 50\% completely wrong predictions.
 
-\section{Network Architectures}
-
-Springenberg et al. shows in~\cite{DBLP:journals/corr/SpringenbergDBR14} that max-pooling layers can successfully be replaced with convolutional layers with corresponding stride value. Stride value specifies how many pixels is the filter moved at a time. Stride values greater than 1 result in output volumes spatially. 
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.6]{lipnet_architecture.png} 
-]\caption{Network architectures used in this project.}
-\end{figure}
-
-
-\subsubsection{K-fold cross validation}
-
-\begin{landscape}
-\begin{table}
-\caption{5-fold cross validation, CNN, Lamellarity problem.} \label{t:kfold-cnn-lamellarity}
-
-\smallskip
-\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-                                 *{4}{S[table-format=2.1]} @{}}
-\toprule
- & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
-         & \multicolumn{4}{c}{Uncertain}  \\
-\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-\midrule
-1 & 0.8634 & 0.9972 & 0.9995 & 0.5158 & 0.9797 & 0.9542 & 0.7472 & 0.9971 & 0.5294 & 0.9155 & 0.0364 & 0.9969\\
-2 & 0.9107 & 0.9917 & 0.9987 & 0.6183 & 0.9913 & 0.9683 & 0.8119 & 0.9988 & 0.4706 & 0.9464 & 0.0503 & 0.9966\\
-3 & 0.9798 & 0.9945 & 0.9992 & 0.8778 & 1.0000 & 0.9912 & 0.9399 & 1.0000 & 0.4706 & 0.9876 & 0.1860 & 0.9968\\
-4 & 0.9915 & 0.9945 & 0.9992 & 0.9447 & 0.9884 & 0.9972 & 0.9798 & 0.9984 & 0.8235 & 0.9933 & 0.4242 & 0.9989\\
-5 & 0.8956 & 0.9972 & 0.9995 & 0.5798 & 0.9707 & 0.9803 & 0.8711 & 0.9959 & 0.7500 & 0.9211 & 0.0513 & 0.9985\\
-\midrule
-Avg & 0.9282 & 0.9950 & 0.9992 & 0.7073 & 0.9860 & 0.9782 & 0.8700 & 0.9980 & 0.6088 & 0.9528 & 0.1497 & 0.9975\\ 
-\bottomrule
-\end{tabular*}
-\end{table}
-
-\begin{table}
-\caption{5-fold cross validation, CNN, Encapsulation problem.} \label{t:kfold-cnn-encapsulation}
-
-\smallskip
-\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-                                 *{4}{S[table-format=2.1]} @{}}
-\toprule
- & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
-         & \multicolumn{4}{c}{Uncertain}  \\
-\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-\midrule
-1 & 0.3030 & 0.9917 & 0.1961 & 0.9953 & 0.8194 & 0.8358 & 0.9945 & 0.1134 & 0.7624 & 0.8239 & 0.0822 & 0.9941\\
-2 & 0.3030 & 0.9861 & 0.1266 & 0.9953 & 0.9019 & 0.7761 & 0.9932 & 0.1793 & 0.5149 & 0.9081 & 0.1038 & 0.9891\\
-3 & 0.4545 & 0.9849 & 0.1667 & 0.9963 & 0.8992 & 0.8955 & 0.9968 & 0.1970 & 0.7030 & 0.9083 & 0.1368 & 0.9933\\
-4 & 0.6061 & 0.9895 & 0.2778 & 0.9974 & 0.9427 & 0.7836 & 0.9937 & 0.2742 & 0.6139 & 0.9490 & 0.1994 & 0.9917\\
-5 & 0.8276 & 0.9861 & 0.2581 & 0.9990 & 0.9258 & 0.9291 & 0.9980 & 0.2469 & 0.5510 & 0.9322 & 0.1403 & 0.9904\\
-\midrule
-Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.6290 & 0.9043 & 0.1325 & 0.9917\\ 
-\bottomrule
-\end{tabular*}
-\end{table}
-
-\end{landscape}
-
-\subsubsection{Visualization, Lamellarity problem}
-
-\begin{figure}[H]
-\begin{tabular}{cc}
-	\includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_1-0.png} & \includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_2-23.png} \\
-	\rom{1} & \rom{2}, channel 24 \\[6pt]
-	\includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_3-3.png} & \includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_4-58.png} \\
-	\rom{3}, channel 4 & \rom{4}, channel 59 \\[6pt]
-\end{tabular}
-\caption{Visualization of convolution kernels}
-\end{figure}
-
-\begin{figure}[H]
-\begin{tabular}{cc}
-	\includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_1.png} & \includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_2.png} \\
-	\rom{1} & \rom{2} \\[6pt]
-		\includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_3.png} & \includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_4.png} \\
-	\rom{3} & \rom{4} \\[6pt]
-
-\end{tabular}
-\caption{Visualization of convolutional layers outputs}
-\end{figure}
-
-
-
 \section{Review of deep learning software tools}
 
 A wide variety of deep learning software tools is available to the public. Most of them are open-source and are distributed under licenses that allow commercial use. Development of deep learning frameworks is driven by Universities and leading IT companies such as Google and Microsoft with extensive help of the community. For example Theano~\cite{2016arXiv160502688short} by University of Montreal is one of the first and most influential deep learning libraries. It was initially released in 2010. Another state of the art tool is Caffe~\cite{jia2014caffe} by UC Berkeley. Google released TensorFlow~\cite{tensorflow2015-whitepaper} software library in November 2015. Microsoft made its CNTK~\cite{cntk} tool available to the public in January 2016.
@@ -649,9 +568,86 @@ Torch & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & \ymark & 
 
 \end{landscape}
 
+\section{Network Architectures}
+
+CNN can be configured according to a wide variety of architectures. There is no general rule that tells how to configure a CNN for specific task but there are some best practices and general recommendations. Probably the most influential CNN architectures are VGG~\cite{DBLP:journals/corr/SimonyanZ14a}, AlexNet~\cite{NIPS2012_4824} and GoogleNet~\cite{DBLP:journals/corr/SzegedyLJSRAEVR14}.
+
+According to~\cite{dl_book}, a typical building block of a convolutional neural network consists of three stages:
+\begin{enumerate}
+\item \textbf{Convolutions}. Here several convolutions are performed in parallel to produce a set of linear activations. Convolutions can have filters of different size, different padding strategies and stride values. Stride value specifies how many pixels is the filter moved at a time. Stride values greater than 1 result in output volumes spatially. Different padding modes affect size of the output. The most common strategies are \textit{valid} and \textit{same}. \textit{Valid} mode implies that convolution is performed only at those positions were filter is within image bounds. This result in reduced size of layer output compared ti layer input. \textit{Same} mode implies zero padding in order to preserve input size. 
+
+\item \textbf{Nonlinearity}. At this stage linear activations produced on the previous step are run through some nonlinear activation function. One of the most widely used is ReLU which is defined as $f(x) = max(0, x)$.
+ 
+\item \textbf{Pooling} is used to modify the output of the layer further. A pooling function replaces the output of a layer at certain position with a summary statistics of the surrounding region. Size of this region is a subject of design decision. In practice $2 \times 2$ pooling is used. The most popular summary statistics is $max$, however other such as average are also possible. Pooling is usually followed by dropout for regularization purposes. Dropout is discussed in details in section~\ref{sec:dropout}.
+\end{enumerate}
+
+Talking about classification problems, a typical CNN is usually flattened at the end and a number of fully connected layers go to the final layer. Final layer has softmax activation and number of nodes that is equal to the number of classes. 
+
+Networks that are flattened and have fully connected layers require input of fixed size, they can not handle images of different size. If it is required to build a model that can process images of arbitrary size then fully convolutional neural network (FCNN) is a possible solution. FCNN do not require input to have fixed size and can be trained on images of variable size. Fully convolutional means in this context that network does not have any fully connected layers, only convolutional. Flattening operation is replaced with $1 \times 1$ convolution which leads to dimension reductionality. FCNN proved to be especially effective in semantic segmentation tasks~\cite{DBLP:journals/corr/ShelhamerLD16}.
+
+Springenberg et al. shows in~\cite{DBLP:journals/corr/SpringenbergDBR14} that max-pooling layers can successfully be replaced with convolutional layers with corresponding stride value. Stride value specifies how many pixels is the filter moved at a time. Stride values greater than 1 result in output volumes spatially. 
+
+Three network architectures are tested in this project. Let us call them LipNet-\textit{x} (figure~\ref{fig:lipnet_arch}), where \textit{x} stands for number of convolutional layers. 
+
+\begin{itemize}
+\item \textbf{LipNet--4} is mainly inspired by VGG--11 architecture. Two convolutional blocks with max-pooling and dropout are followed by a fully connected layer. All convolutional layers have ReLU activation function, \textit{same} padding mode, $3 \times 3$ filter size, 32 channels and stride equal to 1. Input size is fixed to $28 \times 28$.
+
+\item \textbf{LipNet--6} is inspired by ideas of fully convolutional networks and proposal to replace max-pooling with convolution with stride as in~\cite{DBLP:journals/corr/SpringenbergDBR14}. So max-pooling layers are replace with convolutional layers with $2 \times 2$ stride, flatten operation is replaced with $1 \times 1$ convolution with $3$ channels. Input size is fixed to $28 \times 28$.
+
+\item \textbf{LipNet--9} is a modification of LipNet--9 with additional convolutional block. Additional convolution with stride requires bigger input size so images are resized to $32 \times 32$. 
+\end{itemize}
+
+
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{lipnet_architecture_3.png} 
+]\caption{Network architectures used in this project. Left: the LipNet--4 model, $886243$ parameters. Middle: the LipNet--6 model, $46743$ parameters. Right: LipNet--9, parameters}
+\label{fig:lipnet_arch}
+\end{figure}
+
+\newpage
+
+
+\subsection{Visualizations}
+
+Visualizations of convolutional filters and layer outputs.
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+	\includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_1-0.png} & \includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_2-23.png} \\
+	\rom{1} & \rom{2}, channel 24 \\[6pt]
+	\includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_3-3.png} & \includegraphics[scale=0.4]{models/cnn_deep/weights/convolution2d_4-58.png} \\
+	\rom{3}, channel 4 & \rom{4}, channel 59 \\[6pt]
+\end{tabular}
+\caption{Visualization of convolution kernels}
+\end{figure}
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+	\includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_1.png} & \includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_2.png} \\
+	\rom{1} & \rom{2} \\[6pt]
+		\includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_3.png} & \includegraphics[scale=0.4]{models/cnn_deep/output/convolution2d_4.png} \\
+	\rom{3} & \rom{4} \\[6pt]
+
+\end{tabular}
+\caption{Visualization of convolutional layers outputs}
+\end{figure}
+
+
 \section{Results}
 
 \subsection{Experiment set-up}
+
+All images are resized
+
+k-fol validation. Folds are formed with stratified sampling.
+
+Examples are shuffled within batches
+
+Training sets are balanced using oversampling, data is augmented. Test sets are left as they are, no balancing. 
 
 \subsection{Evaluation of data augmentation techniques}
 Data augmentation techniques described in section~\ref{sec:data_augmentation} have been evaluated. Results are presented on figure~\ref{fig:augmentation_evaluation}. 
@@ -689,9 +685,9 @@ $y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold averag
 
 % encapsulation
 \nextgroupplot
-\addplot+ [mark=*] coordinates{(None, 0.18) (Rotation, 0.41) (Shift, 0.53) (Flip, 0.57) (Shear, 0.59) (Zoom, 0.59)};
-\addplot+ [mark=square*] coordinates{(None, 0.99) (Rotation, 0.95) (Shift, 0.89) (Flip, 0.89) (Shear, 0.89) (Zoom, 0.87)};
-\addplot+ [mark=triangle*] coordinates{(None, 0.25) (Rotation, 0.55) (Shift, 0.64) (Flip, 0.62) (Shear, 0.6) (Zoom, 0.6)};
+\addplot+ [mark=*] coordinates{(None, 0.18) (Rotation, 0.41) (Shift, 0.53) (Flip, 0.57) (Shear, 0.59) (Zoom, 0.54)};
+\addplot+ [mark=square*] coordinates{(None, 0.99) (Rotation, 0.95) (Shift, 0.89) (Flip, 0.89) (Shear, 0.89) (Zoom, 0.73)};
+\addplot+ [mark=triangle*] coordinates{(None, 0.25) (Rotation, 0.55) (Shift, 0.64) (Flip, 0.62) (Shear, 0.6) (Zoom, 0.74)};
 \legend{Empty, Full, Uncertain}
 
 \end{groupplot}
@@ -700,14 +696,16 @@ $y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold averag
 \caption{\label{fig:augmentation_evaluation}Effect of combining augmentation techniques successively on average normalized true positive value. Top --- Lamellarity problem, bottom --- Encapsulation.}
 \end{figure}
 
-In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \textit{uncertain} class. Majority  class \textit{unilamellar} and the runner up \textit{unilamellar} are being classified with almost $100\%$ accuracy even without any augmentation of training data. However \textit{uncertain} class is totally misclassified when no augmentation is performed. Rotation itself raises true positive value of \textit{uncertain} to nearly $40\%$ which makes sense. Taking into account very small number (84) of examples of this class it is not an unlikely scenario when test set contains patterns that the model has not seen during training. For example train and test set contain patterns that are similar but differently oriented. In such case rotation improves result a lot which is the case in this experiment. Adding shift transformation brings further improvement to recognition of \textit{uncertain} class...
+In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \textit{uncertain} class. Majority  class \textit{unilamellar} and the runner up \textit{unilamellar} are being classified with almost $100\%$ accuracy even without any augmentation of training data. However \textit{uncertain} class is totally misclassified when no augmentation is performed. Rotation itself raises true positive value of \textit{uncertain} to nearly $40\%$ which makes sense. Taking into account very small number (84) of examples of this class it is not an unlikely scenario when test set contains patterns that the model has not seen during training. For example train and test set contain patterns that are similar but differently oriented. In such case rotation improves result a lot which is the case in this experiment. Adding shift transformation brings further improvement to recognition of \textit{uncertain} class. Adding flip, shear and zoom transformations do not have any positive effect on performance. In fact, more aggressive data augmentation worsens model's ability to generalize and performance on \textit{multilamellar} and \textit{uncertain} classes drops a bit when all transformations are used.
 
-\textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.8$ as more and more data augmentation techniques are added. 
+\textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.9$ as rotation and shift transformations are employed. Adding additional transformations do not improve performance and trend is quite similar to the one observed in lamellarity problem except the last point. Adding zoom transformation improves model's ability to recongnize \textit{uncertain} examples while worsens performance on \textit{full} examples. This is an unexpected result, since it would be natural to expect general performance improvement when zoom transformation is used. Zoom encourages model to focus more on the core of the liposome which is the most relevant part in encapsulation problem.
+
+In order to analyze effect of zoom transformation in more details additional experiment has been performed. This time the data is augmented using only zoom transformation. Resulst are presented in table~\ref{table:zoom_only}. Performance is approximately equal to rotation-only augmentation. 
 
 \begin{center}
 \captionof{table}{5-fold average normalized confusion matrix, encapsulation problem, zoom only.}
 \label{table:zoom_only}
-\begin{tabular}{|L{2.5cm} |C{2cm} |C{2cm} |C{2cm}|}
+\begin{tabular}{|L{2.5cm} |C{2.5cm} |C{2.5cm} |C{2.5cm}|}
 \toprule
  & Empty & Full & Uncertain \\
 \midrule
@@ -716,70 +714,90 @@ Full & 0.04 & 0.90 & 0.06 \\
 Uncertain & 0.14 & 0.35 & 0.51 \\
 \bottomrule
 \end{tabular}
-
 \end{center}
 
-\subsection{Confusion matrix}
-
-\begin{warning}
-Average confusion matrix from k-fold cross validation. Does it make sense? 
-\end{warning}
-
-% CNN
-\begin{center}
-\captionof{table}{Lamellarity problem, fold 5, CNN}
-\begin{tabular}{lrrr}
-\hline
- & Unilamellar & Uncertain & Multilamellar \\ 
-\hline 
-Unilamellar & 0.90 & 0.01 & 0.09 \\ 
-Multilamellar & 0.00 & 0.97 & 0.03 \\ 
-Uncertain & 0.00 & 0.25 & 0.75 \\ 
-\end{tabular} 
-\end{center}
-
-% SVM
-\begin{center}
-\captionof{table}{Lamellarity problem, fold 5, SVM}
-\begin{tabular}{lrrr}
-\hline
- & Unilamellar & Uncertain & Multilamellar \\ 
-\hline 
-Unilamellar & 0.87 & 0.03 & 0.10 \\ 
-Multilamellar & 0.02 & 0.95 & 0.03 \\ 
-Uncertain & 0.03 & 0.00 & 0.97 \\ 
-\end{tabular} 
-\end{center}
-
-% CNN
-\begin{center}
-\captionof{table}{Encapsulation problem, fold 5, CNN}
-\begin{tabular}{lrrr}
-\hline
- & Empty & Full & Uncertain \\ 
-\hline 
-Empty & 0.83 & 0.07 & 0.10 \\ 
-Packed & 0.01 & 0.93 & 0.06 \\ 
-Uncertain & 0.38 & 0.07 & 0.55 \\ 
-\end{tabular} 
-\end{center}
-
-% SVM
-\begin{center}
-\captionof{table}{Encapsulation problem, fold 5, SVM}
-\begin{tabular}{lrrr}
-\hline
- & Empty & Full & Uncertain \\ 
-\hline 
-Empty & 0.93 & 0.01 & 0.06 \\ 
-Packed & 0.04 & 0.87 & 0.09 \\ 
-Uncertain & 0.25 & 0.12 & 0.63 \\ 
-\end{tabular} 
-\end{center}
+The best option would be to evaluate all possible combinations of transformations but that would require to run 120 experiments. Unfortunately due to hardware and time limitations it is not feasible to perform such number of experiments.
 
 \subsection{K-fold cross validation}
 
+\begin{landscape}
+\begin{table}
+\caption{5-fold cross validation, LipNet--4, Lamellarity problem.} \label{t:kfold-cnn-lamellarity}
+
+\smallskip
+\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+                                 *{4}{S[table-format=2.1]} @{}}
+\toprule
+ & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
+         & \multicolumn{4}{c}{Uncertain}  \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+\midrule
+1 & 0.8634 & 0.9972 & 0.9995 & 0.5158 & 0.9797 & 0.9542 & 0.7472 & 0.9971 & 0.5294 & 0.9155 & 0.0364 & 0.9969\\
+2 & 0.9107 & 0.9917 & 0.9987 & 0.6183 & 0.9913 & 0.9683 & 0.8119 & 0.9988 & 0.4706 & 0.9464 & 0.0503 & 0.9966\\
+3 & 0.9798 & 0.9945 & 0.9992 & 0.8778 & 1.0000 & 0.9912 & 0.9399 & 1.0000 & 0.4706 & 0.9876 & 0.1860 & 0.9968\\
+4 & 0.9915 & 0.9945 & 0.9992 & 0.9447 & 0.9884 & 0.9972 & 0.9798 & 0.9984 & 0.8235 & 0.9933 & 0.4242 & 0.9989\\
+5 & 0.8956 & 0.9972 & 0.9995 & 0.5798 & 0.9707 & 0.9803 & 0.8711 & 0.9959 & 0.7500 & 0.9211 & 0.0513 & 0.9985\\
+\midrule
+Avg & 0.9282 & 0.9950 & 0.9992 & 0.7073 & 0.9860 & 0.9782 & 0.8700 & 0.9980 & 0.6088 & 0.9528 & 0.1497 & 0.9975\\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{table}
+\caption{5-fold cross validation, LipNet--4, Encapsulation problem.} \label{t:kfold-cnn-encapsulation}
+
+\smallskip
+\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+                                 *{4}{S[table-format=2.1]} @{}}
+\toprule
+ & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
+         & \multicolumn{4}{c}{Uncertain}  \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+\midrule
+1 & 0.3030 & 0.9917 & 0.1961 & 0.9953 & 0.8194 & 0.8358 & 0.9945 & 0.1134 & 0.7624 & 0.8239 & 0.0822 & 0.9941\\
+2 & 0.3030 & 0.9861 & 0.1266 & 0.9953 & 0.9019 & 0.7761 & 0.9932 & 0.1793 & 0.5149 & 0.9081 & 0.1038 & 0.9891\\
+3 & 0.4545 & 0.9849 & 0.1667 & 0.9963 & 0.8992 & 0.8955 & 0.9968 & 0.1970 & 0.7030 & 0.9083 & 0.1368 & 0.9933\\
+4 & 0.6061 & 0.9895 & 0.2778 & 0.9974 & 0.9427 & 0.7836 & 0.9937 & 0.2742 & 0.6139 & 0.9490 & 0.1994 & 0.9917\\
+5 & 0.8276 & 0.9861 & 0.2581 & 0.9990 & 0.9258 & 0.9291 & 0.9980 & 0.2469 & 0.5510 & 0.9322 & 0.1403 & 0.9904\\
+\midrule
+Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.6290 & 0.9043 & 0.1325 & 0.9917\\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\end{landscape}
+
 \subsection{SVM}
+
+\begin{center}
+\captionof{table}{5-fold average normalized confusion matrix, Encapsulation problem, SVM.}
+\label{table:svm_cf_avg_encapsulation}
+\begin{tabular}{|L{2.5cm} |C{2.5cm} |C{2.5cm} |C{2.5cm}|}
+\toprule
+ & Empty & Full & Uncertain \\
+\midrule
+Empty & 0.89 & 0.01 & 0.10 \\
+Full & 0.04 & 0.87 & 0.09 \\
+Uncertain & 0.18 & 0.10 & 0.72 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\captionof{table}{5-fold average normalized confusion matrix, Lamellarity problem, SVM.}
+\label{table:svm_cf_avg_encapsulation}
+\begin{tabular}{|L{2.5cm} |C{2.5cm} |C{2.5cm} |C{2.5cm}|}
+\toprule
+ & Unilamellar & Multilamellar & Uncertain \\
+\midrule
+Unilamellar & 0.94 & 0.04 & 0.02 \\
+Multilamellar & 0.00 & 0.98 & 0.02 \\
+Uncertain & 0.03 & 0.11 & 0.86 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \begin{landscape}
 
@@ -831,13 +849,9 @@ Avg & 0.8879 & 0.9541 & 0.1128 & 0.9992 & 0.8650 & 0.9239 & 0.9976 & 0.1577 & 0.
 
 \end{landscape}
 
-\subsection{ROC}
-Include ROC curves of different models.
-
 \section{Benchmarking}
-\begin{warning}
-Please comment selection of performance measures for benchmarking! 
-\end{warning}
+
+Here different models are compared.
 
 \begin{landscape}
 
@@ -872,48 +886,69 @@ Please comment selection of performance measures for benchmarking!
 	symbolic x coords={TPR, SPC, PPV, NPV},
 	grid=major,
 	xmajorgrids=false,
+	/pgf/bar width=5pt,
 ]
 %
 % Lamlellarity
 %
 \nextgroupplot[title={Unilamellar}]
-% cnn
-\addplot coordinates{(TPR, 0.9282) (SPC, 0.9950) (PPV, 0.9992) (NPV, 0.7073)};\label{legend:cnn}
+% lipnet-4
+\addplot[color=lblue, fill=lblue] coordinates{(TPR, 0.9282) (SPC, 0.9950) (PPV, 0.9992) (NPV, 0.7073)};\label{legend:lipnet4}
+% lipnet-6
+\addplot[color=lgreen, fill=lgreen] coordinates{(TPR, 0.6229) (SPC, 0.9895) (PPV, 0.9978) (NPV, 0.3112)};\label{legend:lipnet6}
+% lipnet-9
+%\addplot coordinates{(TPR, 0.6229) (SPC, 0.9895) (PPV, 0.9978) (NPV, 0.3112)};\label{legend:lipnet9}
 % svm
-\addplot coordinates{(TPR, 0.8607) (SPC, 0.9801) (PPV, 0.9967) (NPV, 0.5068)};\label{legend:svm}
+\addplot[color=lred, fill=lred] coordinates{(TPR, 0.8607) (SPC, 0.9801) (PPV, 0.9967) (NPV, 0.5068)};\label{legend:svm}
+
+
 
 \nextgroupplot[title={Multilamellar}]
 % cnn
-\addplot coordinates{(TPR, 0.9860) (SPC, 0.9782) (PPV, 0.8700) (NPV, 0.9980)};
+\addplot[color=lblue, fill=lblue] coordinates{(TPR, 0.9860) (SPC, 0.9782) (PPV, 0.8700) (NPV, 0.9980)};
+% lipnet-6
+\addplot[color=lgreen, fill=lgreen] coordinates{(TPR, 0.9732) (SPC, 0.7145) (PPV, 0.3563) (NPV, 0.9949)};
+% lipnet-9
+%\addplot coordinates{(TPR, 0.6229) (SPC, 0.9895) (PPV, 0.9978) (NPV, 0.3112)};
 % svm
-\addplot coordinates{(TPR, 0.9436) (SPC, 0.9708) (PPV, 0.8170) (NPV, 0.9921)};
+\addplot[color=lred, fill=lred] coordinates{(TPR, 0.9436) (SPC, 0.9708) (PPV, 0.8170) (NPV, 0.9921)};
 
 \nextgroupplot[title={Uncertain}]
 % cnn
-\addplot coordinates{(TPR, 0.6088) (SPC, 0.9528) (PPV, 0.1497) (NPV, 0.9975)};
+\addplot[color=lblue, fill=lblue] coordinates{(TPR, 0.6088) (SPC, 0.9528) (PPV, 0.1497) (NPV, 0.9975)};
+% lipnet-6
+\addplot[color=lgreen, fill=lgreen] coordinates{(TPR, 0.3493) (SPC, 0.9154) (PPV, 0.0287) (NPV, 0.9958)};
+% lipnet-9
+%\addplot coordinates{(TPR, 0.6229) (SPC, 0.9895) (PPV, 0.9978) (NPV, 0.3112)};
 % svm
-\addplot coordinates{(TPR, 0.9762) (SPC, 0.8990) (PPV, 0.0548) (NPV, 0.9998)};
+\addplot[color=lred, fill=lred] coordinates{(TPR, 0.9762) (SPC, 0.8990) (PPV, 0.0548) (NPV, 0.9998)};
 
 %
 % Encapsulation
 %
 \nextgroupplot[title={Empty}]
 % cnn
-\addplot coordinates{(TPR, 0.4989) (SPC, 0.9876) (PPV, 0.2050) (NPV, 0.9967)};
+\addplot[color=lblue, fill=lblue] coordinates{(TPR, 0.4989) (SPC, 0.9876) (PPV, 0.2050) (NPV, 0.9967)};
+% lipnet-6
+\addplot[color=lgreen, fill=lgreen] coordinates{(TPR, 0.5812) (SPC, 0.9657) (PPV, 0.1223) (NPV, 0.9972)};
 % svm
-\addplot coordinates{(TPR, 0.8879) (SPC, 0.9541) (PPV, 0.1128) (NPV, 0.9992)};
+\addplot[color=lred, fill=lred] coordinates{(TPR, 0.8879) (SPC, 0.9541) (PPV, 0.1128) (NPV, 0.9992)};
 
 \nextgroupplot[title={Full}]
 % cnn
-\addplot coordinates{(TPR, 0.8978) (SPC, 0.8440) (PPV, 0.9952) (NPV, 0.2021)};
+\addplot[color=lblue, fill=lblue] coordinates{(TPR, 0.8978) (SPC, 0.8440) (PPV, 0.9952) (NPV, 0.2021)};
+% lipnet-6
+\addplot[color=lgreen, fill=lgreen] coordinates{(TPR, 0.7488) (SPC, 0.9462) (PPV, 0.9980) (NPV, 0.1048)};
 % svm
-\addplot coordinates{(TPR, 0.8650) (SPC, 0.9239) (PPV, 0.9976) (NPV, 0.1577)};
+\addplot[color=lred, fill=lred] coordinates{(TPR, 0.8650) (SPC, 0.9239) (PPV, 0.9976) (NPV, 0.1577)};
 
 \nextgroupplot[title={Uncertain}]
 % cnn
-\addplot coordinates{(TPR, 0.6290) (SPC, 0.9043) (PPV, 0.1325) (NPV, 0.9917)};
+\addplot[color=lblue, fill=lblue] coordinates{(TPR, 0.6290) (SPC, 0.9043) (PPV, 0.1325) (NPV, 0.9917)};
+% lipnet-6
+\addplot[color=lgreen, fill=lgreen] coordinates{(TPR, 0.7170) (SPC, 0.7781) (PPV, 0.0715) (NPV, 0.9926)};
 % svm
-\addplot coordinates{(TPR, 0.7257) (SPC, 0.9082) (PPV, 0.1405) (NPV, 0.9938)};
+\addplot[color=lred, fill=lred] coordinates{(TPR, 0.7257) (SPC, 0.9082) (PPV, 0.1405) (NPV, 0.9938)};
 
 \end{groupplot}
 % http://tex.stackexchange.com/questions/192424/pgfplots-single-legend-in-a-group-plot
@@ -932,10 +967,12 @@ Please comment selection of performance measures for benchmarking!
     draw
   ]at([yshift=1ex]legendpos)
   {
-    \ref{legend:cnn}& CNN &[5pt]
+    \ref{legend:lipnet4}& Lipnet--4 &[5pt]
+    \ref{legend:lipnet6}& Lipnet--6 &[5pt]
+    %\ref{legend:lipnet9}& Lipnet--9 &[5pt]
     \ref{legend:svm}& SVM \\};
 \end{tikzpicture} 
-\caption{\label{fig:svm_vs_cnn} Comparison of SVM and CNN}
+\caption{\label{fig:svm_vs_cnn} Comparison of SVM and CNN (best viewed in color).}
 \end{figure}
  
 \end{landscape}
