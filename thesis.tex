@@ -107,7 +107,7 @@ Vironova is a Swedish Biotech company that supplies hardware and software soluti
 
 Convolutional neural network (CNN)~\cite{LeCun1986} is one of such methods. CNN are designed to recognize visual patterns directly from pixel images with minimal preprocessing. One of the first successful applications of CNN to a large data set was recognition of handwritten digits~\cite{41400} in the end of 80s'. Since that CNN has demonstrated excellent results in wide range of problems~\cite{NIPS2012_4824, DBLP:journals/corr/LinCY13}. For example CNN are used for segmentation~\cite{DBLP:journals/corr/ShelhamerLD16, Ronneberger2015} and for classification~\cite{NIPS2012_4824, DBLP:journals/corr/abs-1202-2745} tasks.
 
-The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. CNN models are evaluated by benchmarking against SVM for selected problems. This project also encompasses prospecting the role of CNN technology for the Vironova EM services both as a method for automatic classification included in the software as well as being a research tool (e.g., for identifying useful particle features). This includes discussions on library licenses, operation system availability, performance and community support.
+The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. CNN models are evaluated by benchmarking against SVM for selected problems. This project also encompasses prospecting the role of CNN technology for the Vironova EM services both as a method for automatic classification included in the software as well as being a research tool (e.g., for identifying useful particle features). This includes discussions on library licenses, operating system availability, performance and community support.
 
 \section{Problem description}
 \label{sec:problem_description}
@@ -249,13 +249,21 @@ CNNs are of great interest in image analysis domain because they allow learning 
 
 
 \subsection{Deconvolutional Neural Networks}
-Convolutional neural networks is a powerful method of machine learning that is capable to learn image features in order to describe provided categories. However it is almost always not obvious what kind of feature has the model learned. For some time convolutional neural networks have been treated as a black box. This has changed in 2014 when Zeiler et al.~\cite{Zeiler2014} proposed \textit{Deconvolutional Networks (DN)} for visualization of convolutional  neural networks, or rather patterns that fire network activations. In this way it is much easier to understand how do convolutional neural networks \blockquote{see} images.
+Convolutional neural networks is a powerful method of machine learning that is capable to learn image features in order to describe provided categories. However it is almost always not obvious what kind of feature has the model learned. For some time convolutional neural networks have been treated as a black box. This has changed in 2014 when Zeiler et al.~\cite{Zeiler2014} proposed \textit{Deconvolutional Networks (DN)} for visualization of convolutional  neural networks, or rather patterns that fire network activations. In this way it is much easier to understand how do convolutional neural networks \blockquote{see} images. Figure~\ref{fig:dnn_vis} shows an example visualizations of features learned by a CNN. 
 
 The DN method can be summarized in the following way. The deconvolutional network goes down from activations of a given layer back to image. In this manner DN reverses data flow of a CNN undoing effect of convolutions. The resulting reconstructed image shows parts of the input image that caused the strongest activations. 
 
 In order to reverse the data flow of a CNN all its components must be reversible. To invert learned filters DN transposes them which means in pratice flipping each filter vertically and horizontally. CNN usually use rectifiers as activation functions that guarantee that feature maps are always positive. Features are reconstructed using the same ReLU non-linearities. Pooling is a common building block of any CNN. Unlike convolution and rectification pooling generally can not be undone, it is not reversible. Zeiler et al. propose to record the locations of the maxima within each pooling region, they call these recorded values switch variables. Unpooling operation uses switches to place reconstructions into appropriate locations setting other values within upsampling region to zero.
 
 Convolutional networks that replace max pooling operation with convolution with stride can be visualized in the similar way. Springenberg et al.~\cite{DBLP:journals/corr/SpringenbergDBR14} propose modifications to DN method that achieve similar results as in~\cite{Zeiler2014}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{zeiler_dnn_vis.png} 
+\caption{Visualization of features in a fully trained model. Figure is taken from~\cite{Zeiler2014}.}\label{fig:dnn_vis}
+\end{figure}
+
+DNN method may be used as supporting tool. For example it can aid SVM classifier. Vironova uses SVM classifiers to solve its classification tasks and it performs well. However one must make a good choice of features in order to succeed and it is not always obvious what kind of features to select. DNN can help to decide which features are descriptive related to a certain task. In such situation it may be helpful to train a convolutional neural network and then visualize it. Features that the CNN has learned can be added to the SVM pipeline. 
 
 \subsection{Performance measures}
 
@@ -432,6 +440,9 @@ Figure~\ref{fig:augmented_images} show an example of data augmentation. Thus a m
 \label{fig:augmented_images}
 \end{figure}
 
+\subsection{Optimization}
+Deep learning algorithms involve optimization in many contexts~\cite{dl_book}. The most obvious one is finding network parameters that reduce a cost function. One of design decisions that one has to make is choice of optimization method. In this project I limited the choice of optimizers to ADAM~\cite{DBLP:journals/corr/KingmaB14} and Stochastic Gradient Descent (SGD)~\cite{Zhang04solvinglarge}.
+
 \section{Loss function}
 \label{sec:loss_function}
 
@@ -534,7 +545,13 @@ Licensing is another important issue. All presented here deep learning libraries
 
 One should also mention deep learning libraries that are built on top of other libraries to make more user friendly API. Lasagne and Keras~\cite{chollet2015keras} are such examples. Lasagne is built on top of Theano, Keras is built on top of both Theano and Tensorflow. It is easy to switch backend from Theano to TensorFlow and vice versa in Keras which makes it a very powerful tool. Keras PI is lightweight and simple which makes it a great prototyping tool. A clear drawback of such \blockquote{on-top} libraries is a lag between introduction of new functionality in primary libraries and in on-top libraries. Furthermore, additional layers of abstraction might reduce performance. 
 
-All experiments presented in this project have been performed using TensorFlow and Keras software tools. 
+It is worth to mention that the list of deep learning software tools from  table~\ref{tbl:comparison_of_dl_lib} is just a small fraction of all available tools. I decided to include only those tools that are well established in terms of documentation, community support and developer's reputation. This absolutely does not mean that other tools are of poor quality, but their learning curve might be steeper compared to well established tools.
+
+When it comes to programming language APIs, Python is a primary choice of majority of deep learning tools. Nearly all tools mentioned in this report have well documented extensive Python API. Linux operating system is the preferable operating system for deep learning environments. As of October 2016 not all deep learning tools provide versions for Windows while Linux is supported by all of them. It might be an issue for Vironova as its software is developed for Windows operating system. There is a number of machine learning frameworks available for Microsoft .NET framework and one of the most promising is Accord.NET~\cite{accordnet}. However at the time of writing it does not provide CNN functionality and its community support and development resources can not be compared to the leading deep learning tools. 
+
+All experiments presented in this project have been performed using TensorFlow and Keras software tools on a machine with Linux operating system. Currently Tensorflow has no version for Windows however Keras allows to switch between Tensorflow and Keras backend, so all experiments can be replicated on a Windows machine after switching to Theano backend.
+
+To sum up, there are hardly any obstacles to use deep learning as a research and aid tool. Software tools reviewed in this section are fairly easy to set up on a Linux machine and are well documented. However it might be more difficult to use these tools in production environments taking into account limited support of Windows operating system and absence of C\# application programming interfaces. It does not mean that it is impossible to adopt for production solutions presented in this report but it would require considerable amount of effort to do that.
 
 \begin{landscape}
 \begin{center}
@@ -589,14 +606,36 @@ Three network architectures are tested in this project. Let us call them LipNet-
 \item \textbf{LipNet--9} is a modification of LipNet--9 with additional convolutional block. Additional convolution with stride requires bigger input size so images are resized to $32 \times 32$. 
 \end{itemize}
 
+Classes are one-hot encoded~\cite{harris2013digital} as demonstrated in table~\ref{table:class_encoding}.
+
+\begin{center}
+\captionof{table}{Class encodings}
+\label{table:class_encoding}
+\begin{tabular}{|lc|}
+\toprule 
+Class & Encoding \\ 
+\midrule 
+Multilamellar & \texttt{100} \\ 
+Unilamellar & \texttt{010} \\ 
+Uncertain & \texttt{001} \\ 
+\midrule 
+Empty & \texttt{100} \\ 
+Full & \texttt{010} \\ 
+Uncertain & \texttt{001} \\ 
+\bottomrule 
+\end{tabular} 
+\end{center}
+
+Thus output layer is always represented by three nodes and each of them yields a value between 0 and 1 that is interpreted as a probability of belonging to a corresponding class. Softmax~\cite{Bishop:2006:PRM:1162264} activation function guarantees that all node values are in $[0, 1]$ and sum up to 1. 
+
 
 
 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{lipnet_architecture_3.png} 
-]\caption{Network architectures used in this project. Left: the LipNet--4 model, $886243$ parameters. Middle: the LipNet--6 model, $46743$ parameters. Right: LipNet--9, parameters}
+\includegraphics[width=\textwidth]{lipnet_architecture_3.png} 
+\caption{Network architectures used in this project. Left: the LipNet--4 model, $886243$ parameters. Middle: the LipNet--6 model, $46743$ parameters. Right: LipNet--9, parameters}
 \label{fig:lipnet_arch}
 \end{figure}
 
@@ -637,7 +676,7 @@ LipNet networks were trained using Keras deep learning library with GPU based Te
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{nvidia_smi.png} 
+\includegraphics[width=\textwidth]{nvidia_smi.png} 
 \caption{GPU utilization statistics.}
 \label{fig:nvidia_smi}
 \end{figure}
@@ -646,7 +685,9 @@ All models are evaluated using 5-fold cross-validation~\cite{Kohavi:1995:SCB:164
 
 Training sets are balanced using oversampling, test sets are left unbalanced. During training training data is augmented as described in~\ref{sec:data_augmentation}. Data augmentation transformations are applied randomly to each training example, so the probability to see same training example twice is quite low. 
 
-Input samples are shuffled at the beginning of each epoch. Training data is fed in batches and model parameters are updated after each batch. Batch size is fixed to default value of 32 images. If validation set is used then one can see that at the end of some epochs validation error is less than test error. This happens because model parameters are updated after each batch, so validation which is done at the end of each epoch is performed after training on the whole training set, while test error is an average error of all batches within an epoch. 
+Input samples are shuffled at the beginning of each epoch. Training data is fed in batches and model parameters are updated after each batch. Batch size is fixed to default value of 32 images. If validation set is used then one can see that at the end of some epochs validation error is less than test error. This happens because model parameters are updated after each batch, so validation which is done at the end of each epoch is performed after training on the whole training set, while test error is an average error of all batches within an epoch.
+
+ 
 
 \subsection{Evaluation of data augmentation techniques}
 
@@ -990,13 +1031,23 @@ Here different models are compared.
 \end{landscape}
 
 
-\section{Evaluation}
-
-Evaluate results.
-
 \section{Conclusion}
 
+Speaking about optimization methods, both ADAM and SGD performed well and no method outperformed another one.
+
 \section{Discussion}
+
+\subsection{Limitations}
+
+Due to time limitations experiment with fully convolutional neural networks and variable size inputs has not been performed. Size of a particle seems to be an important factor as one can see some patterns of class distributions depending on size shown in figures~\ref{fig:img_size_scatter_plot} and~\ref{fig:img_size_per_class}. Firstly, due to performance optimization it is necessary to know in advance size of all network layers which requires constant input size. Convolutional neural networks can operate on variable size input but it is a challenging task to implement that. At least at the time of writing leading deep learning tools do not provide recipes for fully convolutional networks for classification tasks. One possible solution would be to fix size of all images to the maximum of the sample and zero pad all smaller images up to that size. In this way network would possible see zero padding as a feature and distinguish between different sizes but that would required a lot of computational power. In practice training networks with input size already $64 \times 64$ required approximately 24 hours. For example images of multilamellar liposomes are mostly greater than $100 \times 100$, so it would take unreasonably large amount of time. Fully convolutional networks with variable size input is the most natural direction of further work on this project.
+
+\medskip
+
+This project is of research character so experiments were performed in a research environment, not production one. It is possible to replicate results of this project in Windows, but it would require significant amount of effort to adopt presented solutions in production environment.
+
+\medskip
+
+Due to hardware limitations it was impossible to test deeper networks with many layers but is doubtfully that deeper network would have better generalization as risk for overfitting increases as network structures become more complicated.
 
 \printbibliography
 
