@@ -121,7 +121,7 @@
     </bcf:option>
     <bcf:option type="singlevalued">
       <bcf:key>sortscheme</bcf:key>
-      <bcf:value>nty</bcf:value>
+      <bcf:value>none</bcf:value>
     </bcf:option>
     <bcf:option type="singlevalued">
       <bcf:key>uniquelist</bcf:key>
@@ -680,30 +680,7 @@
   <bcf:sorting>
     <bcf:presort>mm</bcf:presort>
     <bcf:sort order="1">
-      <bcf:sortitem order="1">presort</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="2" final="1">
-      <bcf:sortitem order="1">sortkey</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="3">
-      <bcf:sortitem order="1">sortname</bcf:sortitem>
-      <bcf:sortitem order="2">author</bcf:sortitem>
-      <bcf:sortitem order="3">editor</bcf:sortitem>
-      <bcf:sortitem order="4">translator</bcf:sortitem>
-      <bcf:sortitem order="5">sorttitle</bcf:sortitem>
-      <bcf:sortitem order="6">title</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="4">
-      <bcf:sortitem order="1">sorttitle</bcf:sortitem>
-      <bcf:sortitem order="2">title</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="5">
-      <bcf:sortitem order="1">sortyear</bcf:sortitem>
-      <bcf:sortitem order="2">year</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="6">
-      <bcf:sortitem order="1" pad_side="left" pad_width="4" pad_char="0">volume</bcf:sortitem>
-      <bcf:sortitem order="2">0000</bcf:sortitem>
+      <bcf:sortitem order="1">citeorder</bcf:sortitem>
     </bcf:sort>
   </bcf:sorting>
   <!-- DATA MODEL -->
@@ -2081,79 +2058,57 @@
     <bcf:citekey order="27">Zeiler2014</bcf:citekey>
     <bcf:citekey order="28">Zeiler2014</bcf:citekey>
     <bcf:citekey order="29">Zeiler2014</bcf:citekey>
-    <bcf:citekey order="30">zhu2007knowledge</bcf:citekey>
-    <bcf:citekey order="31">STEHMAN199777</bcf:citekey>
-    <bcf:citekey order="32">powers07evaluation</bcf:citekey>
-    <bcf:citekey order="33">Ling2010</bcf:citekey>
-    <bcf:citekey order="34">Lopez2013113</bcf:citekey>
-    <bcf:citekey order="35">smote_chawla</bcf:citekey>
-    <bcf:citekey order="36">ishaq_synthetic</bcf:citekey>
-    <bcf:citekey order="37">Zadrozny:2001:LMD:502512.502540</bcf:citekey>
-    <bcf:citekey order="38">smote_chawla</bcf:citekey>
-    <bcf:citekey order="39">ishaq_synthetic</bcf:citekey>
-    <bcf:citekey order="40">Perlin:1985:IS:325165.325247</bcf:citekey>
-    <bcf:citekey order="41">dl_book</bcf:citekey>
-    <bcf:citekey order="42">dl_book</bcf:citekey>
-    <bcf:citekey order="43">pmid18263536</bcf:citekey>
-    <bcf:citekey order="44">dl_book</bcf:citekey>
-    <bcf:citekey order="45">JMLR:v15:srivastava14a</bcf:citekey>
+    <bcf:citekey order="30">dl_book</bcf:citekey>
+    <bcf:citekey order="31">DBLP:journals/corr/KingmaB14</bcf:citekey>
+    <bcf:citekey order="32">Zhang04solvinglarge</bcf:citekey>
+    <bcf:citekey order="33">zhu2007knowledge</bcf:citekey>
+    <bcf:citekey order="34">STEHMAN199777</bcf:citekey>
+    <bcf:citekey order="35">powers07evaluation</bcf:citekey>
+    <bcf:citekey order="36">powers07evaluation</bcf:citekey>
+    <bcf:citekey order="37">Ling2010</bcf:citekey>
+    <bcf:citekey order="38">Lopez2013113</bcf:citekey>
+    <bcf:citekey order="39">smote_chawla</bcf:citekey>
+    <bcf:citekey order="40">ishaq_synthetic</bcf:citekey>
+    <bcf:citekey order="41">Zadrozny:2001:LMD:502512.502540</bcf:citekey>
+    <bcf:citekey order="42">smote_chawla</bcf:citekey>
+    <bcf:citekey order="43">ishaq_synthetic</bcf:citekey>
+    <bcf:citekey order="44">Perlin:1985:IS:325165.325247</bcf:citekey>
+    <bcf:citekey order="45">dl_book</bcf:citekey>
     <bcf:citekey order="46">dl_book</bcf:citekey>
-    <bcf:citekey order="47">dl_book</bcf:citekey>
+    <bcf:citekey order="47">pmid18263536</bcf:citekey>
     <bcf:citekey order="48">dl_book</bcf:citekey>
-    <bcf:citekey order="49">DBLP:journals/corr/KingmaB14</bcf:citekey>
-    <bcf:citekey order="50">Zhang04solvinglarge</bcf:citekey>
-    <bcf:citekey order="51">rosasco</bcf:citekey>
-    <bcf:citekey order="52">2016arXiv160502688short</bcf:citekey>
-    <bcf:citekey order="53">jia2014caffe</bcf:citekey>
-    <bcf:citekey order="54">tensorflow2015-whitepaper</bcf:citekey>
-    <bcf:citekey order="55">cntk</bcf:citekey>
-    <bcf:citekey order="56">Collobert_NIPSWORKSHOP_2011</bcf:citekey>
-    <bcf:citekey order="57">DBLP:journals/corr/ShiWXC16</bcf:citekey>
-    <bcf:citekey order="58">Mamykina:2011:DLF:1978942.1979366</bcf:citekey>
-    <bcf:citekey order="59">Thung:2013:NSS:2495256.2495709</bcf:citekey>
-    <bcf:citekey order="60">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="49">JMLR:v15:srivastava14a</bcf:citekey>
+    <bcf:citekey order="50">dl_book</bcf:citekey>
+    <bcf:citekey order="51">dl_book</bcf:citekey>
+    <bcf:citekey order="52">rosasco</bcf:citekey>
+    <bcf:citekey order="53">2016arXiv160502688short</bcf:citekey>
+    <bcf:citekey order="54">jia2014caffe</bcf:citekey>
+    <bcf:citekey order="55">tensorflow2015-whitepaper</bcf:citekey>
+    <bcf:citekey order="56">cntk</bcf:citekey>
+    <bcf:citekey order="57">Collobert_NIPSWORKSHOP_2011</bcf:citekey>
+    <bcf:citekey order="58">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="59">Mamykina:2011:DLF:1978942.1979366</bcf:citekey>
+    <bcf:citekey order="60">Thung:2013:NSS:2495256.2495709</bcf:citekey>
     <bcf:citekey order="61">DBLP:journals/corr/ShiWXC16</bcf:citekey>
-    <bcf:citekey order="62">Rosen:2004:OSL:1014911</bcf:citekey>
-    <bcf:citekey order="63">chollet2015keras</bcf:citekey>
-    <bcf:citekey order="64">accordnet</bcf:citekey>
-    <bcf:citekey order="65">DBLP:journals/corr/SimonyanZ14a</bcf:citekey>
-    <bcf:citekey order="66">NIPS2012_4824</bcf:citekey>
-    <bcf:citekey order="67">DBLP:journals/corr/SzegedyLJSRAEVR14</bcf:citekey>
-    <bcf:citekey order="68">dl_book</bcf:citekey>
-    <bcf:citekey order="69">DBLP:journals/corr/ShelhamerLD16</bcf:citekey>
-    <bcf:citekey order="70">DBLP:journals/corr/SpringenbergDBR14</bcf:citekey>
+    <bcf:citekey order="62">DBLP:journals/corr/ShiWXC16</bcf:citekey>
+    <bcf:citekey order="63">Rosen:2004:OSL:1014911</bcf:citekey>
+    <bcf:citekey order="64">chollet2015keras</bcf:citekey>
+    <bcf:citekey order="65">accordnet</bcf:citekey>
+    <bcf:citekey order="66">DBLP:journals/corr/SimonyanZ14a</bcf:citekey>
+    <bcf:citekey order="67">NIPS2012_4824</bcf:citekey>
+    <bcf:citekey order="68">DBLP:journals/corr/SzegedyLJSRAEVR14</bcf:citekey>
+    <bcf:citekey order="69">dl_book</bcf:citekey>
+    <bcf:citekey order="70">DBLP:journals/corr/ShelhamerLD16</bcf:citekey>
     <bcf:citekey order="71">DBLP:journals/corr/SpringenbergDBR14</bcf:citekey>
-    <bcf:citekey order="72">harris2013digital</bcf:citekey>
-    <bcf:citekey order="73">Bishop:2006:PRM:1162264</bcf:citekey>
-    <bcf:citekey order="74">Kohavi:1995:SCB:1643031.1643047</bcf:citekey>
+    <bcf:citekey order="72">DBLP:journals/corr/SpringenbergDBR14</bcf:citekey>
+    <bcf:citekey order="73">harris2013digital</bcf:citekey>
+    <bcf:citekey order="74">Bishop:2006:PRM:1162264</bcf:citekey>
+    <bcf:citekey order="75">Kohavi:1995:SCB:1643031.1643047</bcf:citekey>
   </bcf:section>
-  <bcf:sortlist section="0" name="nty/global" type="entry" sortscheme="nty" sortnamekeyscheme="global">
+  <bcf:sortlist section="0" name="none/global" type="entry" sortscheme="none" sortnamekeyscheme="global">
   <bcf:sorting>
     <bcf:sort order="1">
-      <bcf:sortitem order="1">presort</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="2" final="1">
-      <bcf:sortitem order="1">sortkey</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="3">
-      <bcf:sortitem order="1">sortname</bcf:sortitem>
-      <bcf:sortitem order="2">author</bcf:sortitem>
-      <bcf:sortitem order="3">editor</bcf:sortitem>
-      <bcf:sortitem order="4">translator</bcf:sortitem>
-      <bcf:sortitem order="5">sorttitle</bcf:sortitem>
-      <bcf:sortitem order="6">title</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="4">
-      <bcf:sortitem order="1">sorttitle</bcf:sortitem>
-      <bcf:sortitem order="2">title</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="5">
-      <bcf:sortitem order="1">sortyear</bcf:sortitem>
-      <bcf:sortitem order="2">year</bcf:sortitem>
-    </bcf:sort>
-    <bcf:sort order="6">
-      <bcf:sortitem order="1" pad_side="left" pad_width="4" pad_char="0">volume</bcf:sortitem>
-      <bcf:sortitem order="2">0000</bcf:sortitem>
+      <bcf:sortitem order="1">citeorder</bcf:sortitem>
     </bcf:sort>
   </bcf:sorting>
   </bcf:sortlist>
