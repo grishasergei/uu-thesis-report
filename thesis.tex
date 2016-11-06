@@ -10,6 +10,7 @@
 \usepackage{pifont,mdframed}
 \usepackage{subfig}
 \usepackage{amsmath}
+\usepackage{pdfpages}
 \usepackage{siunitx}
 \sisetup{
     group-digits=true,
@@ -94,13 +95,19 @@
 
 \begin{document}
 
-\maketitle
+% remove page numbering
+% http://tex.stackexchange.com/questions/54333/no-page-numbering
+\pagenumbering{gobble}
 
+\includepdf{./resources/first_page.pdf}
+\newpage\phantom{}
+\includepdf{./resources/abstract.pdf}
+\newpage\phantom{}
+\newpage\phantom{}
+
+% Arabic page numbers (and reset to 1)
+\pagenumbering{arabic}
 \tableofcontents
-
-\begin{abstract}
-An abstract.
-\end{abstract}
 
 \section{Introduction}
 Vironova is a Swedish Biotech company that supplies hardware and software solutions for advanced electron microscopy (EM), image analysis, nano-characterization and viral clearance testing~\cite{virnonva_linkedin}. Vironova has a lot of EM images and many tasks involve classification step therefore automatic classification is of great interest. Currently automatic classification is performed by means of support vector machines (SVM)~\cite{Boser:1992:TAO:130385.130401} method and it demonstrates reasonable performance. On the other hand SVM operates on features representation of images rather than on raw pixel data. Determining a set of feature that would describe difference between classes is a non-trivial task that requires expert knowledge. This motivates interest in methods that do operate on raw pixel data and are capable of learning features themselves during training. 
@@ -321,6 +328,59 @@ F_1 = \frac{2}{\frac{1}{TPR} + \frac{1}{TNR}}
 
 Presented above measures allow more detailed analysis of classifier performance and can clearly illustrate eventual bias of a classifier towards some class or classes. 
 
+\subsection{Loss function}
+\label{sec:loss_function}
+This section is taken from~\cite{mlprojectreport}.
+
+The multi-class logarithmic loss function is a loss function that represents the price paid for inaccuracy of predictions in classification problems~\cite{rosasco}. The formula is:
+\begin{equation}
+loss = -\frac{1}{N} \sum_{i=1}^{N} \sum_{j=1}^{M} y_{i,j} log(p_{i,j})
+\end{equation}
+
+Where 
+\begin{itemize}
+\item N -- number of observations
+\item M -- number of classes, it is five in our case
+\item \textit{log} -- natural logarithm
+\item $y_{i,j}$ -- is 1 if observation $i$ is in class $j$ and 0 otherwise
+\item $p_{i,j}$ --  is the predicted probability that observation $i$ is in class $j$
+\end{itemize}
+
+In order to calculate multi-class logarithmic loss the classifier must assign a probability to each class rather than simply yielding the most likely class. This fact constitutes the main difference between accuracy and logarithmic loss. In order to consider a prediction as accurate, it is sufficient that classifier marks the correct class as the most likely one, no matter how confident the prediction is.
+
+Figure~\ref{fig:logloss} shows log loss from a single class where predicted probability ranges from 0 (the completely wrong prediction) to 1 (the correct prediction). As predicted probability moves closer to 1, log loss decreases gently to 0. On the contrary, log loss increases rapidly as predicted probability moves towards zero. It is clear from Figure~\ref{fig:logloss} that the multi-class logarithmic loss heavily penalizes classifiers that are confident about an incorrect classification.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+	axis lines = left,
+	xlabel = Predicted probability,
+	ylabel = Loss,
+]
+\addplot [
+	domain=0.0001:1,
+	samples=100,
+	color=red,
+]
+{-ln(x)};
+\addlegendentry{$f(x) = -log(x)$}
+\end{axis}
+\end{tikzpicture}
+\caption{\label{fig:logloss} Log loss of a single class where predicted probability ranges from 0 to 1. }
+\end{figure}
+
+Consider an example of a binary classifier and let us take a look at the effect of various predictions for class membership probability. 
+\begin{itemize}
+\item Classification that assigns equal probabilities to both classes results in loss $-log(0.5)=0.6932$.  
+
+\item Classification confident in the correct class results in loss $-log(0.9)=0.1054$.
+
+\item Classification confident in the wrong class results in loss $-log(0.1)=2.3026$. 
+\end{itemize}
+
+In other words, the log loss function encourages moderate predictions. It is better to make all classifications neutral rather than make 50\% correct classifications and 50\% completely wrong predictions.
+
 \subsection{Class Imbalance Problem}
 \label{sec:class_imbalance}
 Encyclopedia of Machine Learning~\cite{Ling2010} defines Class Imbalance problem as follows:
@@ -370,6 +430,7 @@ In this project artificial data has been generated for lamellarity problem. Arti
 
 Note that despite visual similarity artificial images are not based on statistical measures from the real data set. Histograms and image patterns are not drawn from real distributions. With limited time and effort, this experiment should be rather seen as a proof of concept.
 
+\newpage
 \section{Regularization}
 \label{sec:regularization}
 
@@ -447,62 +508,7 @@ Figure~\ref{fig:augmented_images} show an example of data augmentation. Thus a m
 \label{fig:augmented_images}
 \end{figure}
 
-\section{Loss function}
-\label{sec:loss_function}
-
-\begin{warning}
-This section is taken from project report for Machine Learning course. How to cite it?
-\end{warning}
-
-The multi-class logarithmic loss function is a loss function that represents the price paid for inaccuracy of predictions in classification problems~\cite{rosasco}. The formula is:
-\begin{equation}
-loss = -\frac{1}{N} \sum_{i=1}^{N} \sum_{j=1}^{M} y_{i,j} log(p_{i,j})
-\end{equation}
-
-Where 
-\begin{itemize}
-\item N -- number of observations
-\item M -- number of classes, it is five in our case
-\item \textit{log} -- natural logarithm
-\item $y_{i,j}$ -- is 1 if observation $i$ is in class $j$ and 0 otherwise
-\item $p_{i,j}$ --  is the predicted probability that observation $i$ is in class $j$
-\end{itemize}
-
-In order to calculate multi-class logarithmic loss the classifier must assign a probability to each class rather than simply yielding the most likely class. This fact constitutes the main difference between accuracy and logarithmic loss. In order to consider a prediction as accurate, it is sufficient that classifier marks the correct class as the most likely one, no matter how confident the prediction is.
-
-Figure~\ref{fig:logloss} shows log loss from a single class where predicted probability ranges from 0 (the completely wrong prediction) to 1 (the correct prediction). As predicted probability moves closer to 1, log loss decreases gently to 0. On the contrary, log loss increases rapidly as predicted probability moves towards zero. It is clear from Figure~\ref{fig:logloss} that the multi-class logarithmic loss heavily penalizes classifiers that are confident about an incorrect classification.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-	axis lines = left,
-	xlabel = Predicted probability,
-	ylabel = Loss,
-]
-\addplot [
-	domain=0.0001:1,
-	samples=100,
-	color=red,
-]
-{-ln(x)};
-\addlegendentry{$f(x) = -log(x)$}
-\end{axis}
-\end{tikzpicture}
-\caption{\label{fig:logloss} Log loss of a single class where predicted probability ranges from 0 to 1. }
-\end{figure}
-
-Consider an example of a binary classifier and let us take a look at the effect of various predictions for class membership probability. 
-\begin{itemize}
-\item Classification that assigns equal probabilities to both classes results in loss $-log(0.5)=0.6932$.  
-
-\item Classification confident in the correct class results in loss $-log(0.9)=0.1054$.
-
-\item Classification confident in the wrong class results in loss $-log(0.1)=2.3026$. 
-\end{itemize}
-
-In other words, the log loss function encourages moderate predictions. It is better to make all classifications neutral rather than make 50\% correct classifications and 50\% completely wrong predictions.
-
+\newpage
 \section{Review of deep learning software tools}
 
 A wide variety of deep learning software tools is available to the public. Most of them are open-source and are distributed under licenses that allow commercial use. Development of deep learning frameworks is driven by Universities and leading IT companies such as Google and Microsoft with extensive help of the community. For example Theano~\cite{2016arXiv160502688short} by University of Montreal is one of the first and most influential deep learning libraries. It was initially released in 2010. Another state of the art tool is Caffe~\cite{jia2014caffe} by UC Berkeley. Google released TensorFlow~\cite{tensorflow2015-whitepaper} software library in November 2015. Microsoft made its CNTK~\cite{cntk} tool available to the public in January 2016.
@@ -647,7 +653,7 @@ Thus output layer is always represented by three nodes and each of them yields a
 \label{fig:lipnet_arch}
 \end{figure}
 
-\newpage
+%\newpage
 
 
 
@@ -666,7 +672,7 @@ Figure~\ref{fig:lipnet4_filters} shows an example of visualized convolutional fi
 \label{fig:lipnet4_filters}
 \end{figure}
 
-\newpage
+%\newpage
 
 Figure~\ref{fig:lipnet4_conv_output} shows example output of different convolutional layers of LipNet--4 model.
 
@@ -684,7 +690,6 @@ Figure~\ref{fig:lipnet4_conv_output} shows example output of different convoluti
 \end{figure}
 
 \newpage
-
 \section{Results}
 
 \subsection{Experiment set-up}
@@ -967,55 +972,57 @@ Uncertain & 0.03 & 0.11 & 0.86 \\
 \end{tabular}
 \end{center}
 
-\begin{landscape}
+%\begin{landscape}
+%
+%\begin{table}
+%\caption{5-fold cross validation, SVM, Lamellarity problem.} \label{t:kfold-svm-lamellarity}
+%
+%\smallskip
+%\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+%                                 *{4}{S[table-format=2.1]} @{}}
+%\toprule
+% & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
+%         & \multicolumn{4}{c}{Uncertain}  \\
+%\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+%Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+%\midrule
+%1 & 0.8659 & 0.9812 & 0.9969 & 0.5157 & 0.9527 & 0.9736 & 0.8326 & 0.9933 & 0.9851 & 0.9021 & 0.0565 & 0.9999 \\
+%2 & 0.8578 & 0.9826 & 0.9971 & 0.5014 & 0.9432 & 0.9719 & 0.8222 & 0.9920 & 0.9701 & 0.8951 & 0.0521 & 0.9998 \\
+%3 & 0.8404 & 0.9806 & 0.9966 & 0.4721 & 0.9432 & 0.9671 & 0.7979 & 0.9920 & 0.9701 & 0.8844 & 0.0475 & 0.9998  \\
+%4 & 0.8742 & 0.9757 & 0.9960 & 0.5302 & 0.9315 & 0.9721 & 0.8215 & 0.9904 & 0.9851 & 0.9088 & 0.0604 & 0.9999\\
+%5 & 0.8651 & 0.9806 & 0.9967 & 0.5147 & 0.9477 & 0.9695 & 0.8109 & 0.9926 & 0.9706 & 0.9045 & 0.0577 & 0.9998\\
+%\midrule
+%Avg & 0.8607 & 0.9801 & 0.9967 & 0.5068 & 0.9436 & 0.9708 & 0.8170 & 0.9921 & 0.9762 & 0.8990 & 0.0548 & 0.9998\\ 
+%\bottomrule
+%\end{tabular*}
+%\end{table}
+%
+%\begin{table}
+%\caption{5-fold cross validation, SVM, Encapsulation problem.} \label{t:kfold-svm-encapsulation}
+%
+%\smallskip
+%\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
+%                                 *{4}{S[table-format=2.1]} @{}}
+%\toprule
+% & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
+%         & \multicolumn{4}{c}{Uncertain}  \\
+%\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
+%Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
+%\midrule
+%1 & 0.8750 & 0.9594 & 0.1223 & 0.9992 & 0.8703 & 0.9357 & 0.9980 & 0.1644 & 0.7082 & 0.9073 & 0.1356 & 0.9934\\
+%2 & 0.8984 & 0.9477 & 0.1000 & 0.9993 & 0.8625 & 0.9376 & 0.9980 & 0.1567 & 0.7681 & 0.9126 & 0.1529 & 0.9948\\
+%3 & 0.8828 & 0.9576 & 0.1186 & 0.9992 & 0.8582 & 0.9149 & 0.9973 & 0.1496 & 0.7207 & 0.8979 & 0.1266 & 0.9937\\
+%4 & 0.8516 & 0.9487 & 0.0969 & 0.9990 & 0.8676 & 0.9244 & 0.9976 & 0.1599 & 0.7980 & 0.9174 & 0.1655 & 0.9955\\
+%5 & 0.9318 & 0.9570 & 0.1263 & 0.9995 & 0.8666 & 0.9067 & 0.9970 & 0.1580 & 0.6337 & 0.9056 & 0.1218 & 0.9917\\
+%\midrule
+%Avg & 0.8879 & 0.9541 & 0.1128 & 0.9992 & 0.8650 & 0.9239 & 0.9976 & 0.1577 & 0.7257 & 0.9082 & 0.1405 & 0.9938\\ 
+%\bottomrule
+%\end{tabular*}
+%\end{table}
+%
+%\end{landscape}
 
-\begin{table}
-\caption{5-fold cross validation, SVM, Lamellarity problem.} \label{t:kfold-svm-lamellarity}
-
-\smallskip
-\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-                                 *{4}{S[table-format=2.1]} @{}}
-\toprule
- & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
-         & \multicolumn{4}{c}{Uncertain}  \\
-\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-\midrule
-1 & 0.8659 & 0.9812 & 0.9969 & 0.5157 & 0.9527 & 0.9736 & 0.8326 & 0.9933 & 0.9851 & 0.9021 & 0.0565 & 0.9999 \\
-2 & 0.8578 & 0.9826 & 0.9971 & 0.5014 & 0.9432 & 0.9719 & 0.8222 & 0.9920 & 0.9701 & 0.8951 & 0.0521 & 0.9998 \\
-3 & 0.8404 & 0.9806 & 0.9966 & 0.4721 & 0.9432 & 0.9671 & 0.7979 & 0.9920 & 0.9701 & 0.8844 & 0.0475 & 0.9998  \\
-4 & 0.8742 & 0.9757 & 0.9960 & 0.5302 & 0.9315 & 0.9721 & 0.8215 & 0.9904 & 0.9851 & 0.9088 & 0.0604 & 0.9999\\
-5 & 0.8651 & 0.9806 & 0.9967 & 0.5147 & 0.9477 & 0.9695 & 0.8109 & 0.9926 & 0.9706 & 0.9045 & 0.0577 & 0.9998\\
-\midrule
-Avg & 0.8607 & 0.9801 & 0.9967 & 0.5068 & 0.9436 & 0.9708 & 0.8170 & 0.9921 & 0.9762 & 0.8990 & 0.0548 & 0.9998\\ 
-\bottomrule
-\end{tabular*}
-\end{table}
-
-\begin{table}
-\caption{5-fold cross validation, SVM, Encapsulation problem.} \label{t:kfold-svm-encapsulation}
-
-\smallskip
-\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-                                 *{4}{S[table-format=2.1]} @{}}
-\toprule
- & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
-         & \multicolumn{4}{c}{Uncertain}  \\
-\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-\midrule
-1 & 0.8750 & 0.9594 & 0.1223 & 0.9992 & 0.8703 & 0.9357 & 0.9980 & 0.1644 & 0.7082 & 0.9073 & 0.1356 & 0.9934\\
-2 & 0.8984 & 0.9477 & 0.1000 & 0.9993 & 0.8625 & 0.9376 & 0.9980 & 0.1567 & 0.7681 & 0.9126 & 0.1529 & 0.9948\\
-3 & 0.8828 & 0.9576 & 0.1186 & 0.9992 & 0.8582 & 0.9149 & 0.9973 & 0.1496 & 0.7207 & 0.8979 & 0.1266 & 0.9937\\
-4 & 0.8516 & 0.9487 & 0.0969 & 0.9990 & 0.8676 & 0.9244 & 0.9976 & 0.1599 & 0.7980 & 0.9174 & 0.1655 & 0.9955\\
-5 & 0.9318 & 0.9570 & 0.1263 & 0.9995 & 0.8666 & 0.9067 & 0.9970 & 0.1580 & 0.6337 & 0.9056 & 0.1218 & 0.9917\\
-\midrule
-Avg & 0.8879 & 0.9541 & 0.1128 & 0.9992 & 0.8650 & 0.9239 & 0.9976 & 0.1577 & 0.7257 & 0.9082 & 0.1405 & 0.9938\\ 
-\bottomrule
-\end{tabular*}
-\end{table}
-
-\end{landscape}
+%\newpage
 
 \subsection{Impact of surrounding and masking on the input images}
 
@@ -1110,9 +1117,46 @@ Results of experiments showed that including padding to input images leads to wo
 \end{figure}
 
 
+\newpage
 \section{Benchmarking}
 
-Here different models are compared.
+In this section selected CNN models are benchmarked against SVM. For each problem one CNN model that performed best in previous experiments has been selected for comparison to SVM. For Lamellarity problem LipNet-4 model has been selected, for encapsulation problem --- LipNet-2. In both cases data sets are balanced with oversampling, input images are cropped, masked and augmented. All metrics are presented in figure~\ref{fig:svm_vs_cnn}. 
+
+Unilamellar and multilamellar liposomes are recognized by both LipNet-4 and SVM with reasonably high results. Convolutional neural network slightly outperforms SVM in this case. In particular CNN is better in predicting that a particle is not unilamellar, CNNs negative predicted value is $0.7$ against $0.5$ of SVM. On the other hands results are opposite when it comes to uncertain class of Lamellarity problem. Here SVM clearly outperforms CNN in terms of sensitivity: SVM identifies nearly all particles of uncertain class as such while CNN does so only in $70\%$ of cases. However both methods yield many false positive predictions of uncertain class which results in poor precision. Even though CNN has almost double precision ans SVM it is still very poor being slightly above $10\%$. Mainly unilamellar liposomes are confused with uncertains by both CNN and SVM. Even if a small fraction of unilamellars are falsely identified as uncertains it is enough to bring down precision because data sets are heavily unbalanced. Averaged across 5 folds unnormalised confusion matrix is presented in table~\ref{table:cnn_lamellarity_cf_not_normalized}. 
+
+\begin{figure}[H]
+\centering
+\captionof{table}{5-fold average unnormalised confusion matrix, Lamellarity problem, LipNet-4.}
+\label{table:cnn_lamellarity_cf_not_normalized}
+\begin{tabular}{|L{2.5cm} |C{2.5cm} |C{2.5cm} |C{2.5cm}|}
+\toprule
+ & Unilamellar & Multilamellar & Uncertain \\
+\midrule
+Unilamellar & 2325 & 15 & 124 \\
+Multilamellar & 4 & 323 & 16 \\
+Uncertain & 2 & 3 & 11 \\
+\bottomrule
+\end{tabular}
+\end{figure}
+
+
+Particles from Encapsulation problem are generally better classified by SVM. In this case SVM outperforms CNN for all three classes however the difference is not very big, LipNet-2 is still demonstrating a reasonable level of performance. Positive predicted value of empty and uncertain class demonstrates the same patter as uncertain class from Lamellarity problem. Approximately $10\%$ respectively $15\%$ of positive empty and uncertain predictions are correct because some full liposomes are falsely classified as either empty or uncertain. Once again, even is a small fraction of full liposomes are misclassified this reduces precision of minority classes drastically. Another notable result is low negative predicted value of full class. It means that classifiers yield more false negative predictions than true negative. On the other hand positive predicted value of both CNN and SVM for full class is almost 1 which means that there are hardly any empty and uncertain particles that are falsely classified as full. In other words it means that if a classifier says that a particle is full that it is mostly likely to be full, however when it says the opposite it is most likely to false. Averaged across 5 folds unnormalised confusion matrix is presented in table~\ref{table:cnn_encapsulation_cf_not_normalized}.     
+
+\begin{figure}[H]
+\centering
+\captionof{table}{5-fold average unnormalised confusion matrix, Encapsulation problem, LipNet-4.}
+\label{table:cnn_encapsulation_cf_not_normalized}
+\begin{tabular}{|L{2.5cm} |C{2.5cm} |C{2.5cm} |C{2.5cm}|}
+\toprule
+ & Empty & Full & Uncertain \\
+\midrule
+Empty 2 24 & 1 & 7 \\
+Full & 272 & 3929 & 660 \\
+Uncertain & 30 & 9 & 61 \\
+\bottomrule
+\end{tabular}
+\end{figure}
+
 
 \begin{landscape}
 
@@ -1178,19 +1222,19 @@ Here different models are compared.
 %
 \nextgroupplot[title={Empty}]
 % lipnet-1
-\addplot coordinates{(TPR, 0.6719) (TNR, 0.9551) (PPV, 0.1062) (NPV, 0.9977)};
+\addplot coordinates{(TPR, 0.7576) (TNR, 0.9384) (PPV, 0.0978) (NPV, 0.9983) ($F_1$, 0.6905)};
 % svm
 \addplot coordinates{(TPR, 0.8879) (TNR, 0.9541) (PPV, 0.1128) (NPV, 0.9992) ($F_1$, 0.9198)};
 
 \nextgroupplot[title={Full}]
 % lipnet-1
-\addplot coordinates{(TPR, 0.7304) (TNR, 0.9403) (PPV, 0.9979) (NPV, 0.1038)};
+\addplot coordinates{(TPR, 0.8094) (TNR, 0.9283) (PPV, 0.9976) (NPV, 0.1355) ($F_1$, 0.6932)};
 % svm
 \addplot coordinates{(TPR, 0.8650) (TNR, 0.9239) (PPV, 0.9976) (NPV, 0.1577) ($F_1$, 0.8935)};
 
 \nextgroupplot[title={Uncertain}]
 % lipnet-1
-\addplot coordinates{(TPR, 0.6934) (TNR, 0.7708) (PPV, 0.0735) (NPV, 0.9921)};
+\addplot coordinates{(TPR, 0.6085) (TNR, 0.8654) (PPV, 0.0968) (NPV, 0.9909) ($F_1$, 0.5869)};
 % svm
 \addplot coordinates{(TPR, 0.7257) (TNR, 0.9082) (PPV, 0.1405) (NPV, 0.9938) ($F_1$, 0.8068)};
 
@@ -1223,9 +1267,16 @@ Here different models are compared.
 
 Comparison of different input image modes showed that the best performance is achieved when input images contain only particles. Including surrounding worsens classifiers performance. The result is intuitive and expected. By excluding all information irrelevant to the particle we make images less noisy and let classifier concentrate on the particle. This has though one drawback: masking implies reading mask files and performing multiplications with requires additional time. Experiments showed that in Encapsulation problem masking improved 5-fold average $F_1$ score of Full and Empty classes by $6\%$ and $7\%$ respectively and in Lamellarity problem $F_1$ score of Unilamellar and Uncertain classes went up $2\%$ and $7\%$ respectively. On the other hand $F_1$ score of Uncertain class in Encapsulation problem went $2\%$ down after applying masking but I still consider masking worth applying given increase of performance for other classes.
 
+\medskip
+
+Comparison of SVM and CNN classifiers has shown that Lamellarity problem can be solved with both methods with approximately same performance. SVM achieved better performance for Encapsulation problem but CNN still demonstrated reasonable results. Despite such results CNN may still be preferred due to its ability to generalize to almost any classification problem. SVM performed well due to careful choice of image feature that was done by image analysis specialists. However there is no guarantee that with the same features SVM would perform well solving some other problem. On the contrary, CNN does not require such type of expert knowledge. Ability to learn descriptive image features in non-trivial domains is the cornerstone of convolutional neural networks. Given a data set of reasonable size CNN model can be relatively easy retrained and adopted for almost any kind of classification problem. Of course such flexibility has its cost. CNN models are more time consuming than SVM and still require more effort from software engineers to be set up and deployed to production environment even if it is changing rapidly. 
+
+\medskip
+Deconvolutional neural networks is a powerful visualization tool that can help to understand what kind of image feature has the CNN learned. Unfortunately due to time and software limitations no experiments with deconvolutional networks have been performed. According to~\cite{DBLP:journals/corr/YosinskiCBL14} it is qiute common that convolutional neural networks trained on natural images learn features similar to a set of Gabor filters and color blobs on the first layer. It is hard to say what kind of features have LipNet models learned by just looking on its filters like on figure~\ref{fig:lipnet4_filters}. One can not say that LipNet networks learned anything like a set of Gabor filters or any other well known filters. One possible explanation can be that unlike data sets of natural images, Lamellarity and Encapsulation images are very similar to each other and CNN models have to catch differences that can be hardly seen by a human eye. So a CNN model does not need to understand that a particle is round because all particles of all classes are round, this information would be useless in determining whether a liposome is full or empty. However a CNN would most probably learn such kind of features if the task would be to recognize liposomes among other objects of different shapes. 
+
 \subsection{Limitations}
 
-Due to time limitations experiment with fully convolutional neural networks and variable size inputs has not been performed. Size of a particle seems to be an important factor as one can see some patterns of class distributions depending on size shown in figures~\ref{fig:img_size_scatter_plot} and~\ref{fig:img_size_per_class}. Firstly, due to performance optimization it is necessary to know in advance size of all network layers which requires constant input size. Convolutional neural networks can operate on variable size input but it is a challenging task to implement that. At least at the time of writing leading deep learning tools do not provide recipes for fully convolutional networks for classification tasks. One possible solution would be to fix size of all images to the maximum of the sample and zero pad all smaller images up to that size. In this way network would possible see zero padding as a feature and distinguish between different sizes but that would required a lot of computational power. In practice training networks with input size already $64 \times 64$ required approximately 24 hours. For example images of multilamellar liposomes are mostly greater than $100 \times 100$, so it would take unreasonably large amount of time. Fully convolutional networks with variable size input is the most natural direction of further work on this project.
+Due to time limitations experiment with fully convolutional neural networks and variable size inputs has not been performed. Size of a particle seems to be an important factor as one can see some patterns of class distributions depending on size shown in figures~\ref{fig:img_size_scatter_plot} and~\ref{fig:img_size_per_class}. Firstly, due to performance optimization it is necessary to know in advance size of all network layers which requires constant input size. Convolutional neural networks can operate on variable size input but it is a challenging task to implement that. At least at the time of writing leading deep learning tools do not provide recipes for fully convolutional networks for classification tasks. One possible solution would be to fix size of all images to the maximum of the sample and zero pad all smaller images up to that size. In this way network would possible see zero padding as a feature and distinguish between different sizes but that would required a lot of computational power. In practice training networks with input size already $64 \times 64$ required approximately 24 hours. For example images of multilamellar liposomes are mostly greater than $100 \times 100$, so it would take unreasonably large amount of time. 
 
 \medskip
 
@@ -1235,27 +1286,28 @@ This project is of research character so experiments were performed in a researc
 
 Due to hardware limitations it was impossible to test deeper networks with many layers but is doubtfully that deeper network would have better generalization as risk for overfitting increases as network structures become more complicated.
 
+\newpage
 \section{Conclusion}
 
 Data sets imbalance has proven to be a major problem. Unless imbalance problem is addressed classifiers are heavily biased towards majority classes and almost ignore underrepresented classes. It has been shown that oversampling combined with data augmentation can mitigate imbalance problem and lead to reasonable level of generalization. Most common image augmentation techniques like rotation, shift, flop, shear and zoom have been compared. Rotation and shift were the most helpful techniques, however it is context-dependent. For example, zoom technique was almost as helpful as rotation in encapsulation problem, while rotation was far more effective than zoom in lamellarity problem. 
 
-\medskip
 Deconvolutional neural networks have been discussed and it can be concluded that is a promising method that can help to select features that would describe images from different problems in the best way.  
 
-\medskip
 A number of deep learning software tools has been reviewed. As of October 2016 deep learning frameworks are still mainly a research tool and deployment of trained models to production environments might demand significant amount of effort and time resources. However it is changing and integration of deep learning tools into production routines is expected to be easier in the nearest future. TensorFlow, Theano and Caffe are currently the most popular frameworks in terms of number of questions on Stackoverflow and number of subscribers on GitHub. All frameworks benefit from allocating computations on GPU and currently there is no clear leader in terms of performance. 
 
-\medskip
 Speaking about optimization methods, both ADAM and SGD performed well and no method outperformed another one.
 
-\medskip
 Convolutional neural networks trained on cropped and masked images have demonstrated the best performance among all input image modes. Cropping and masking excludes irrelevant information from the image and in that way makes it less noisy. 
 
-\medskip 
-Conclusions about model architectures...
+Five different network architectures have been tested and compared. A network with two convolutional blocks each of which has two convolutional layers performed best in Lamellarity problem. A simpler one, with two convolutional blocks and one covolutional layer per block was best for Encapsulation problem. 
 
-\medskip
-Final comparison to SVM
+Overall performance shown by CNN was reasonable. CNN performed approximately on the same level as SVM in lamellarity problem and was slightly worse than SVM in Encapsulation problem. Convolutional neural networks offer greater flexibility and generalization compared to SVM because CNN method does not require expert knowledge in order to choose image features. However such flexibility comes at cost of greater computational overhead.
+
+\newpage
+\section{Future work}
+Testing fully convolutional neural networks with variable size of input images is one of possible extensions to this project. Size of a particle might be an important feature so adopting fully convolutional approach may improve classifier's results.
+
+Besides this, the results of the convolutional neural networks can be improved by expanding training data sets. New samples might be difficult to retrieve so study of alternative ways to expand the data set are of great interest. Even though an attempt to generate artificial data, that is presented in this project, did not improve performance, it is a question worth to research.
 
 \newpage
 \printbibliography
