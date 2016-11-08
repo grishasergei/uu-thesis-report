@@ -2105,7 +2105,8 @@
     <bcf:citekey order="74">harris2013digital</bcf:citekey>
     <bcf:citekey order="75">Bishop:2006:PRM:1162264</bcf:citekey>
     <bcf:citekey order="76">Kohavi:1995:SCB:1643031.1643047</bcf:citekey>
-    <bcf:citekey order="77">DBLP:journals/corr/YosinskiCBL14</bcf:citekey>
+    <bcf:citekey order="77">dl_book</bcf:citekey>
+    <bcf:citekey order="78">DBLP:journals/corr/YosinskiCBL14</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="none/global" type="entry" sortscheme="none" sortnamekeyscheme="global">
   <bcf:sorting>

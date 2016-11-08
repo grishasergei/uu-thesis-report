@@ -113,35 +113,35 @@
 \tableofcontents
 
 \section{Introduction}
-Vironova is a Swedish Biotech company that supplies hardware and software solutions for advanced electron microscopy (EM), image analysis, nano-characterization and viral clearance testing~\cite{virnonva_linkedin}. Vironova has a lot of EM images and many tasks involve classification step therefore automatic classification is of great interest. Currently automatic classification is performed by means of support vector machines (SVM)~\cite{Boser:1992:TAO:130385.130401} method and it demonstrates reasonable performance. On the other hand SVM operates on features representation of images rather than on raw pixel data. Determining a set of feature that would describe difference between classes is a non-trivial task that requires expert knowledge. This motivates interest in methods that do operate on raw pixel data and are capable of learning features themselves during training. 
+Vironova is a Swedish Biotech company that supplies hardware and software solutions for advanced electron microscopy (EM), image analysis, nano-characterization and viral clearance testing~\cite{virnonva_linkedin}. Vironova has a lot of EM images and many its tasks involve a classification step, therefore automatic classification is of great interest. Currently automatic classification is performed by means of support vector machines (SVM)~\cite{Boser:1992:TAO:130385.130401} method, which demonstrates reasonable performance. On the other hand SVM operates on features representation of images rather than on raw pixel data. Determining a set of features that would describe difference between classes is a non-trivial task that requires expert knowledge. This motivates interest in methods that do operate on raw pixel data and are capable of learning image features themselves during training. 
 
-Convolutional neural network (CNN)~\cite{LeCun1986} is one of such methods. CNN are designed to recognize visual patterns directly from pixel images with minimal preprocessing. One of the first successful applications of CNN to a large data set was recognition of handwritten digits~\cite{41400} in the end of 80s'. Since that CNN has demonstrated excellent results in wide range of problems~\cite{NIPS2012_4824, DBLP:journals/corr/LinCY13}. For example CNN are used for segmentation~\cite{DBLP:journals/corr/ShelhamerLD16, Ronneberger2015} and for classification~\cite{NIPS2012_4824, DBLP:journals/corr/abs-1202-2745} tasks.
+Convolutional neural network (CNN)~\cite{LeCun1986} is one of such methods. CNN are designed to recognize visual patterns directly from pixel data with minimal preprocessing. One of the first successful applications of CNN to a large data set was recognition of handwritten digits~\cite{41400} in the end of 80s'. Since then CNN has demonstrated excellent results in wide range of problems~\cite{NIPS2012_4824, DBLP:journals/corr/LinCY13}. For example CNN are used for segmentation~\cite{DBLP:journals/corr/ShelhamerLD16, Ronneberger2015} and for classification~\cite{NIPS2012_4824, DBLP:journals/corr/abs-1202-2745} tasks.
 
-The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. CNN models are evaluated by benchmarking against SVM for selected problems. This project also encompasses prospecting the role of CNN technology for the Vironova EM services both as a method for automatic classification included in the software as well as being a research tool (e.g., for identifying useful particle features). This includes discussions on library licenses, operating system availability, performance and community support.
+The goal of this project is to study and evaluate the suitability of applying CNN method for automatic classification of electron microscopy (EM) images. CNN models are evaluated by benchmarking against SVM for selected problems. This project also encompasses prospecting the role of CNN technology for the Vironova EM services both as a method for automatic classification included in the software as well as being a research tool (e.g., for identifying useful particle features). This includes discussion on library licenses, operating system availability, performance and community support.
 
 \section{Problem description}
 \label{sec:problem_description}
-One of Vironova's electron microscopy services is to classify types of liposomes\footnote{A liposome is a sperical vesicle having at least one lipid bilayer~\cite{betageri1993liposome}. Liposomes were first described in 1964 by A.D. Bangham and R.W. Thorne and G. Weissman. They suggested the name "liposome"~\cite{betageri1993liposome}. Liposomes can be classified into different types according to numerous features such as but not limited to size, number of lamellae, composition, shape, production method, etc. The classification of liposomes was first presented at a meeting of New York Academy of Science~\cite{liposomes1978}.}. This includes determining:
+One of Vironova's electron microscopy services is to classify types of liposomes\footnote{A liposome is a spherical vesicle having at least one lipid bilayer~\cite{betageri1993liposome}. Liposomes were first described in 1964 by A.D. Bangham and R.W. Thorne and G. Weissman. They suggested the name "liposome"~\cite{betageri1993liposome}. Liposomes can be classified into different types according to numerous features such as but not limited to size, number of lamellae, composition, shape, production method, etc. The classification of liposomes was first presented at a meeting of New York Academy of Science~\cite{liposomes1978}.}. This includes determining:
 \begin{itemize}
 \item Structure of liposome.
-\item Presence of liposomal encapsulation of for example adeno-associated virus or doxorubicin.
+\item Presence of liposomal encapsulation of, for example, adeno-associated virus or doxorubicin.
 \end{itemize}
 
 Let us call these two problems as \textit{Lamellarity} and \textit{Encapsulation}.\medskip
 
-\textbf{Lamellarity}. The term lamellarity refers to the number of lamellae. Lamella, in cell biology, is used to describe numerous plate or disc-like structures at both a tissue and cellular level~\cite{cammack2006oxford}. According to number of lamellae liposomes can be \textit{unilamellar} (single lamella) and \textit{multilamellar} (multiple lamellae). In addition uncertain class is introduced because in some cases it is almost impossible to be certain about lamellarity class. For example liposomes can overlap each other. Another issue to keep in mind is that samples are usually delivered frozen, so liposomes may be partly covered with pieces of ice that result in large black bulbs on EM images. Figure~\ref{fig:lamellarity_problem} illustrates examples of liposomes from each class.
+\textbf{Lamellarity}. The term lamellarity refers to the number of lamellae. Lamella, in cell biology, is used to describe numerous plate or disc-like structures at both a tissue and cellular level~\cite{cammack2006oxford}. According to number of lamellae liposomes can be \textit{unilamellar} (single lamella) and \textit{multilamellar} (multiple lamellae). In addition, \textit{uncertain} class is introduced because in some cases it is almost impossible to be certain about lamellarity class. For example liposomes can overlap each other. Another issue to keep in mind is that samples are usually delivered frozen, so liposomes may be partly covered with pieces of ice that result in large black bulbs on EM images. Figure~\ref{fig:lamellarity_problem} illustrates examples of liposomes from each class.
 
 \begin{figure}[H]
 \centering
 \begin{tabular}{ccc}
 	\includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uni} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/multi} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uncertain} \\
-	Unilamellar & Multiilamellar & Uncertain \\[6pt]
+	Unilamellar & Multilamellar & Uncertain \\[6pt]
 \end{tabular}
 \caption{Lamellarity problem, 3 classes}
 \label{fig:lamellarity_problem}
 \end{figure}
 
-Table~\ref{table:lamellarity_data_set} presents lamellarity problem data set which contains $\num{14169}$ EM images.
+Table~\ref{table:lamellarity_data_set} presents lamellarity problem data set which contains $\num{14169}$ EM images. All images in this data set have been manually classified by an expert into three classes.
 
 \begin{center}
 \captionof{table}{Lamellarity problem}
@@ -155,7 +155,7 @@ Uncertain & \num{84} & 0,59\% \\
 \end{center}
 
 
-\textbf{Encapsulation}. Liposomes can be used as vehicles for drug delivering throughout various destinations in the human body~\cite{betageri1993liposome}. A crucial part of testing this approach is to measure how many liposomes responded to drugs encapsulation and can carry them further. In encapsulation problem liposomes are classified between the following classes: \textit{full}, i.e. liposomes that received  drug substance; \textit{empty}, i.e. liposomes that remained empty after encapsulation attempt. As in lamellarity problem \textit{uncertain} class is introduced with the same motivation. Figure~\ref{fig:encapsulation_problem} illustrates different classes of encapsulation problem. Table~\ref{table:encapsulation_dataset} presents encapsulation problem data set which contains $\num{24918}$ EM images.
+\textbf{Encapsulation}. Liposomes can be used as vehicles for drug delivering throughout various destinations in the human body~\cite{betageri1993liposome}. A crucial part of testing this approach is to measure how many liposomes responded to drugs encapsulation and can carry them further. In encapsulation problem liposomes are classified between the following classes: \textit{full}, i.e. liposomes that received  drug substance; \textit{empty}, i.e. liposomes that remained empty after encapsulation attempt. As in lamellarity problem \textit{uncertain} class is introduced with the same motivation. Figure~\ref{fig:encapsulation_problem} illustrates different classes of encapsulation problem. Table~\ref{table:encapsulation_dataset} presents encapsulation problem data set which contains $\num{24918}$ EM images. Images in this data set are also manually classified into three classes.
 
 \begin{figure}[H]
 \centering
@@ -181,38 +181,40 @@ Empty & \num{161} & 0.65\% \\
 
 \section{The data}
 \label{sec:dataset}
-The data for this project is provided by Vironova AB. The data consists of two data sets corresponding to lamellarity and inccpsulation problems. Both data sets contain grayscale EM images of particles and a number of computed image features.
+The data for this project is provided by Vironova AB. The data consists of two data sets corresponding to lamellarity and encapsulation problems. Both data sets contain grayscale EM images of particles and a number of computed image features.
 
-Each image depict exactly one liposome. All images are padded 50 pixels in each direction. Effect of particle surrounding on classifier performance is described later in this report. Corresponding particle masks are also provided. All images have different size. Figure~\ref{fig:img_size_scatter_plot} shows scatter plots where axes coordinates correspond to image width and height in pixels. Figure~\ref{fig:img_size_per_class} demonstrates image size distribution inside each class. 
+Each image depicts exactly one liposome. All images are padded 50 pixels in each direction. The effect of particles surrounding on classifier performance is described later in this report. Corresponding particle masks are also provided. All images have different size. Figure~\ref{fig:img_size_scatter_plot} shows scatter plots where axes correspond to image width and height in pixels. Figure~\ref{fig:img_size_per_class} demonstrates image size distribution inside each class. 
 
 \begin{figure}[H]
 \centering
 \begin{tabular}{cc}
 \includegraphics[scale=0.32]{img_size/lamellarity/scatter_plot_width_height.png} & \includegraphics[scale=0.32]{img_size/encapsulation/scatter_plot_width_height.png}
 \end{tabular}
-\caption{Scatter plots of images sizes (best viewed in color): lamellarity data set to the left hand side, encapsulation --- to the rights hand side. Width and height units are pixels.}
+\caption{Scatter plots of image sizes (best viewed in color): lamellarity data set to the left hand side, encapsulation --- to the rights hand side. Width and height units are pixels.}
 \label{fig:img_size_scatter_plot}
 \end{figure}
 
 %\pagebreak
-Both data sets contain following features:
+\begin{minipage}{\linewidth}
+Both data sets contain the following features:
 \begin{itemize}
-\item \textbf{Maximum width} in nanometres. If particle is an ellipse then it is diameter along the largest axis. It particle is a polygon then it is a maximum value of distance transform of particle mask.
+\item \textbf{Maximum width} in nanometres. If particle is an ellipse, then it is a diameter along the largest axis. If particle is a polygon, then it is a maximum value of distance transform of particle mask.
 
-\item \textbf{Diameter} in pixels. If particle is an ellipse then it is diameter along the largest axis. If particle is a polygon then it is the greatest distance between any two vertices. 
+\item \textbf{Diameter} in pixels. If particle is an ellipse, then it is a diameter along the largest axis. If particle is a polygon, then it is the greatest distance between any two vertices. 
 
-\item \textbf{Length} is defined as diameter but it has nanometre as units.
+\item \textbf{Length} is defined as diameter converted to nanometre units.
 
-\item \textbf{Histogram} histogram of pixel intensity values, 32 bins.
+\item \textbf{Histogram}: histogram of pixel intensity values, 32 bins.
 
-\item \textbf{Moments} Image moments $\mu_{20}$, $\mu_{02}$, $\mu_{30}$, $\mu_{03}$ as defined in~\cite{1057692}. 
+\item \textbf{Moments}: image moments $\mu_{20}$, $\mu_{02}$, $\mu_{30}$, $\mu_{03}$ as defined in~\cite{1057692}. 
 
-\item \textbf{Radial Density Profile} It is a 2d array, first value in each pair in pixel  is pixel intensity value and second one is distance in nanometre to the center of the particle. First entry of the array corresponds to the center of the particle, then all values are average of outward concentric rings.
+\item \textbf{Radial Density Profile} is a 2d array, the first value in each pair is pixel intensity value and the second one is distance in nanometres to the center of the particle. The first entry of the array corresponds to the center of the particle, then all values are averages of outward concentric rings.
 
-\item \textbf{Edge Density Profile} is defined in similar way to the radial density profile, though second value in each pair is defined in such way that it has 0 value at membrane.
+\item \textbf{Edge Density Profile} is defined in a similar way to the radial density profile, though the second value in each pair is defined in such way that it has 0 value at the membrane.
 
-\item \textbf{Signal to noise} is a measure that says how much variance across the membrane is different compared to the variance along with the membrane.
+\item \textbf{Signal to noise} is a measure that says how much the variance across the membrane is different compared to the variance along the membrane.
 \end{itemize}
+\end{minipage}
 
 
 \begin{landscape}
@@ -234,7 +236,7 @@ Both data sets contain following features:
 
 \subsection{Support Vector Machines}
 \label{sec:svm}
-The support vector machine (SVM) is one of the most influential approaches to supervised learning~\cite{Boser:1992:TAO:130385.130401}. SVM is driven by a linear function $w^\top x + b$~\cite{dl_book}. In classification tasks SVM has the aim to determine decision boundaries that produce optimal class separation. SVM was initially designed for binary classification case but a number of modifications had been introduced for multiclass classification. On of them is "one-against-one" approach~\cite{Knerr1990}. According to this technique $n (n-1)\frac{1}{2}$, where $n$ is number of classes, classifiers are trained for each class. SVM does not provide probabilities, just a class identity~\cite{dl_book}. \texttt{LIBSVM}~\cite{CC01a} library is used for experiments in this project and it implements "one-against-one" technique.
+The support vector machine (SVM) is one of the most influential approaches to supervised learning~\cite{Boser:1992:TAO:130385.130401}. SVM is driven by a linear function $w^\top x + b$~\cite{dl_book}. In classification tasks SVM has the aim to determine decision boundaries that produce optimal class separation. SVM was initially designed for binary classification case but a number of modifications were introduced for multiclass classification. One of them is "one-against-one" approach~\cite{Knerr1990}. According to this technique $n (n-1)\frac{1}{2}$ classifiers are trained for each class, where $n$ is a number of classes. SVM does not provide probabilities, just a class identity~\cite{dl_book}. \texttt{LIBSVM}~\cite{CC01a} library is used for experiments in this project and it implements "one-against-one" technique.
 
 Currently automatic classification is performed by means of SVM at Vironova. Performance of SVM method has shown up to $98\%$ accuracy on lamellarity problem and up to $87\%$ on encapsulation problem. The following features are used by Vironova:
 \begin{itemize}
@@ -251,21 +253,19 @@ All named above features except internal segmentation variance are described in 
 \subsection{Convolutional Neural Networks}
 Convolutional networks~\cite{LeCun1986}, also known as convolutional neural networks or CNNs, are defined in~\cite{dl_book} as \blockquote{a specialized kind of neural network for processing data that has a known, grid-like topology. Convolutional networks are simply neural networks that use convolution in place of general matrix multiplication in at least one of their layers.}
 
-Employing of CNNs for this project as the main tool for performing classification tasks is motivated in the following way. 
+Employing of CNNs for this project as the main tool for performing classification tasks is motivated in the following way. Since introduction in~\cite{LeCun1986} in the late 1980's, CNNs have demonstrated excellent performance in object detection and recognition tasks. One of the most influential applications of CNNs is ImageNet 2012 competition that was won using a CNN model~\cite{NIPS2012_4824} with error rate of $16.4\%$ which was a breakthrough at that time. There are also examples of successful applications of CNNs in microscopy images domain. For example U-Net~\cite{Ronneberger2015} has solved biomedical image segmentation task provided very limited training data set. Area of CNNs application is extensive and they are being used by all leading IT companies such as Google, Facebook, Microsoft and others. Current interest for CNNs is driven mainly by three factors~\cite{Zeiler2014}: the availability of large annotated data sets, powerful GPU hardware, and better model regularization strategies. 
 
-Since introduction in~\cite{LeCun1986} in the late 1980's, CNNs have demonstrated excellent performance in object detection and recognition tasks. One of the most influential applications of CNNs is ImageNet 2012 competition that was won using a CNN model~\cite{NIPS2012_4824} with error rate of $16.4\%$ which was a breakthrough at that time. There are also examples of successful application of CNNs in microscopy images domain. For example U-Net~\cite{Ronneberger2015} has solved biomedical image segmentation task provided very limited training data set. Area of CNNs application is extensive and they are being used by all leading IT companies such as Google, Facebook, Microsoft and others. Current interest for CNNs is driven mainly by three factors~\cite{Zeiler2014}: the availability of large annotated data sets; powerful GPU hardware and better model regularization strategies. 
-
-CNNs are of great interest in image analysis domain because they allow learning of image features. One does not need to be an image analysis specialist to build a powerful and robust image classification or object recognition system. Unlike many other methods of image analysis CNNs do not require handcrafted convolutional filters designed by an image analysis specialist, even though these features can be incorporated in a CNN model. For instance, lamellarity and encapsulation problems have already been successfully solved by Vironova specialists using SVM and carefully selected image features such as area, circularity, image moments and other discussed in section~\ref{sec:svm}. This projects studies CNNs ability to achieve comparable result in fully unsupervised manner. 
+CNNs are of great interest in image analysis domain because they allow learning of image features. One does not need to be an image analysis specialist to build a powerful and robust image classification or object recognition system. Unlike many other methods of image analysis CNNs do not require handcrafted convolutional filters designed by an image analysis specialist, even though these features can be incorporated in a CNN model. For instance, lamellarity and encapsulation problems have already been successfully solved by Vironova specialists using SVM combined with carefully selected image features such as area, circularity, image moments and other features discussed in section~\ref{sec:svm}. This project studies CNNs ability to achieve comparable result without using handcrafted features. 
 
 
 \subsection{Deconvolutional Neural Networks}
-Convolutional neural networks is a powerful method of machine learning that is capable to learn image features in order to describe provided categories. However it is almost always not obvious what kind of feature has the model learned. For some time convolutional neural networks have been treated as a black box. This has changed in 2014 when Zeiler et al.~\cite{Zeiler2014} proposed \textit{Deconvolutional Networks (DN)} for visualization of convolutional  neural networks, or rather patterns that fire network activations. In this way it is much easier to understand how do convolutional neural networks \blockquote{see} images. Figure~\ref{fig:dnn_vis} shows an example visualizations of features learned by a CNN. 
+Convolutional neural networks is a powerful method of machine learning that is capable to learn image features in order to describe provided categories. However, it is almost always not obvious what kind of features the model has learned. For some time convolutional neural networks have been treated as a black box. This has changed in 2014 when Zeiler et al.~\cite{Zeiler2014} proposed \textit{Deconvolutional Networks (DN)} for visualization of convolutional  neural networks, or rather patterns that fire network activations. In this way it is much easier to understand how convolutional neural networks \blockquote{see} images. Figure~\ref{fig:dnn_vis} shows examples of visualization of features learned by a CNN. 
 
 The DN method can be summarized in the following way. The deconvolutional network goes down from activations of a given layer back to image. In this manner DN reverses data flow of a CNN undoing effect of convolutions. The resulting reconstructed image shows parts of the input image that caused the strongest activations. 
 
-In order to reverse the data flow of a CNN all its components must be reversible. To invert learned filters DN transposes them which means in pratice flipping each filter vertically and horizontally. CNN usually use rectifiers as activation functions that guarantee that feature maps are always positive. Features are reconstructed using the same ReLU non-linearities. Pooling is a common building block of any CNN. Unlike convolution and rectification pooling generally can not be undone, it is not reversible. Zeiler et al. propose to record the locations of the maxima within each pooling region, they call these recorded values switch variables. Unpooling operation uses switches to place reconstructions into appropriate locations setting other values within upsampling region to zero.
+In order to reverse the data flow of a CNN all its components must be reversible. To invert learned filters DN transposes them which means in pratice flipping each filter vertically and horizontally. CNN usually use rectifiers as activation functions that guarantee that feature maps are always positive. Features are reconstructed using the same ReLU non-linearities. Pooling is a common building block of any CNN. Unlike convolution and rectification pooling generally can not be undone, it is not reversible. Zeiler et al. proposed to record the locations of the maxima within each pooling region, they call these recorded values switch variables. Unpooling operation uses switches to place reconstructions into appropriate locations, setting other values within upsampling region to zero.
 
-Convolutional networks that replace max pooling operation with convolution with stride can be visualized in the similar way. Springenberg et al.~\cite{DBLP:journals/corr/SpringenbergDBR14} propose modifications to DN method that achieve similar results as in~\cite{Zeiler2014}.
+Convolutional networks that replace max pooling operation with convolution with stride can be visualized in the similar way. Springenberg et al.~\cite{DBLP:journals/corr/SpringenbergDBR14} propose modifications to the DN method that achieve similar results as in~\cite{Zeiler2014}.
 
 \begin{figure}[H]
 \centering
@@ -273,20 +273,20 @@ Convolutional networks that replace max pooling operation with convolution with 
 \caption{Visualization of features in a fully trained model. Figure is taken from~\cite{Zeiler2014}.}\label{fig:dnn_vis}
 \end{figure}
 
-DNN method may be used as supporting tool. For example it can aid SVM classifier. Vironova uses SVM classifiers to solve its classification tasks and it performs well. However one must make a good choice of features in order to succeed and it is not always obvious what kind of features to select. DNN can help to decide which features are descriptive related to a certain task. In such situation it may be helpful to train a convolutional neural network and then visualize it. Features that the CNN has learned can be added to the SVM pipeline. 
+The DNN method may be used as an auxiliary tool. For example it can aid SVM classifier. Vironova uses SVM classifiers to solve its classification tasks and it performs well. However one must make a good choice of features in order to succeed and it is not always obvious what kind of features to select. DNN can help to decide which features are descriptive related to a certain task. In such situation it may be helpful to train a convolutional neural network and then visualize it. Features that the CNN has learned can be added to the SVM pipeline. 
 
 \subsection{Optimization}
-Deep learning algorithms involve optimization in many contexts~\cite{dl_book}. The most obvious one is finding network parameters that reduce a cost function. One of design decisions that one has to make is choice of optimization method. In this project I limited the choice of optimizers to ADAM~\cite{DBLP:journals/corr/KingmaB14} and Stochastic Gradient Descent (SGD)~\cite{Zhang04solvinglarge}.
+Deep learning algorithms involve optimization in many contexts~\cite{dl_book}. The most obvious one is finding network parameters that reduce a cost function. One of design decisions that one has to make is a choice of optimization method. In this project I limited the choice of optimizers to ADAM~\cite{DBLP:journals/corr/KingmaB14} and Stochastic Gradient Descent (SGD)~\cite{Zhang04solvinglarge}.
 
 \subsection{Performance measures}
 
 When evaluating a classification model one is almost always interested in how many predictions from all predictions made are correct. In other words we are interested in how accurate a particular model is. The accuracy of a classification system is the share of correct predictions in total number of examples. Accuracy  is one of the most frequently used performance measures in classification problems. However accuracy alone is usually not enough to describe predictive power of the model. Models with a given accuracy may have greater predictive power than models with higher accuracy. This is known as Accuracy Paradox~\cite{zhu2007knowledge}.
 
-Let's illustrate Accuracy Paradox using encapsulation problem. Table~\ref{table:encapsulation_dataset} on page~\pageref{table:encapsulation_dataset} presents distribution of three classes in encapsulation data set. Consider a model that classifies all particles as full. Such model would achieve astonishing accuracy of $97\%$ just by making the same prediction for all particles. Let's compare it to another model, that makes a random guess, i.e. predicts each class with $\frac{1}{3}$ probability. Such random guess model would have accuracy of approximately $33\%$, almost three times less than the first model. However, while the first model totally ignores two minority classes, the second one has $33\%$ chance of detecting them, so it may be preferred comparing to the first one. 
+Let's illustrate Accuracy Paradox using encapsulation problem. Table~\ref{table:encapsulation_dataset} on page~\pageref{table:encapsulation_dataset} presents distribution of three classes in the encapsulation data set. Consider a model that classifies all particles as full. Such model would achieve astonishing accuracy of $97\%$ just by making the same prediction for all particles. Let's compare it to another model, that makes a random guess, i.e. predicts each class with $\frac{1}{3}$ probability. Such random guess model would have accuracy of approximately $33\%$, almost three times less than the first model. However, while the first model totally ignores two minority classes, the second one has $33\%$ chance of detecting them, so it may be preferred comparing to the first one. 
 
-Imbalanced data sets is a typical example when accuracy is misleading and fails as a performance measure. An unambiguous way to present the prediction results of a classification model is a confusion matrix~\cite{STEHMAN199777}. Confusion matrix is a table with number of rows and columns that are both equal to number of classes in the data set under consideration. Columns represent predicted classes and rows represent true classes. Each cell contains the number of predictions that corresponds to that particular category. 
+Imbalanced data sets is a typical example when accuracy is misleading and fails as a performance measure. An unambiguous way to present the prediction results of a classification model is a confusion matrix~\cite{STEHMAN199777}. Confusion matrix is a table with number of rows and columns that are both equal to a number of classes in the data set under consideration. Columns represent predicted classes and rows represent true classes. Each cell contains the number of predictions that corresponds to that particular category. 
 
-A table of confusion is a special case of confusion matrix that is dealing with binary classification. Table of confusion is presented in table~\ref{table:table_of_confusion} and it is usually used to illustrate performance measures that are derived from confusion matrix.
+A table of confusion is a special case of confusion matrix that deals with binary classification. Table of confusion is presented in table~\ref{table:table_of_confusion} and it is usually used to illustrate performance measures that are derived from confusion matrix.
 
 \begin{center}
 \captionof{table}{Table of confusion}
@@ -302,7 +302,7 @@ Actual False & \specialcell{False positive \\ FP} & \specialcell{True negative \
 \end{tabular} 
 \end{center}
  
-Different performance measures are discussed and compared in~\cite{powers07evaluation}. The rest of this section presents performance measures that are used in this project for evaluation and comparing of different classification models. 
+Different performance measures are discussed and compared in~\cite{powers07evaluation}. The rest of this section presents performance measures that are used in this project for evaluation and comparison of different classification models. 
 
 \textbf{True positive rate (TPR)}, also known as sensitivity or recall, measures share of positives that have been correctly identified:
 \begin{equation*}
@@ -314,17 +314,17 @@ TPR = \frac{TP}{TP + FN}
 TNR = \frac{TN}{TN + FP}
 \end{equation*}
 
-\textbf{Positive predicted value (PPV)}, also known as precision, measures share of correct positive predictions :
+\textbf{Positive predicted value (PPV)}, also known as precision, measures share of correct positive predictions:
 \begin{equation*}
 PPV = \frac{TP}{TP + FP}
 \end{equation*}
 
-\textbf{Negative predicted value (NPV)}, measures share of correct negative predictions:
+\textbf{Negative predicted value (NPV)} measures share of correct negative predictions:
 \begin{equation*}
 NPV = \frac{TN}{TN + FN}
 \end{equation*}
 
-\textbf{$F_1$ score} is a harmonic mean of TPR and TNR, which is a measure of a test's accuracy. $F_1$ score reaches its best value at 1 and worst at 0. $F_1$ has been criticized for not taking true negatives into account~\cite{powers07evaluation} but for the sake of simplicity let us use it anyway.   
+\textbf{$F_1$ score} is a harmonic mean of TPR and TNR, which is a measure of a test's accuracy. $F_1$ score reaches its best value at 1 and worst at 0. $F_1$ has been criticized for not taking true negatives into account~\cite{powers07evaluation} but for the sake of simplicity let us use it anyway:   
 \begin{equation*}
 F_1 = \frac{2}{\frac{1}{TPR} + \frac{1}{TNR}}
 \end{equation*}
@@ -389,62 +389,61 @@ In other words, the log loss function encourages moderate predictions. It is bet
 Encyclopedia of Machine Learning~\cite{Ling2010} defines Class Imbalance problem as follows:
 \blockquote{Data are said to suffer the \textit{Class Imbalance Problem} when the class distributions are highly imbalanced. In this context, many classification learning algorithms have low predictive accuracy for the infrequent class.}
 
-It is a serious problem because most machine learning algorithms will tend to classify all examples as majority class treating examples of minority class as noise. Lamellarity and encapsulation data sets presented in sections~\ref{sec:problem_description} are highly unbalanced. In lamellarity data set majority class accounts for $87\%$ of all samples and in encapsulation dataset majority class constitutes $97\%$ of all samples. Preliminary experiments showed that classifiers trained on raw unbalanced data sets are highly biased towards majority classes and do not generalize. Imbalance problem is not uncommon. In fact, data sets are highly imbalanced in many domains, for example fraud detection, medical diagnosis, anomaly detection, telecommunications, etc. 
+It is a serious problem because most machine learning algorithms will tend to classify all examples as majority class treating examples of minority class as noise. Lamellarity and encapsulation data sets presented in section~\ref{sec:problem_description} are highly unbalanced. In lamellarity data set majority class accounts for $87\%$ of all samples and in encapsulation dataset majority class constitutes $97\%$ of all samples. Preliminary experiments showed that classifiers trained on raw unbalanced data sets are highly biased towards majority classes and do not generalize. However class imbalance problem is not uncommon. In fact, data sets are highly imbalanced in many domains, for example fraud detection, medical diagnosis, anomaly detection, telecommunications, etc. 
 
 Various solutions have been proposed to deal with this problem and they can be summarized into three groups~\cite{Lopez2013113}:
 
 \begin{itemize}
 
-\item \textit{Data sampling} implies any means to produce more or less balanced data set. For example it can be oversampling, undersampling, SMOTE~\cite{smote_chawla} or generating artificial examples~\cite{ishaq_synthetic}. Data sampling method perform usually best combined with data augmentation techniques.
+\item \textit{Data sampling} implies any means to produce more or less balanced data set. For example it can be oversampling, undersampling, SMOTE~\cite{smote_chawla} or generating artificial examples~\cite{ishaq_synthetic}. Data sampling method usually performs best combined with data augmentation techniques.
 
-\item \textit{Algorithm modification} this procedure is oriented towards the adaptation of base learning methods to be more attuned to class imbalance issues ~\cite{Zadrozny:2001:LMD:502512.502540}.
+\item \textit{Algorithm modification} is oriented towards the adaptation of base learning methods to be more attuned to class imbalance issues~\cite{Zadrozny:2001:LMD:502512.502540}.
 
 \item \textit{Cost sensitive learning} introduces higher penalties for misclassification of minority classes making learning algorithm more sensitive to underrepresented classes. 
 
 \end{itemize}
 
-Listed above methods prevent classifiers from ignoring underrepresented classes during training phase. However this is very likely to lead to another problem --- overfitting. Overfitting and how to combat it is discussed in section~\ref{sec:regularization}. The rest of this section discusses methods that have been used to mitigate Class Imbalance Problem in lamellarity and encapsulation data sets. 
+Listed above methods prevent classifiers from ignoring underrepresented classes during training phase. However this is very likely to lead to another problem --- overfitting. Overfitting is discussed in section~\ref{sec:regularization}. The rest of this section discusses methods that have been used to mitigate Class Imbalance Problem in lamellarity and encapsulation data sets. 
 
 
 \subsubsection{Oversampling}
-Oversampling means repeating instances of underrepresented classes. Minority classes in lamellarity data set are multilamellar and uncertain, and in encapsulation data set --- empty and uncertain. Examples of these classes are repeated to match number of training samples of majority class so training sets become balanced. Oversampling itself does not mitigate imbalance problem much, it works best combined with data augmentation which is discussed in section~\ref{sec:data_augmentation}.
+Oversampling means repeating instances of underrepresented classes. Minority classes in lamellarity data set are multilamellar and uncertain, and in encapsulation data set --- empty and uncertain. Examples of these classes are repeated to match the number of majority class samples so that training sets become balanced. Oversampling itself does not mitigate imbalance problem much, it works best combined with data augmentation which is discussed in section~\ref{sec:data_augmentation}.
 
 \subsubsection{Undersampling}
-Undersampling, as opposed to oversampling, means excluding some examples of majority class in order to make training set balanced. In practice undersampling is repeated at the beginning of each learning epoch when randomly selected examples are excluded. In such way learning algorithm can still use all samples for training, it just does not see all of them during all epochs. Proportion of excluded examples can vary and depends on the contexts. In experiments presented in this project undersampling implies dropping $20\%$ of majority class examples. 
+Undersampling, as opposed to oversampling, means excluding some samples of majority class in order to make training set balanced. In practice undersampling is repeated at the beginning of each learning epoch when randomly selected samples are excluded. In such way learning algorithm can still use all samples for training, it just does not see all of them during all epochs. Proportion of excluded samples can vary and depends on the contexts. In experiments presented in this project undersampling implies dropping $20\%$ of majority class samples. 
 
 \subsubsection{SMOTE}
 Synthetic Minority Over-sampling Technique (SMOTE) is an over-sampling approach in which the minority class is over-sampled by creating “synthetic” examples rather than by over-sampling with replacement~\cite{smote_chawla}. 
 Synthetic examples are generated by combining each minority class example with its randomly selected $k$ nearest neighbors, where $k$ is a parameter that depends on amount of required over-sampling.
 
 \subsubsection{Artificial data}
-Machine learning algorithms perform best provided large training data sets. In many domains, including medicine and biology, expert annotation is required for preparing training and test data sets. This results in high cost and effort, so size of data sets if often limited. In such case artificial data is an attractive alternative to real expert-annotated data. Training of convolutional neural network models for fluorescent spot detection on artificial data is discussed and evaluated in~\cite{ishaq_synthetic}. 
+Machine learning algorithms perform best provided large training data sets. In many domains, including medicine and biology, expert annotation is required for preparing training and test data sets. This results in high cost and effort, so size of data sets is often limited. In such case artificial data is an attractive alternative to real expert-annotated data. Training of convolutional neural network models for fluorescent spot detection on artificial data is discussed and evaluated in~\cite{ishaq_synthetic}. 
 
 \begin{figure}[H]
 \centering
 \begin{tabular}{ccc}
 	\includegraphics[scale=1.5]{synthetic/uni.png} & \includegraphics[scale=1.5]{synthetic/multi.png} & \includegraphics[scale=1.5]{synthetic/uncertain.png} \\
-	Unilamellar & Multiilamellar & Uncertain \\[6pt]
+	Unilamellar & Multilamellar & Uncertain \\[6pt]
 \end{tabular}
 \caption{Artificial examples, lamellarity problem}
 \label{fig:synthetic_images}
 \end{figure}
 
-In this project artificial data has been generated for lamellarity problem. Artificial EM images of liposomes are generated by drawing circles with carefully selected randomized distortions. Background and distortions are generated using Perlin noise~\cite{Perlin:1985:IS:325165.325247}. Figure~\ref{fig:synthetic_images} presents examples of artificially generated EM images.
+In this project artificial data has been generated for lamellarity problem. Artificial images of liposomes are generated by drawing circles with carefully selected randomized distortions. Background and distortions are generated using Perlin noise~\cite{Perlin:1985:IS:325165.325247}. Figure~\ref{fig:synthetic_images} presents examples of artificially generated EM images.
 
 Note that despite visual similarity artificial images are not based on statistical measures from the real data set. Histograms and image patterns are not drawn from real distributions. With limited time and effort, this experiment should be rather seen as a proof of concept.
 
-\newpage
 \section{Regularization}
 \label{sec:regularization}
 
 Let us assume that an imbalanced data set has been balanced by any combination of methods described in section~\ref{sec:class_imbalance}. This would significantly reduce training error which means that the model is able to describe data generation process of the training set. 
 
-However as the result of seeing multiple copies of minority classes learning algorithm will almost likely describe random error or noise as well. Such model would not be able to make reliable predictions on general untrained data, i. e. its generalization error would still be unacceptably high. As defined in~\cite{dl_book} \blockquote{\textit{Regularization} is any modification we make to a learning algorithm that is intended to reduce its generalization error but not its training error}.
+However as the result of seeing multiple copies of minority classes learning algorithm will almost likely describe random error or noise as well. Such model would not be able to make reliable predictions on general untrained data, i.~e. its generalization error would still be unacceptably high. As defined in~\cite{dl_book}, \blockquote{\textit{Regularization} is any modification we make to a learning algorithm that is intended to reduce its generalization error but not its training error}.
 
-The reset of this section presents regularization techniques that have been used to reduce generalization error of models trained on lamellarity and encapsulation data sets.
+The rest of this section presents regularization techniques that have been used to reduce generalization error of models trained on lamellarity and encapsulation data sets.
 
 \subsection{Weight decay}
-Weight decay is a method of adding penalty on hidden layer weights magnitude to the loss function. In this way we express preference of smaller weights and prevent weight of some hidden nodes or convolutional filters from becoming to large. Large weights can result in undesired numerical errors such as overflow or truncation error. Usually $L^2$ norm of penalized layers multiplied by some constant $\alpha$ (typically close to zero) is added to the loss function. However other norms such as but not limited to $L^1$ can be used. 
+Weight decay is a method of adding penalty on hidden layer weights magnitude to the loss function. In this way we express preference of smaller weights and prevent weight of some hidden nodes or convolutional filters from becoming too large. Large weights can result in undesired numerical errors such as overflow or truncation error. Usually $L^2$ norm of penalized layers multiplied by some constant $\alpha$ (typically close to zero) is added to the loss function. However other norms such as but not limited to $L^1$ can be used. 
 On the other hand weight decay can lead to other problems as described in~\cite{dl_book}. Penalties on weights can cause non-convex optimization procedures to get stuck in local minima corresponding to small values of weights. 
 
 Applied to neural networks it means that weight decay can lead to \blockquote{dead units}. These units do not contribute much to the learning process because their input and output weights are all very small. This configuration can be locally optimal even if loss value can be significantly reduced by making the wights larger. This fenomena was observed during experiments presented in this project. Applying weight decay to convolutional layers resulted in numerous dead filters which worsened classifiers performance on both training and test sets.
@@ -482,11 +481,11 @@ A good classifier is invariant to a wide variety of transformations and can see 
 
 In this project data is augmented in the following way:
 \begin{itemize}
-\item Rotation in range $(-180, 180)$ degrees with spline interpolation
-\item Shear transformation
-\item Vertical shift in range $(-10, 10)$ percent of total height
-\item Horizontal shift in range $(-10, 10)$ percent of total width
-\item Zoom
+\item Rotation in range $[-180, 180]$ degrees with spline interpolation
+\item Shear transformation in range $[0, 0.2]$
+\item Vertical shift in range $[-10, 10]$ percent of total height
+\item Horizontal shift in range $[-10, 10]$ percent of total width
+\item Zoom in range $[0.8, 1.0]$ which means zoom by maximum $20\%$
 \item Horizontal flip
 \item Vertical flip
 \end{itemize}
@@ -511,16 +510,15 @@ Figure~\ref{fig:augmented_images} show an example of data augmentation. Thus a m
 \label{fig:augmented_images}
 \end{figure}
 
-\newpage
 \section{Review of deep learning software tools}
 
-A wide variety of deep learning software tools is available to the public. Most of them are open-source and are distributed under licenses that allow commercial use. Development of deep learning frameworks is driven by Universities and leading IT companies such as Google and Microsoft with extensive help of the community. For example Theano~\cite{2016arXiv160502688short} by University of Montreal is one of the first and most influential deep learning libraries. It was initially released in 2010. Another state of the art tool is Caffe~\cite{jia2014caffe} by UC Berkeley. Google released TensorFlow~\cite{tensorflow2015-whitepaper} software library in November 2015. Microsoft made its CNTK~\cite{cntk} tool available to the public in January 2016.
+A wide variety of deep learning software tools is available to the public. Most of them are open-source and are distributed under licenses that allow commercial use. Development of deep learning frameworks is driven by Universities and leading IT companies such as Google and Microsoft with extensive help from the community. For example Theano~\cite{2016arXiv160502688short} by University of Montreal is one of the first and most influential deep learning libraries. It was initially released in 2010. Another state of the art tool is Caffe~\cite{jia2014caffe} by UC Berkeley. Google released TensorFlow~\cite{tensorflow2015-whitepaper} software library in November 2015. Microsoft made its CNTK~\cite{cntk} tool available to the public in January 2016.
 
 Mentioned above software tools together with some other are summarized in table~\ref{tbl:comparison_of_dl_lib}. 
 
-Four deep learning libraries: TensorFlow, Caffe, Torch~\cite{Collobert_NIPSWORKSHOP_2011} and CNTK have been compared and benchmarked in~\cite{DBLP:journals/corr/ShiWXC16}. Authors have concluded that \blockquote{all tested tools can make good use of GPUs to achieve significant speedup over their CPU counterparts. However, there is  no  single  software  tool  that  can  consistently  outperforms other.} Their tests of CNN models showed that Caffe and Tensorflow performed best on CPU with 4 and 16 threads respectively. On GPU Caffe, Tensorflow and CNTK were best depending on mini-batch size and GPU type. 
+Four deep learning libraries: TensorFlow, Caffe, Torch~\cite{Collobert_NIPSWORKSHOP_2011} and CNTK have been compared and benchmarked in~\cite{DBLP:journals/corr/ShiWXC16}. Authors have concluded that \blockquote{all tested tools can make good use of GPUs to achieve significant speedup over their CPU counterparts. However, there is  no  single  software  tool  that  can  consistently  outperform other.} Their tests of CNN models showed that Caffe and Tensorflow performed best on CPU with 4 and 16 threads respectively. On GPU Caffe, Tensorflow and CNTK were best depending on mini-batch size and GPU type. 
 
-When selecting deep learning framework one should also consider community involvement. This is an important factor as an open-source project cannot be developed and maintained well without appropriate amount of interest from the programmers community. In order to estimate popularity of a deep learning library I gathered statistics from Stackoverflow~\cite{Mamykina:2011:DLF:1978942.1979366} and GitHub~\cite{Thung:2013:NSS:2495256.2495709}. Stackoverflow is a popular on-line programming question and answer community. Github is one of the largest web-based code repository hosting service. Source code of all deep learning libraries mentioned in this project is hosted on GitHub at the time of writing. Number of questions on Stackoverflow related to each deep learning library and number of subscribers to the corresponding code repositories are compared on figure~\ref{fig:framework_popularity}. While according to~\cite{DBLP:journals/corr/ShiWXC16} there is no clear performance leader, programmers community seems to have already selected its favorite deep learning library. There are almost four times more questions about TensorFlow than about its runner ups Caffe and Theano and almost three times more people are watching its repository. On the other hand CNTK that showed good performance during tests performed in~\cite{DBLP:journals/corr/ShiWXC16} seems to be almost ignored by the community, as of October 2016 there were only 15 questions tagged CNTK on Stackoverflow. 
+When selecting deep learning framework one should also consider community involvement. This is an important factor as an open-source project cannot be developed and maintained well without appropriate amount of interest from the programmers community. In order to estimate popularity of a deep learning library I gathered statistics from Stackoverflow~\cite{Mamykina:2011:DLF:1978942.1979366} and GitHub~\cite{Thung:2013:NSS:2495256.2495709}. Stackoverflow is a popular on-line programming question and answer community. Github is one of the largest web-based code repository hosting service. Source code of all deep learning libraries mentioned in this project is hosted on GitHub at the time of writing. Number of questions on Stackoverflow related to each deep learning library and number of subscribers to the corresponding code repositories are compared on figure~\ref{fig:framework_popularity}. While according to~\cite{DBLP:journals/corr/ShiWXC16} there is no clear performance leader, programmers community seems to have already selected its favorite deep learning library. There are almost four times more questions about TensorFlow than about its runner up Caffe and Theano and almost three times more people are watching its repository. On the other hand CNTK that showed good performance during tests performed in~\cite{DBLP:journals/corr/ShiWXC16} seems to be almost ignored by the community, as of October 2016 there were only 15 questions about CNTK on Stackoverflow. 
 
 \begin{figure}[H]
 \centering
@@ -556,15 +554,13 @@ When selecting deep learning framework one should also consider community involv
 
 Licensing is another important issue. All presented here deep learning libraries are distributed under one of the following open-source licenses~\cite{Rosen:2004:OSL:1014911}: MIT, Apache and BSD. The only exception is CNTK which has also a permissive license but has not adopted any of the more conventional licenses.
 
-One should also mention deep learning libraries that are built on top of other libraries to make more user friendly API. Lasagne and Keras~\cite{chollet2015keras} are such examples. Lasagne is built on top of Theano, Keras is built on top of both Theano and Tensorflow. It is easy to switch backend from Theano to TensorFlow and vice versa in Keras which makes it a very powerful tool. Keras PI is lightweight and simple which makes it a great prototyping tool. A clear drawback of such \blockquote{on-top} libraries is a lag between introduction of new functionality in primary libraries and in on-top libraries. Furthermore, additional layers of abstraction might reduce performance. 
+One should also mention deep learning libraries that are built on top of other libraries to make more user friendly API. Lasagne and Keras~\cite{chollet2015keras} are such examples. Lasagne is built on top of Theano, Keras is built on top of both Theano and TensorFlow. It is easy to switch backend from Theano to TensorFlow and vice versa in Keras which makes it a very powerful tool. Keras API is lightweight and simple which makes it a great prototyping tool. A clear drawback of such \blockquote{on-top} libraries is a lag between introduction of new functionality in primary libraries and in on-top libraries. Furthermore, additional layers of abstraction might reduce performance. 
 
 It is worth to mention that the list of deep learning software tools from  table~\ref{tbl:comparison_of_dl_lib} is just a small fraction of all available tools. I decided to include only those tools that are well established in terms of documentation, community support and developer's reputation. This absolutely does not mean that other tools are of poor quality, but their learning curve might be steeper compared to well established tools.
 
 When it comes to programming language APIs, Python is a primary choice of majority of deep learning tools. Nearly all tools mentioned in this report have well documented extensive Python API. Linux operating system is the preferable operating system for deep learning environments. As of October 2016 not all deep learning tools provide versions for Windows while Linux is supported by all of them. It might be an issue for Vironova as its software is developed for Windows operating system. There is a number of machine learning frameworks available for Microsoft .NET framework and one of the most promising is Accord.NET~\cite{accordnet}. However at the time of writing it does not provide CNN functionality and its community support and development resources can not be compared to the leading deep learning tools. 
 
-All experiments presented in this project have been performed using TensorFlow and Keras software tools on a machine with Linux operating system. Currently Tensorflow has no version for Windows however Keras allows to switch between Tensorflow and Keras backend, so all experiments can be replicated on a Windows machine after switching to Theano backend.
-
-To sum up, there are hardly any obstacles to use deep learning as a research and aid tool. Software tools reviewed in this section are fairly easy to set up on a Linux machine and are well documented. However it might be more difficult to use these tools in production environments taking into account limited support of Windows operating system and absence of C\# application programming interfaces. It does not mean that it is impossible to adopt for production solutions presented in this report but it would require considerable amount of effort to do that.
+All experiments presented in this project have been performed using TensorFlow and Keras software tools on a machine with Linux operating system. Currently TensorFlow has no version for Windows however Keras allows to switch between TensorFlow and Theano backend, so all experiments can be replicated on a Windows machine after switching to Theano backend.
 
 \begin{landscape}
 \begin{center}
@@ -594,22 +590,22 @@ Torch & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & \ymark & 
 
 CNN can be configured according to a wide variety of architectures. There is no general rule that tells how to configure a CNN for specific task but there are some best practices and general recommendations. Probably the most influential CNN architectures are VGG~\cite{DBLP:journals/corr/SimonyanZ14a}, AlexNet~\cite{NIPS2012_4824} and GoogleNet~\cite{DBLP:journals/corr/SzegedyLJSRAEVR14}.
 
-According to~\cite{dl_book}, a typical building block of a convolutional neural network consists of three stages:
+According to~\cite{dl_book} a typical building block of a convolutional neural network consists of three stages:
 \begin{enumerate}
-\item \textbf{Convolutions}. Here several convolutions are performed in parallel to produce a set of linear activations. Convolutions can have filters of different size, different padding strategies and stride values. Stride value specifies how many pixels is the filter moved at a time. Stride values greater than 1 result in output volumes spatially. Different padding modes affect size of the output. The most common strategies are \textit{valid} and \textit{same}. \textit{Valid} mode implies that convolution is performed only at those positions were filter is within image bounds. This result in reduced size of layer output compared ti layer input. \textit{Same} mode implies zero padding in order to preserve input size. 
+\item \textbf{Convolutions}. Here several convolutions are performed in parallel to produce a set of linear activations. Convolutions can have filters of different size, different padding strategies and stride values. Stride value specifies how many pixels is the filter moved at a time. Different padding modes affect size of the output. The most common strategies are \textit{valid} and \textit{same}. \textit{Valid} mode implies that convolution is performed only at those positions were filter is within image bounds. This results in reduced size of layer output compared to layer input. \textit{Same} mode implies zero padding in order to preserve input size. 
 
 \item \textbf{Nonlinearity}. At this stage linear activations produced on the previous step are run through some nonlinear activation function. One of the most widely used is ReLU which is defined as $f(x) = max(0, x)$.
  
 \item \textbf{Pooling} is used to modify the output of the layer further. A pooling function replaces the output of a layer at certain position with a summary statistics of the surrounding region. Size of this region is a subject of design decision. In practice $2 \times 2$ pooling is used. The most popular summary statistics is $max$, however other such as average are also possible. Pooling is usually followed by dropout for regularization purposes. Dropout is discussed in details in section~\ref{sec:dropout}.
 \end{enumerate}
 
-Talking about classification problems, a typical CNN is usually flattened at the end and a number of fully connected layers go to the final layer. Final layer has softmax activation and number of nodes that is equal to the number of classes. 
+Talking about classification problems, a typical CNN is usually flattened, i.e. collapsed into one dimension, at the end and a number of fully connected layers go to the final layer. Final layer has softmax activation and number of nodes that is equal to the number of classes. 
 
 Networks that are flattened and have fully connected layers require input of fixed size, they can not handle images of different size. If it is required to build a model that can process images of arbitrary size then fully convolutional neural network (FCNN) is a possible solution. FCNN do not require input to have fixed size and can be trained on images of variable size. Fully convolutional means in this context that network does not have any fully connected layers, only convolutional. Flattening operation is replaced with $1 \times 1$ convolution which leads to dimension reductionality. FCNN proved to be especially effective in semantic segmentation tasks~\cite{DBLP:journals/corr/ShelhamerLD16}.
 
 Springenberg et al. shows in~\cite{DBLP:journals/corr/SpringenbergDBR14} that max-pooling layers can successfully be replaced with convolutional layers with corresponding stride value. Stride value specifies how many pixels is the filter moved at a time. Stride values greater than 1 result in output volumes spatially. 
 
-Five are tested in this project. I start with the simplest configuration possible --- one convolutional layer followed by two fully connected layers and gradually add more and more convolutional layers. Let us call networks LipNet-\textit{x} (figure~\ref{fig:lipnet_arch}), where \textit{x} stands for number of convolutional layers. 
+Five architectures are tested in this project. I start with the simplest configuration possible --- one convolutional layer followed by two fully connected layers and gradually add additional convolutional layers. Let us call networks LipNet-\textit{x} (figure~\ref{fig:lipnet_arch}), where \textit{x} stands for number of convolutional layers. 
 
 \begin{itemize}
 \item \textbf{LipNet--1} is the simplest possible configuration, a starting point for experiments. It consists of one convolutional block with max pooling and dropout followed by two fully connected layers.
@@ -618,7 +614,7 @@ Five are tested in this project. I start with the simplest configuration possibl
 
 \item \textbf{LipNet--4} is mainly inspired by VGG--11 architecture. Two convolutional blocks with max-pooling and dropout are followed by a fully connected layer. All convolutional layers have ReLU activation function, \textit{same} padding mode, $3 \times 3$ filter size, 32 channels and stride equal to 1. Input size is fixed to $28 \times 28$.
 
-\item \textbf{LipNet--4c} is inspired by ideas of fully convolutional networks and proposal to replace max-pooling with convolution with stride as in~\cite{DBLP:journals/corr/SpringenbergDBR14}. So max-pooling layers are replace with convolutional layers with $2 \times 2$ stride, flatten operation is replaced with $1 \times 1$ convolution with $3$ channels. Input size is fixed to $28 \times 28$.
+\item \textbf{LipNet--4c} is inspired by ideas of fully convolutional networks and proposal to replace max-pooling with convolution with stride as in~\cite{DBLP:journals/corr/SpringenbergDBR14}. So max-pooling layers are replaced with convolutional layers with $2 \times 2$ stride, flatten operation is replaced with $1 \times 1$ convolution with $3$ channels. Input size is fixed to $28 \times 28$.
 
 \item \textbf{LipNet-6} is a modification of LipNet--4 with additional convolutional block. Additional convolution with stride requires bigger input size so images are resized to $32 \times 32$. 
 \end{itemize}
@@ -716,11 +712,11 @@ Input samples are shuffled at the beginning of each epoch. Training data is fed 
 
 \subsection{Evaluation of data augmentation techniques}
 
-Evaluation of data augmentation techniques is performed in the following way. All data is divided in five folds with preserved class proportion and each of them serves as a test set in turn while other four as a training set. All training sets are balanced using oversampling, test sets are not balanced. Model architecture is Lipnet-4, images are without padding and masks are no applied.
+Evaluation of data augmentation techniques is performed in the following way. All data is divided in five folds with preserved class proportion and each of them serves as a test set in turn while other four as a training set. All training sets are balanced using oversampling, test sets are not balanced. Model architecture is LipNet-4, images are without padding and masks are not applied.
 
 First experiment is performed without any data augmentation, this corresponds to the first $x$ axis tick which is \textit{None}. Then experiments are repeated adding augmentation techniques successively. For example \textit{Flip} tick means that this experiment was performed using \textit{Rotation}, \textit{Shift} and \textit{Flip} techniques.
 
-$y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold average normalized true positive value for each respective class. 
+$y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold average normalized true positive rate for each respective class. 
 
 \begin{figure}[H]
 \centering
@@ -760,9 +756,9 @@ $y$ axis of figure~\ref{fig:augmentation_evaluation} represents five-fold averag
 \caption{\label{fig:augmentation_evaluation}Effect of combining augmentation techniques successively on average normalized true positive value. Top --- Lamellarity problem, bottom --- Encapsulation.}
 \end{figure}
 
-In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \textit{uncertain} class. Majority  class \textit{unilamellar} and the runner up \textit{unilamellar} are being classified with almost $100\%$ accuracy even without any augmentation of training data. However \textit{uncertain} class is totally misclassified when no augmentation is performed. Rotation itself raises true positive value of \textit{uncertain} to nearly $40\%$ which makes sense. Taking into account very small number (84) of examples of this class it is not an unlikely scenario when test set contains patterns that the model has not seen during training. For example train and test set contain patterns that are similar but differently oriented. In such case rotation improves result a lot which is the case in this experiment. Adding shift transformation brings further improvement to recognition of \textit{uncertain} class. Adding flip, shear and zoom transformations do not have any positive effect on performance. In fact, more aggressive data augmentation worsens model's ability to generalize and performance on \textit{multilamellar} and \textit{uncertain} classes drops a bit when all transformations are used.
+In \textbf{lamellarity} problem the clear beneficiary of data augmentation is \textit{uncertain} class. Majority  class \textit{unilamellar} and the runner up \textit{multilamellar} are being classified with almost $100\%$ accuracy even without any augmentation of training data. However \textit{uncertain} class is totally misclassified when no augmentation is performed. Rotation itself raises true positive value of \textit{uncertain} to nearly $40\%$ which makes sense. Taking into account very small number (84) of examples of this class it is not an unlikely scenario when test set contains patterns that the model has not seen during training. For example train and test set contain patterns that are similar but differently oriented. In such case rotation improves result a lot which is the case in this experiment. Adding shift transformation brings further improvement to recognition of \textit{uncertain} class. Adding flip, shear and zoom transformations do not have any positive effect on performance. In fact, more aggressive data augmentation worsens model's ability to generalize and performance on \textit{unilamellar} and \textit{uncertain} classes drops a bit when all transformations are used.
 
-\textbf{Encapsulation} problem is even more unbalanced that lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.9$ as rotation and shift transformations are employed. Adding additional transformations do not improve performance and trend is quite similar to the one observed in lamellarity problem except the last point. Adding zoom transformation improves model's ability to recognize \textit{uncertain} examples while worsens performance on \textit{full} examples. This is an unexpected result, since it would be natural to expect general performance improvement when zoom transformation is used. Zoom encourages model to focus more on the core of the liposome which is the most relevant part in encapsulation problem.
+\textbf{Encapsulation} problem is even more unbalanced than lamellarity so without any data augmentation almost all examples are classified as \textit{full}. Data augmentation makes clear improvement in performance, true positive values of \textit{empty} and \textit{uncertain} classes are growing while \textit{full} slowly decreases from approximately $1.0$ to $0.9$ as rotation and shift transformations are employed. Adding additional transformations do not improve performance and the trend is quite similar to the one observed in lamellarity problem except the last point. Adding zoom transformation improves model's ability to recognize \textit{uncertain} examples while worsens performance on \textit{full} examples. This is an unexpected result, since it would be natural to expect general performance improvement when zoom transformation is used. Zoom encourages model to focus more on the core of the liposome which is the most relevant part in encapsulation problem.
 
 In order to analyze effect of zoom transformation in more details additional experiment has been performed. This time the data is augmented using only zoom transformation. Results are presented in table~\ref{table:zoom_only}. Performance is approximately equal to rotation-only augmentation. 
 
@@ -780,13 +776,13 @@ Uncertain & 0.14 & 0.35 & 0.51 \\
 \end{tabular}
 \end{center}
 
-The best option would be to evaluate all possible combinations of transformations but that would require to run 120 experiments. Unfortunately due to hardware and time limitations it is not feasible to perform such number of experiments.
+The best option would be to evaluate all possible combinations of transformations applied in all possible orders but that would require to run 325 experiments. Unfortunately due to hardware and time limitations it is not feasible to perform such number of experiments.
 
 \subsection{Evaluation of different CNN models}
 
 In this section different LipNet models are evaluated and compared. Average $F_1$ score is recorded for each class.
 
-Results for Lamellarity problem are shown on figure\ref{fig:cnn_models_lamellarity}. LipNet-4 is a clear leader that outperforms all other models for all classes. It is interesting to note that multilamellar liposomes are recognized by LipNet-4 with almost no error despite the fact that only $12\%$ of all particles in the data set belong to that class compared to $87\%$ of unilamellars. All other models demonstrated more or less similar results in recognition of unilamellar and multilamellar liposomes. LipNet-4 and LipNet-6 were best to recognize particles if uncertain class clearly outperforming other models.
+Results for Lamellarity problem are shown on figure~\ref{fig:cnn_models_lamellarity}. LipNet-4 is a clear leader that outperforms all other models for all classes. It is interesting to note that multilamellar liposomes are recognized by LipNet-4 with almost no error despite the fact that only $12\%$ of all particles in the data set belong to that class compared to $87\%$ of unilamellars. All other models demonstrated more or less similar results in recognition of unilamellar and multilamellar liposomes. LipNet-4 and LipNet-6 were best to recognize particles if uncertain class clearly outperforming other models.
 
 \begin{figure}[H]
 \centering
@@ -834,7 +830,7 @@ Results for Lamellarity problem are shown on figure\ref{fig:cnn_models_lamellari
 \caption{\label{fig:cnn_models_lamellarity}Lamellarity problem. $F_1$ scores of different CNN models.}
 \end{figure}
 
-Results for Encapsulation problem are shown on figure~\ref{fig:cnn_models_encapsulation}. Unlike Lamellarity problem there is no clear leader, no model outperforms other for all classes. Simpler models like LipNet-1 and LipNet-2 are superior when in comes to Empty class but they are marginally worse than LipNet-4 and LipNet-4c in recognizing Full class. LipNet-4 and LipNet-4c are best to recognize liposomes of Uncertain class but LipNet-1 result is very close. The only clear pattern is that LipNet-6 ability to generalize is the worst among tested models. Probably it has to many parameters and overfit which leads to poor generalization.
+Results for Encapsulation problem are shown on figure~\ref{fig:cnn_models_encapsulation}. Unlike Lamellarity problem there is no clear leader, no model outperforms other for all classes. Simpler models like LipNet-1 and LipNet-2 are superior when in comes to Empty class but they are marginally worse than LipNet-4 and LipNet-4c in recognizing Full class. LipNet-4 and LipNet-4c are best to recognize liposomes of Uncertain class but LipNet-1 result is very close. The only clear pattern is that LipNet-6 ability to generalize is the worst among all tested models. Probably it has to many parameters and overfit which leads to poor generalization.
 
 \begin{figure}[H]
 \centering
@@ -945,7 +941,7 @@ The following features are used to train SVM models.
 
 Training sets are not balanced, instead class weights are adjusted inversely proportional to class frequencies in the input data.
 
-Tables~\ref{table:svm_cf_avg_encapsulation} and~\ref{table:svm_cf_avg_lamellarity} present average normalized confusion matrices for encapsulation and lamellarity problems respectively. Data sets are so unbalanced that total accuracy coincides with true positive rate of majority classes, which are \textit{empty} and \textit{unilamellar} respectively. Tables~\ref{t:kfold-svm-encapsulation} and~\ref{t:kfold-svm-lamellarity} present performance statistics for all 5 folds, average values are shown on figure~\ref{fig:svm_vs_cnn}.
+Tables~\ref{table:svm_cf_avg_encapsulation} and~\ref{table:svm_cf_avg_lamellarity} present average normalized confusion matrices for encapsulation and lamellarity problems respectively. Data sets are so unbalanced that total accuracy coincides with true positive rate of majority classes, which are \textit{empty} and \textit{unilamellar} respectively. 
 
 \begin{center}
 \captionof{table}{5-fold average normalized confusion matrix, Encapsulation problem, SVM.}
@@ -1029,7 +1025,7 @@ Uncertain & 0.03 & 0.11 & 0.86 \\
 
 \subsection{Impact of surrounding and masking on the input images}
 
-Recall that each image is padded 50 pixels in each direction and corresponding particle masks are available. So it is a matter of design decision whether to include padding or not  as well as if masks are to be applied. Three alternatives have been tested:
+Recall that each image is padded 50 pixels in each direction and corresponding particle masks are available. So it is a matter of design decision whether to include padding or not  as well as if masks are to be applied. The following three alternatives have been tested:
 \begin{itemize}
 \item Input images with padding. All images are padded 50 pixels in each direction and include information about particles surrounding.
 \item Cropped images. All images are cropped to a minimum size that allows to contain particles.
@@ -1123,9 +1119,9 @@ Results of experiments showed that including padding to input images leads to wo
 \newpage
 \section{Benchmarking}
 
-In this section selected CNN models are benchmarked against SVM. For each problem one CNN model that performed best in previous experiments has been selected for comparison to SVM. For Lamellarity problem LipNet-4 model has been selected, for encapsulation problem --- LipNet-2. In both cases data sets are balanced with oversampling, input images are cropped, masked and augmented. All metrics are presented in figure~\ref{fig:svm_vs_cnn}. 
+In this section selected CNN models are benchmarked against SVM. For each problem one CNN model that performed best in the previous experiments has been selected for comparison to SVM. For Lamellarity problem LipNet-4 model has been selected, for encapsulation problem --- LipNet-2. In both cases data sets are balanced using oversampling, input images are cropped, masked and augmented. All metrics are presented in figure~\ref{fig:svm_vs_cnn}. 
 
-Unilamellar and multilamellar liposomes are recognized by both LipNet-4 and SVM with reasonably high results. Convolutional neural network slightly outperforms SVM in this case. In particular CNN is better in predicting that a particle is not unilamellar, CNNs negative predicted value is $0.7$ against $0.5$ of SVM. On the other hands results are opposite when it comes to uncertain class of Lamellarity problem. Here SVM clearly outperforms CNN in terms of sensitivity: SVM identifies nearly all particles of uncertain class as such while CNN does so only in $70\%$ of cases. However both methods yield many false positive predictions of uncertain class which results in poor precision. Even though CNN has almost double precision ans SVM it is still very poor being slightly above $10\%$. Mainly unilamellar liposomes are confused with uncertains by both CNN and SVM. Even if a small fraction of unilamellars are falsely identified as uncertains it is enough to bring down precision because data sets are heavily unbalanced. Averaged across 5 folds unnormalised confusion matrix is presented in table~\ref{table:cnn_lamellarity_cf_not_normalized}. 
+Unilamellar and multilamellar liposomes are recognized by both LipNet-4 and SVM with reasonably high results. Convolutional neural network slightly outperforms SVM in this case. In particular CNN is better in predicting that a particle is not unilamellar, CNNs negative predicted value is $0.7$ against $0.5$ of SVM. On the other hand results are opposite when it comes to uncertain class of Lamellarity problem. Here SVM clearly outperforms CNN in terms of sensitivity: SVM identifies nearly all particles of uncertain class as such while CNN does so only in $70\%$ of cases. However both methods yield many false positive predictions of uncertain class which results in poor precision. Even though CNN has almost double precision and SVM it is still very poor being slightly above $10\%$. Mainly unilamellar liposomes are confused with uncertains by both CNN and SVM. Even if a small fraction of unilamellars are falsely identified as uncertains it is enough to bring down precision because data sets are heavily unbalanced. Averaged across 5 folds unnormalised confusion matrix is presented in table~\ref{table:cnn_lamellarity_cf_not_normalized}. 
 
 \begin{figure}[H]
 \centering
@@ -1143,7 +1139,9 @@ Uncertain & 2 & 3 & 11 \\
 \end{figure}
 
 
-Particles from Encapsulation problem are generally better classified by SVM. In this case SVM outperforms CNN for all three classes however the difference is not very big, LipNet-2 is still demonstrating a reasonable level of performance. Positive predicted value of empty and uncertain class demonstrates the same patter as uncertain class from Lamellarity problem. Approximately $10\%$ respectively $15\%$ of positive empty and uncertain predictions are correct because some full liposomes are falsely classified as either empty or uncertain. Once again, even is a small fraction of full liposomes are misclassified this reduces precision of minority classes drastically. Another notable result is low negative predicted value of full class. It means that classifiers yield more false negative predictions than true negative. On the other hand positive predicted value of both CNN and SVM for full class is almost 1 which means that there are hardly any empty and uncertain particles that are falsely classified as full. In other words it means that if a classifier says that a particle is full that it is mostly likely to be full, however when it says the opposite it is most likely to false. Averaged across 5 folds unnormalised confusion matrix is presented in table~\ref{table:cnn_encapsulation_cf_not_normalized}.     
+Particles from Encapsulation problem are generally better classified by SVM. In this case SVM outperforms CNN for all three classes however the difference is not very big, LipNet-2 is still demonstrating a reasonable level of performance. Positive predicted value of empty and uncertain class demonstrates the same pattern as uncertain class from Lamellarity problem. Approximately $10\%$ respectively $15\%$ of positive empty and uncertain predictions are correct because some full liposomes are falsely classified as either empty or uncertain. Once again, even if a small fraction of full liposomes are misclassified this reduces precision of minority classes drastically. Another notable result is low negative predicted value of full class. It means that classifiers yield more false negative predictions than true negative. On the other hand positive predicted value of both CNN and SVM for full class is almost 1 which means that there are hardly any empty and uncertain particles that are falsely classified as full. In other words it means that if a classifier says that a particle is full then it is most likely to be full, however when it says the opposite it is most likely to be false. In this way the classifier is very careful in predicting a particle being full. It would rather yield a false negative full than false positive. It may be both good and bad depending on the domain. Discussion of risks and potential side effects of under- and overestimating the rate of liposomal encapsulation are beyond the scope of this project. 
+
+Averaged across 5 folds unnormalised confusion matrix is presented in table~\ref{table:cnn_encapsulation_cf_not_normalized}.     
 
 \begin{figure}[H]
 \centering
@@ -1153,7 +1151,7 @@ Particles from Encapsulation problem are generally better classified by SVM. In 
 \toprule
  & Empty & Full & Uncertain \\
 \midrule
-Empty 2 24 & 1 & 7 \\
+Empty & 24 & 1 & 7 \\
 Full & 272 & 3929 & 660 \\
 Uncertain & 30 & 9 & 61 \\
 \bottomrule
@@ -1268,33 +1266,26 @@ Uncertain & 30 & 9 & 61 \\
 
 \section{Discussion}
 
-Comparison of different input image modes showed that the best performance is achieved when input images contain only particles. Including surrounding worsens classifiers performance. The result is intuitive and expected. By excluding all information irrelevant to the particle we make images less noisy and let classifier concentrate on the particle. This has though one drawback: masking implies reading mask files and performing multiplications with requires additional time. Experiments showed that in Encapsulation problem masking improved 5-fold average $F_1$ score of Full and Empty classes by $6\%$ and $7\%$ respectively and in Lamellarity problem $F_1$ score of Unilamellar and Uncertain classes went up $2\%$ and $7\%$ respectively. On the other hand $F_1$ score of Uncertain class in Encapsulation problem went $2\%$ down after applying masking but I still consider masking worth applying given increase of performance for other classes.
+Comparison of different input image modes showed that the best performance is achieved when input images contain only particles. Including surrounding worsens classifiers performance. The result is intuitive and expected. By excluding all information irrelevant to the particle we make images less noisy and let the classifier concentrate on the particle. This has though one drawback: masking implies reading mask files and performing multiplications which requires additional time. Experiments showed that in Encapsulation problem masking improved 5-fold average $F_1$ score of Full and Empty classes by $6\%$ and $7\%$ respectively and in Lamellarity problem $F_1$ score of Unilamellar and Uncertain classes went up $2\%$ and $7\%$ respectively. On the other hand $F_1$ score of Uncertain class in Encapsulation problem went $2\%$ down after applying masking but I still consider masking worth applying given increase in performance for other classes.
 
-\medskip
+Comparison of SVM and CNN classifiers has shown that Lamellarity problem can be solved with both methods with approximately same performance. SVM achieved better performance for Encapsulation problem but CNN still demonstrated reasonable results. Despite such results CNN may still be preferred due to its ability to generalize to almost any classification problem. SVM performed well due to careful choice of image features that was done by image analysis specialists. However there is no guarantee that with the same features SVM would perform well solving some other problem. On the contrary, CNN does not require such type of expert knowledge. Ability to learn descriptive image features in non-trivial domains is the cornerstone of convolutional neural networks. Given a data set of reasonable size CNN model can be relatively easy retrained and adopted for almost any kind of classification problem. A rough rule of thumb is that a CNN model will generally achieve acceptable performance with around $5000$ labeled examples per category~\cite{dl_book}. Of course such flexibility has its cost. CNN models are more time consuming than SVM and still require more effort from software engineers to be set up and deployed to production environment. However this is changing rapidly. 
 
-Comparison of SVM and CNN classifiers has shown that Lamellarity problem can be solved with both methods with approximately same performance. SVM achieved better performance for Encapsulation problem but CNN still demonstrated reasonable results. Despite such results CNN may still be preferred due to its ability to generalize to almost any classification problem. SVM performed well due to careful choice of image feature that was done by image analysis specialists. However there is no guarantee that with the same features SVM would perform well solving some other problem. On the contrary, CNN does not require such type of expert knowledge. Ability to learn descriptive image features in non-trivial domains is the cornerstone of convolutional neural networks. Given a data set of reasonable size CNN model can be relatively easy retrained and adopted for almost any kind of classification problem. Of course such flexibility has its cost. CNN models are more time consuming than SVM and still require more effort from software engineers to be set up and deployed to production environment even if it is changing rapidly. 
-
-\medskip
-Deconvolutional neural networks is a powerful visualization tool that can help to understand what kind of image feature has the CNN learned. Unfortunately due to time and software limitations no experiments with deconvolutional networks have been performed. According to~\cite{DBLP:journals/corr/YosinskiCBL14} it is qiute common that convolutional neural networks trained on natural images learn features similar to a set of Gabor filters and color blobs on the first layer. It is hard to say what kind of features have LipNet models learned by just looking on its filters like on figure~\ref{fig:lipnet4_filters}. One can not say that LipNet networks learned anything like a set of Gabor filters or any other well known filters. One possible explanation can be that unlike data sets of natural images, Lamellarity and Encapsulation images are very similar to each other and CNN models have to catch differences that can be hardly seen by a human eye. So a CNN model does not need to understand that a particle is round because all particles of all classes are round, this information would be useless in determining whether a liposome is full or empty. However a CNN would most probably learn such kind of features if the task would be to recognize liposomes among other objects of different shapes. 
+Deconvolutional neural networks is a powerful visualization tool that can help to understand what kind of image feature the CNN has learned. Unfortunately due to time and software limitations no experiments with deconvolutional networks have been performed. According to~\cite{DBLP:journals/corr/YosinskiCBL14} it is qiute common that convolutional neural networks trained on natural images learn features similar to a set of Gabor filters and color blobs on the first layer. It is hard to say what kind of features LipNet models have learned by just looking on its filters like on figure~\ref{fig:lipnet4_filters}. One can not say that LipNet networks learned anything like a set of Gabor filters or any other well known filters. One possible explanation can be that unlike data sets of natural images, Lamellarity and Encapsulation images are very similar to each other and CNN models have to catch differences that can be hardly seen by a human eye. So a CNN model does not need to understand that a particle is round because all particles of all classes are round, this information would be useless in determining whether a liposome is full or empty. However a CNN would most probably learn such kind of features if the task would be to recognize liposomes among other objects of different shapes. 
 
 \subsection{Limitations}
 
-Due to time limitations experiment with fully convolutional neural networks and variable size inputs has not been performed. Size of a particle seems to be an important factor as one can see some patterns of class distributions depending on size shown in figures~\ref{fig:img_size_scatter_plot} and~\ref{fig:img_size_per_class}. Firstly, due to performance optimization it is necessary to know in advance size of all network layers which requires constant input size. Convolutional neural networks can operate on variable size input but it is a challenging task to implement that. At least at the time of writing leading deep learning tools do not provide recipes for fully convolutional networks for classification tasks. One possible solution would be to fix size of all images to the maximum of the sample and zero pad all smaller images up to that size. In this way network would possible see zero padding as a feature and distinguish between different sizes but that would required a lot of computational power. In practice training networks with input size already $64 \times 64$ required approximately 24 hours. For example images of multilamellar liposomes are mostly greater than $100 \times 100$, so it would take unreasonably large amount of time. 
-
-\medskip
-
+Due to time limitations an experiment with fully convolutional neural networks and variable size inputs has not been performed. Size of a particle seems to be an important factor as one can see some patterns of class distributions depending on size shown in figures~\ref{fig:img_size_scatter_plot} and~\ref{fig:img_size_per_class}. Firstly, due to performance optimization it is necessary to know in advance size of all network layers which requires constant input size. Convolutional neural networks can operate on variable size input but it is a challenging task to implement that. At least at the time of writing this report, leading deep learning tools do not provide recipes for fully convolutional networks for classification tasks. One possible solution would be to fix size of all images to the maximum of the sample and zero pad all smaller images up to that size. In this way network would possibly see zero padding as a feature and distinguish between different sizes but that would require a lot of computational power. In practice training, networks with input size $64 \times 64$ required approximately 24 hours. For example, images of multilamellar liposomes are generally greater than $100 \times 100$, so it would take unreasonably large amount of time to train models with inputs of such size. 
+mostly
 This project is of research character so experiments were performed in a research environment, not production one. It is possible to replicate results of this project in Windows, but it would require significant amount of effort to adopt presented solutions in production environment.
 
-\medskip
-
-Due to hardware limitations it was impossible to test deeper networks with many layers but is doubtfully that deeper network would have better generalization as risk for overfitting increases as network structures become more complicated.
+Due to hardware limitations it was impossible to test deeper networks with many layers but is doubtfully that deeper network would have better generalization as risk for overfitting increases as network structure become more complicated. LipNet-6 model which has the largest number of convolutional layers performed worse than its simpler counterparts.
 
 \newpage
 \section{Conclusion}
 
-Data sets imbalance has proven to be a major problem. Unless imbalance problem is addressed classifiers are heavily biased towards majority classes and almost ignore underrepresented classes. It has been shown that oversampling combined with data augmentation can mitigate imbalance problem and lead to reasonable level of generalization. Most common image augmentation techniques like rotation, shift, flop, shear and zoom have been compared. Rotation and shift were the most helpful techniques, however it is context-dependent. For example, zoom technique was almost as helpful as rotation in encapsulation problem, while rotation was far more effective than zoom in lamellarity problem. 
+Data set imbalance has proven to be a major problem. Unless imbalance problem is addressed classifiers are heavily biased towards majority classes and almost ignore underrepresented classes. It has been shown that oversampling combined with data augmentation can mitigate imbalance problem and lead to a reasonable level of generalization. Most common image augmentation techniques like rotation, shift, flip, shear and zoom have been compared. Rotation and shift were the most helpful techniques, however it is context-dependent. For example, zoom technique was almost as helpful as rotation in encapsulation problem, while rotation was far more effective than zoom in lamellarity problem. An attempt to train CNN models an artificial data unfortunately did not improve performance. In fact performance of such models was very poor so artificial data has not been used in any experiments that are presented in this report. 
 
-Deconvolutional neural networks have been discussed and it can be concluded that is a promising method that can help to select features that would describe images from different problems in the best way.  
+Deconvolutional neural networks have been discussed and it can be concluded that it is a promising method that can help to select features that would describe images from different problems in the best way.  
 
 A number of deep learning software tools has been reviewed. As of October 2016 deep learning frameworks are still mainly a research tool and deployment of trained models to production environments might demand significant amount of effort and time resources. However it is changing and integration of deep learning tools into production routines is expected to be easier in the nearest future. TensorFlow, Theano and Caffe are currently the most popular frameworks in terms of number of questions on Stackoverflow and number of subscribers on GitHub. All frameworks benefit from allocating computations on GPU and currently there is no clear leader in terms of performance. 
 
@@ -1304,13 +1295,21 @@ Convolutional neural networks trained on cropped and masked images have demonstr
 
 Five different network architectures have been tested and compared. A network with two convolutional blocks each of which has two convolutional layers performed best in Lamellarity problem. A simpler one, with two convolutional blocks and one covolutional layer per block was best for Encapsulation problem. 
 
-Overall performance shown by CNN was reasonable. CNN performed approximately on the same level as SVM in lamellarity problem and was slightly worse than SVM in Encapsulation problem. Convolutional neural networks offer greater flexibility and generalization compared to SVM because CNN method does not require expert knowledge in order to choose image features. However such flexibility comes at cost of greater computational overhead.
+Overall performance shown by CNN was reasonable. CNN performed approximately on the same level as SVM in Lamellarity problem and was slightly worse than SVM in Encapsulation problem. Convolutional neural networks offer greater flexibility and generalization compared to SVM because CNN method does not require expert knowledge in order to choose image features. However such flexibility comes at cost of greater computational overhead.
 
-\newpage
+To sum up, there are hardly any obstacles to use deep learning as a
+research and aid tool. Software tools reviewed in this section are fairly easy
+to set up on a Linux machine and are well documented. However it might
+be more difficult to use these tools in production environments taking into
+account limited support of Windows operating system and absence of C\#
+application programming interfaces. It does not mean that it is impossible to
+adopt the solutions presented in this report for production, but it would require
+considerable amount of effort to do that.
+
 \section{Future work}
 Testing fully convolutional neural networks with variable size of input images is one of possible extensions to this project. Size of a particle might be an important feature so adopting fully convolutional approach may improve classifier's results.
 
-Besides this, the results of the convolutional neural networks can be improved by expanding training data sets. New samples might be difficult to retrieve so study of alternative ways to expand the data set are of great interest. Even though an attempt to generate artificial data, that is presented in this project, did not improve performance, it is a question worth to research.
+Besides this, the results of the convolutional neural networks can be improved by expanding training data sets. New samples might be difficult to retrieve, so alternative ways to expand the data set are of great interest. Even though an attempt to generate artificial data did not improve performance, it is a question worth to research.
 
 \newpage
 \printbibliography
