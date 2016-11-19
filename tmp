@@ -1,0 +1,54 @@
+\begin{figure}
+\centering
+
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		group name=group_augmentation,
+		group size=2 by 1,
+		ylabels at=edge left,
+	},
+	footnotesize,
+	width=\linewidth * 0.33,
+	%height=5cm,
+	tickpos=left,
+	ytick align=outside,
+	xtick align=outside,
+	enlarge x limits = 0.2,
+	enlarge y limits = 0.02,
+	xtick=data,
+	enlarge x limits = 0.2,
+	enlarge y limits = 0.02,
+	ymin=0,
+	ymax=1,
+	legend style={at={(0.5,-0.1)},
+	legend pos = south east,
+	symbolic x coords={No augmentation, Rotation, Shift},
+	grid=major,
+]
+\nextgroupplot[title={Lamellarity}]
+% unilamellar
+\addplot coordinates{(No augmentation, 0.992) (Rotation, 0.966) (Shift, 0.906)}
+% multilamellar
+\addplot coordinates{(No augmentation, 0.958) (Rotation, 0.99) (Shift, 0.986)}
+% uncertain
+\addplot coordinates{(No augmentation, 0.0) (Rotation, 0.346) (Shift, 0.618)}
+
+\legend{Unilamellar, Multilamellar, Uncertain}
+
+\nextgroupplot[title={Encapsulation}]
+% empty
+\addplot coordinates{(No augmentation, 0.18) (Rotation, 0.41) (Shift, 0.53)}
+% full
+\addplot coordinates{(No augmentation, 0.99) (Rotation, 0.95) (Shift, 0.89)}
+% uncertain
+\addplot coordinates{(No augmentation, 0.25) (Rotation, 0.55) (Shift, 0.64)}
+
+\legend{Empty, Full, Uncertain}
+
+\end{groupplot}
+\end{tikzpicture}
+
+\caption{Evaluation of augmentation techniques}
+\end{figure}
+
