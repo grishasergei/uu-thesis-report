@@ -185,7 +185,7 @@ Empty & \num{161} & 0.65\% \\
 
 \section{The data}
 \label{sec:dataset}
-The data for this project is provided by Vironova AB. The data consists of two data sets corresponding to the lamellarity and the encapsulation problems respectively. Both data sets contain grayscale EM images of particles and a number of computed image features.
+The data for this project is provided by Vironova AB. The data consists of two data sets corresponding to the lamellarity and the encapsulation problems respectively. Both data sets contain grayscale EM image cut outs of particles and a number of computed image features.
 
 Each image depicts exactly one liposome object which is located in the center of the image. In addition each image contains liposome's surrounding that goes 50 pixels in each direction. The effect of the liposome surrounding on the classifier performance is described later in this report. Corresponding particle masks are also provided. All liposomes have different sizes and so do corresponding images. The size of the liposome might be an important feature that potentially could help to describe the differences between the classes.  Figure~\ref{fig:img_size_scatter_plot} shows scatter plots where the axes correspond to image width and height in pixels. Figure~\ref{fig:img_size_per_class} demonstrates image size distribution inside each class.
 
@@ -328,10 +328,12 @@ In order to reverse the data flow of a CNN, all its components must be reversibl
 
 Convolutional networks that replace the max pooling operation with convolution with stride can be visualized in a similar way. Springenberg et al.~\cite{DBLP:journals/corr/SpringenbergDBR14} propose modifications to the DN method that achieve similar results as in~\cite{Zeiler2014}.
 
-The DNN method may be used as an auxiliary tool. For example it can aid SVM classifier. Vironova uses SVM classifiers to solve its classification tasks and it performs well. However one must make a good choice of features in order to succeed and it is not always obvious what kind of features to select. DNN can help to decide which features are descriptive related to a certain task. In such situation it may be helpful to train a convolutional neural network and then visualize it. Features that the CNN has learned can be added to the SVM pipeline. 
-
 \subsection{Optimization}
-Deep learning algorithms involve optimization in many contexts~\cite{dl_book}. The most obvious one is finding network parameters that reduce a cost function. One design decision that has to be made is the choice of optimization method. In this project I limited the choice of optimizers to ADAM~\cite{DBLP:journals/corr/KingmaB14} and Stochastic Gradient Descent (SGD)~\cite{Zhang04solvinglarge}.
+Deep learning algorithms involve optimization in many contexts~\cite{dl_book}. The most obvious one is finding network parameters that reduce a cost function. One design decision that has to be made is the choice of optimization method. In this project I limited the choice of optimizers to ADAM~\cite{DBLP:journals/corr/KingmaB14} and Stochastic Gradient Descent (SGD)~\cite{Zhang04solvinglarge}. 
+
+Stochastic gradient descent is a stochastic approximatoin of the gradient descent optimization method for minimizing an objective function. SGD combined with the backpropagation algorithm is the most common method for training artificial neural networks~\cite{LeCun1998}.
+
+ADAM (Adaptive Moment Estimation) is a novel optimization method which brings some important modifications to the SGD algorithm. ADAM's update rule uses both the average of past stored gradients and the average of past squared gradients. Both average values are exponentially decaying. 
 
 \subsection{Performance measures}
 
@@ -374,14 +376,16 @@ TNR = \frac{TN}{TN + FP}
 PPV = \frac{TP}{TP + FP}
 \end{equation*}
 
-\textbf{Negative predicted value (NPV)} measures share of correct negative predictions:
+\textbf{Negative predicted value (NPV)} measures the share of correct negative predictions:
 \begin{equation*}
 NPV = \frac{TN}{TN + FN}
 \end{equation*}
-It$F_1$ score reaches its best value at 1 and worst at 0. $F_1$ has been criticized for not taking true negatives into account~\cite{powers07evaluation} but for the sake of simplicity let us use it anyway:   
+
+The $F_1$ score is a harmonic mean of TPR and TNR, which is a measure of a test's accuracy. It reaches its best value at 1 and worst at 0. 
 \begin{equation*}
 F_1 = \frac{2}{\frac{1}{TPR} + \frac{1}{TNR}}
 \end{equation*}
+$F_1$ has been criticized for not taking true negatives into account and a number of alternative measures such as Phi coefficient, Matthews correlation coefficient and Cohen's kappa have been proposed~\cite{powers07evaluation}. However, let us use $F_1$ anyway for the sake of simplicity.   
 
 Combining all measures presented above allows more detailed analysis of the classifier performance. 
 
@@ -449,7 +453,7 @@ Various solutions have been proposed to deal with this problem and they can be s
 
 \begin{itemize}
 
-\item \textit{Data sampling} implies any means to produce a more or less balanced data set. It can for example be oversampling, undersampling, SMOTE~\cite{smote_chawla} or generating artificial examples~\cite{ishaq_synthetic}. The data sampling method usually performs best combined with data augmentation techniques.
+\item \textit{Data sampling} implies any means to produce a more or less balanced data set. It can for example be oversampling, undersampling, SMOTE (Synthetic Minority Over-sampling Technique)~\cite{smote_chawla} or generating artificial examples~\cite{ishaq_synthetic}. The data sampling method usually performs best combined with data augmentation techniques.
 
 \item \textit{Algorithm modification} is oriented towards the adaptation of base learning methods to be more attuned to class imbalance issues~\cite{Zadrozny:2001:LMD:502512.502540}.
 
@@ -468,7 +472,7 @@ Undersampling, as opposed to oversampling, means excluding some samples of the m
 
 \subsubsection{SMOTE}
 Synthetic Minority Over-sampling Technique (SMOTE) is an over-sampling approach in which the minority class is over-sampled by creating “synthetic” examples rather than by over-sampling with replacement~\cite{smote_chawla}. 
-Synthetic examples are generated by combining each minority class example with its randomly selected $k$ nearest neighbors, where $k$ is a parameter that depends on amount of required over-sampling.
+Synthetic examples are generated by combining each minority class example with its randomly selected $k$ nearest neighbors in feature space, where $k$ is a parameter that depends on amount of required over-sampling. Selection of feature is a design decision and varies between different problems.
 
 \subsubsection{Artificial data}
 Machine learning algorithms perform best when provided with large training data sets. In many domains, including medicine and biology, expert annotation is required for preparing training and test data sets. This results in high cost and effort, so the size of data sets is often limited. In such a case artificial data is an attractive alternative to real expert-annotated data. Training of convolutional neural network models for fluorescent spot detection on artificial data is e.g., discussed and evaluated in~\cite{ishaq_synthetic}. 
@@ -483,7 +487,7 @@ Machine learning algorithms perform best when provided with large training data 
 \label{fig:synthetic_images}
 \end{figure}
 
-In this project artificial data has been generated for the lamellarity problem. Artificial images of liposomes are generated by drawing circles with carefully selected randomized distortions. Background and distortions are generated using Perlin noise~\cite{Perlin:1985:IS:325165.325247}. Figure~\ref{fig:synthetic_images} presents examples of artificially generated EM images.
+In this project artificial data has been generated for the lamellarity problem. Artificial images of liposomes are generated by drawing circles with carefully selected randomized distortions. Background and distortions are generated using Perlin noise~\cite{Perlin:1985:IS:325165.325247}. Perlin noise was selected because of visual similarity of its output to the actual EM images. Figure~\ref{fig:synthetic_images} presents examples of artificially generated EM images. These artificial examples contain random shift transformation so they are not centered as the real examples in Figure~\ref{fig:lamellarity_problem}.
 
 Note that despite visual similarity, artificial images are not based on statistical measures from the real data set. Histograms and image patterns are not drawn from real distributions. With limited time and effort, this experiment should be rather seen as a proof of concept.
 
@@ -681,7 +685,7 @@ Thus output, the layer is always represented by three nodes and each of them yie
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{lipnet_architecture.png} 
-\caption{Network architectures.}
+\caption{Network configurations that have been tested in this project. All networks assume \textit{same} padding mode, unit stride and ReLU activations.}
 \label{fig:lipnet_arch}
 \end{figure}
 
@@ -1062,7 +1066,7 @@ Recall that each image contains a liposome object and its surrounding which goes
 \item Cropped and masked. All images are cropped and the corresponding masks are applied. This means that each image contains information only about a particular particle and nothing else.
 \end{itemize}
 
-The comparison is performed in terms of $F_1$ score (averaged across 5 folds) for the LipNet-4 network trained on images in different modes.
+The comparison is performed in terms of $F_1$ score (averaged across 5 folds) for the LipNet-4 network trained on images in the modes described above.
 
 Results of the experiments show that including surrounding to the input images leads to worse performance in both problems for all classes. The best performance is achieved when the input images are cropped and masked. A detailed comparison is shown in Figures~\ref{fig:input_img_comparison_encapsulation} and~\ref{fig:input_img_comparison_lamellarity}.
 
@@ -1300,6 +1304,9 @@ Comparison of different input image modes showed that the best performance is ac
 Comparison of SVM and CNN classifiers has shown that Lamellarity problem can be solved with both methods with approximately same performance. SVM achieved better performance for Encapsulation problem but CNN still demonstrated reasonable results. Despite such results CNN may still be preferred due to its ability to generalize to almost any classification problem. SVM performed well due to careful choice of image features that was done by image analysis specialists. However there is no guarantee that with the same features SVM would perform well solving some other problem. On the contrary, CNN does not require such type of expert knowledge. Ability to learn descriptive image features in non-trivial domains is the cornerstone of convolutional neural networks. Given a data set of reasonable size CNN model can be relatively easy retrained and adopted for almost any kind of classification problem. A rough rule of thumb is that a CNN model will generally achieve acceptable performance with around $5000$ labeled examples per category~\cite{dl_book}. Of course such flexibility has its cost. CNN models are more time consuming than SVM and still require more effort from software engineers to be set up and deployed to production environment. However this is changing rapidly. 
 
 Deconvolutional neural networks is a powerful visualization tool that can help to understand what kind of image feature the CNN has learned. Unfortunately due to time and software limitations no experiments with deconvolutional networks have been performed. According to~\cite{DBLP:journals/corr/YosinskiCBL14} it is qiute common that convolutional neural networks trained on natural images learn features similar to a set of Gabor filters and color blobs on the first layer. It is hard to say what kind of features LipNet models have learned by just looking on its filters like on Figure~\ref{fig:lipnet4_filters}. One can not say that LipNet networks learned anything like a set of Gabor filters or any other well known filters. One possible explanation can be that unlike data sets of natural images, Lamellarity and Encapsulation images are very similar to each other and CNN models have to catch differences that can be hardly seen by a human eye. So a CNN model does not need to understand that a particle is round because all particles of all classes are round, this information would be useless in determining whether a liposome is full or empty. However a CNN would most probably learn such kind of features if the task would be to recognize liposomes among other objects of different shapes. 
+
+The DNN method may be used as an auxiliary tool. For example it can aid SVM classifier. Vironova uses SVM classifiers to solve its classification tasks and it performs well. However one must make a good choice of features in order to succeed and it is not always obvious what kind of features to select. DNN can help to decide which features are descriptive related to a certain task. In such situation it may be helpful to train a convolutional neural network and then visualize it. Features that the CNN has learned can be added to the SVM pipeline. 
+
 
 \subsection{Limitations}
 
