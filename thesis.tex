@@ -110,7 +110,7 @@
 
 % Abstract page 
 % http://pdf.teknik.uu.se/pdf/abstract.php
-% One of Vironova's electron microscopy services is to classify liposomes. This includes determining the structure of a liposome and presence of a liposomal encapsulation. Vironova has a lot of electron microscopy images so automatic classification is of great interest. The purpose of this project is to evaluate convolutional neural networks for solving lamellarity and encapsulation classification problems. The available data sets are imbalanced so a number of techniques to overcome this problem are studied. The convolutional neural network models have reasonable performance and offer great flexibility, so they can be an alternative to the support vector machines method which is currently used to perform automatic classification tasks.
+% One of Vironova's electron microscopy services is to classify liposomes. This includes determining the structure of a liposome and presence of a liposomal encapsulation. A typical service analysis contains a lot of electron microscopy images, so automatic classification is of great interest. The purpose of this project is to evaluate convolutional neural networks for solving lamellarity and encapsulation classification problems. The available data sets are imbalanced so a number of techniques to overcome this problem are studied. The convolutional neural network models have reasonable performance and offer great flexibility, so they can be an alternative to the support vector machines method which is currently used to perform automatic classification tasks. The project also includes the feasibility study of convolutional neural networks from Vironova's perspective.
 
 % Arabic page numbers (and reset to 1)
 \pagenumbering{arabic}
@@ -646,7 +646,7 @@ Torch & \ymark & \ymark & \ymark & \ymark & \ymark & \ymark & \nmark & \ymark & 
 
 \section{Network Architectures}
 
-Five architectures are tested in this project. I start with the simplest configuration possible --- one convolutional layer followed by two fully connected layers and gradually add additional convolutional layers. Let us call the networks LipNet-\textit{x}, see Figure~\ref{fig:lipnet_arch}, where \textit{x} stands for the number of convolutional layers. 
+Five network configurations are tested in this project. I start with the simplest configuration possible --- one convolutional layer followed by two fully connected layers and gradually add additional convolutional layers. Let us call the networks LipNet-\textit{x}, see Figure~\ref{fig:lipnet_arch}, where \textit{x} stands for the number of convolutional layers. 
 
 \begin{itemize}
 \item \textbf{LipNet--1} is the simplest possible configuration and a starting point for the experiments. It consists of one convolutional block with max pooling and dropout followed by two fully connected layers.
