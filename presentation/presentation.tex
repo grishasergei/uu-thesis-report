@@ -1,5 +1,6 @@
 \documentclass{beamer}
 \usetheme{Boadilla}
+\usecolortheme{whale}
 
 \usepackage{tikz}
 \tikzset{
@@ -21,7 +22,13 @@ electron microscopy imagery}
 \subtitle{}
 
 \author{Sergii Gryshkevych}
-\institute{Uppsala University}
+\institute{
+Uppsala University \\
+Supervisor: Max Pihlstr{\"o}m \\
+Reviewer: Ida-Maria Sintorn \\
+Examinator: Justin Pearson \\
+Opponent: Christopher Lagerhult
+}
 \date{December 14, 2016}
 
 \begin{document}
@@ -32,9 +39,200 @@ electron microscopy imagery}
 
 \section{Introduction}
 
+
 \begin{frame}
 \frametitle{Introduction}
-Introduction
+This MSc project is done in cooperation with Vironova AB.
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{vironova_logo.jpg} 
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Objective}
+\begin{itemize}
+\item<1-> Discuss the suitability of applying CNN method for classification of electron microscopy images
+\item<2-> Benchmark CNN models against SVM classifier for the selected problems 
+\item<3-> Discuss Deep Learning software:
+\begin{itemize}
+\item OS availability
+\item Licenses
+\item Performance
+\item Community support
+\end{itemize} 
+\end{itemize}
+\end{frame}
+
+
+%
+%	Problem description
+%
+
+\begin{frame}
+\frametitle{Problem description: Lamellarity}
+
+\begin{columns}
+\column{0.35\textwidth}
+Determine structure of a liposome according to the number of lamellae.
+\vskip 0.2in
+There are 14169 EM images and three classes:
+\begin{itemize}
+\item Unilamellar \\ 12368, 87.29\%
+\item Multilamellar \\ 1717, 12.12\%
+\item Uncertain \\ 84, 0.5\%
+\end{itemize}
+\column{0.65\textwidth}
+\begin{figure}[H]
+\centering
+\begin{tabular}{ccc}
+	\includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uni} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/multi} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uncertain} \\
+	\includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uni2} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/multi2} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uncertain2} \\
+	\includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uni3} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/multi3} & \includegraphics[height=2cm, keepaspectratio]{problem_description/lamellarity/uncertain3} \\
+Unilamellar & Multilamellar & Uncertain \\[6pt]
+\end{tabular}
+\end{figure}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Problem description: Encapsulation}
+
+\begin{columns}
+\column{0.35\textwidth}
+Determine presence of a liposomal encapsulation.
+\vskip 0.2in
+There are $24918$ EM images and three classes:
+\begin{itemize}
+\item Full \\ 24255, 97.34\%
+\item Empty \\ 161, 2.01\%
+\item Uncertain \\ 502, 0.65\%
+\end{itemize}
+\column{0.65\textwidth}
+\begin{figure}[H]
+\centering
+\begin{tabular}{ccc}
+	\includegraphics[height=2cm, keepaspectratio]{problem_description/packiging/full} & \includegraphics[height=2cm, keepaspectratio]{problem_description/packiging/empty} & \includegraphics[height=2cm, keepaspectratio]{problem_description/packiging/uncertain} \\
+	\includegraphics[height=2cm, keepaspectratio]{problem_description/packiging/full2} & \includegraphics[height=2cm, keepaspectratio]{problem_description/packiging/empty2} & \includegraphics[height=2cm, keepaspectratio]{problem_description/packiging/uncertain2} \\
+Full & Empty & Uncertain \\[6pt]
+\end{tabular}
+\end{figure}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The data set of image features}
+
+\begin{definition}
+In computer vision and image processing, a feature is a piece of information which is relevant for solving the computational task related to a certain application. Features may be specific structures in the image such as points, edges or objects. Features may also be the result of a general neighborhood operation or feature detection applied to the image.
+\end{definition}
+
+\begin{itemize}
+\item Maximum width
+\item Diameter
+\item Length
+\item Histogram
+\item Image Moments 
+\item Radial Density Profile
+\item Edge Density Profile
+\item Signal to noise
+\end{itemize}
+
+\end{frame}
+
+%
+%	Convolutional neural networks
+%
+
+\begin{frame}
+\frametitle{Convolutional neural networks}
+\begin{definition}
+
+\end{definition}
+\end{frame}
+
+%
+%	The Class Imbalance Problem
+%
+
+\begin{frame}
+\frametitle{The Class Imbalance Problem}
+
+Lamellarity and Encapsulation data sets are imbalanced and it is a problem!
+\vskip 0.2in
+How to mitigate the class imbalance problem?
+\begin{itemize}
+\item Oversampling
+\item Undersampling
+\item SMOTE (Synthetic Minority Oversampling Technique)
+\item Artificial data
+\item Higher penalties for misclassification of minority classes
+\end{itemize}
+
+
+\end{frame}
+
+%
+%	Regularization
+%
+
+\begin{frame}
+\frametitle{Regularization}
+
+\begin{definition}
+\textit{Regularization} is any modification we make to a learning algorithm that is intended to reduce its generalization error but not its training error
+\end{definition}
+
+\begin{itemize}
+\item Weight decay
+\item Noise injection: label smoothing
+\item Dropout
+\item Early stopping
+\item Data augmentation
+\end{itemize}
+
+\end{frame}
+
+%
+%	Data augmentation
+%
+
+\section{Data augmentation}
+\begin{frame}
+\frametitle{Data augmentation techniques}
+
+Data augmentation introduces additional diversity in the training set by applying different transformations to the existing examples.
+\vskip 0.2in
+\begin{itemize}
+\item Rotation in the range $[-180, 180]$ degrees with spline interpolation
+\item Shear transformation in the range $[0, 0.2]$
+\item Vertical shift in the range $[-10, 10]$ percent of total height
+\item Horizontal shift in the range $[-10, 10]$ percent of total width
+\item Zoom in the range $[0.8, 1.0]$ which means zoom by a maximum $20\%$
+\item Horizontal flip
+\item Vertical flip
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Data augmentation example}
+\begin{figure}
+\centering
+\begin{tabular}{ccccc}
+\includegraphics[scale=0.5]{augmented/541253.jpg} & \includegraphics[scale=0.5]{augmented/_0_645.jpeg} & \includegraphics[scale=0.5]{augmented/_0_1385.jpeg} & \includegraphics[scale=0.5]{augmented/_0_1749.jpeg} & \includegraphics[scale=0.5]{augmented/_0_2343.jpeg} \\
+
+\includegraphics[scale=0.5]{augmented/_0_4050.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3413.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3414.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3687.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3916.jpeg} \\
+	
+\includegraphics[scale=0.5]{augmented/_0_4165.jpeg} & \includegraphics[scale=0.5]{augmented/_0_5014.jpeg} & \includegraphics[scale=0.5]{augmented/_0_5165.jpeg} & \includegraphics[scale=0.5]{augmented/_0_5567.jpeg} & \includegraphics[scale=0.5]{augmented/_0_6089.jpeg} \\
+
+\includegraphics[scale=0.5]{augmented/_0_7140.jpeg} & \includegraphics[scale=0.5]{augmented/_0_7746.jpeg} & \includegraphics[scale=0.5]{augmented/_0_8553.jpeg} & \includegraphics[scale=0.5]{augmented/_0_8763.jpeg} & \includegraphics[scale=0.5]{augmented/_0_9361.jpeg} 
+	
+\end{tabular}
+\end{figure}
 \end{frame}
 
 %
@@ -91,40 +289,28 @@ It is a harmonic mean of TPR and TNR
 \end{frame}
 
 %
-%	Data augmentation
+%	LipNet networks
 %
 
-\section{Data augmentation}
 \begin{frame}
-\frametitle{Data augmentation techniques}
+\frametitle{Network architectures}
 
-\begin{itemize}
-\item<1-> Rotation in the range $[-180, 180]$ degrees with spline interpolation
-\item<2-> Shear transformation in the range $[0, 0.2]$
-\item<3-> Vertical shift in the range $[-10, 10]$ percent of total height
-\item<4-> Horizontal shift in the range $[-10, 10]$ percent of total width
-\item<5-> Zoom in the range $[0.8, 1.0]$ which means zoom by a maximum $20\%$
-\item<6-> Horizontal flip
-\item<7-> Vertical flip
-\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{lipnet_architecture.png} 
+\end{figure}
 
 \end{frame}
 
+\section{Results}
 \begin{frame}
-\frametitle{Data augmentation example}
-\begin{figure}
-\centering
-\begin{tabular}{ccccc}
-\includegraphics[scale=0.5]{augmented/541253.jpg} & \includegraphics[scale=0.5]{augmented/_0_645.jpeg} & \includegraphics[scale=0.5]{augmented/_0_1385.jpeg} & \includegraphics[scale=0.5]{augmented/_0_1749.jpeg} & \includegraphics[scale=0.5]{augmented/_0_2343.jpeg} \\
-
-\includegraphics[scale=0.5]{augmented/_0_4050.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3413.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3414.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3687.jpeg} & \includegraphics[scale=0.5]{augmented/_0_3916.jpeg} \\
-	
-\includegraphics[scale=0.5]{augmented/_0_4165.jpeg} & \includegraphics[scale=0.5]{augmented/_0_5014.jpeg} & \includegraphics[scale=0.5]{augmented/_0_5165.jpeg} & \includegraphics[scale=0.5]{augmented/_0_5567.jpeg} & \includegraphics[scale=0.5]{augmented/_0_6089.jpeg} \\
-
-\includegraphics[scale=0.5]{augmented/_0_7140.jpeg} & \includegraphics[scale=0.5]{augmented/_0_7746.jpeg} & \includegraphics[scale=0.5]{augmented/_0_8553.jpeg} & \includegraphics[scale=0.5]{augmented/_0_8763.jpeg} & \includegraphics[scale=0.5]{augmented/_0_9361.jpeg} 
-	
-\end{tabular}
-\end{figure}
+\frametitle{Which LipNet model is the best?}
+Five LipNet models are evaluated by recording their 5-fold cross validated $F_1$ scores. 
+\vskip 0.2in
+\begin{itemize}
+\item<2-> The Lamellarity Problem: \textbf{LipNet-4} is the best
+\item<3-> The Encapsulation Problem: There is no clear leader. \textbf{LipNet-2} is selected for the final experiment. LipNet-6 performed worst. 
+\end{itemize}
 \end{frame}
 
 %
@@ -173,19 +359,62 @@ It is a harmonic mean of TPR and TNR
 \end{frame}
 
 %
-%	LipNet networks
+%	Input images modes
 %
 
 \begin{frame}
-\frametitle{Network architectures}
+\frametitle{Input images: surrounding and masking}
+Each image contains a liposome object and its surrounding which goes 50 pixels in each direction. Corresponding particle masks are also available. 
+\vskip 0.2in
+Three choices:
+\begin{itemize}
+\item Images with surrounding
+\item Cropped images
+\item \alert<2>{Cropped and masked} 
+\end{itemize}
+\end{frame}
+
+%
+%	CNN vs SVM
+%
+
+\section{Benchmarking}
+
+\begin{frame}
+\frametitle{CNN vs SVM: Lamellarity}
 
 \begin{figure}
 \centering
-\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{lipnet_architecture.png} 
+\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{cnn_vs_svm_lamellarity.png} 
 \end{figure}
+
+\begin{itemize}
+\item CNN is better in predicting \textit{unilamellar} and \textit{multilamellar}.
+\item More false negative \textit{unilamellar} by SVM than CNN.
+\item More false positive \textit{multilamellar} by SVM than by CNN.
+\item SVM is better in predicting \textit{uncertain}.
+\item Many false positive predictions of \textit{uncertain}, mainly \textit{unilamellar} is confused with \textit{uncertain}.
+\end{itemize}
 
 \end{frame}
 
+\begin{frame}
+\frametitle{CNN vs SVM: Encapsulation}
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{cnn_vs_svm_encapsulation.png} 
+\end{figure}
+
+\begin{itemize}
+\item SVM is slightly better than CNN.
+\item Poor precision for \textit{empty} and \textit{uncertain} because some \textit{full} are falsely classified.
+\item Low NPV for \textit{full}, it is a direct consequence of the previous item.
+\item Precision of \textit{full} and NPV of \textit{empty} and \textit{uncertain} are almost 1, so hardly any false positive of \textit{empty}.
+\item Both classifiers underestimate the number of \textit{full}.
+\end{itemize}
+
+\end{frame}
 
 %
 %	Popularity of DL software
@@ -224,32 +453,6 @@ It is a harmonic mean of TPR and TNR
 \end{tikzpicture}
 
 \end{figure}
-\end{frame}
-
-%
-%	CNN vs SVM
-%
-
-\section{Benchmarking}
-
-\begin{frame}
-\frametitle{CNN vs SVM: Lamellarity}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{cnn_vs_svm_lamellarity.png} 
-\end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{CNN vs SVM: Encapsulation}
-
-\begin{figure}
-\centering
-\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{cnn_vs_svm_encapsulation.png} 
-\end{figure}
-
 \end{frame}
 
 \end{document}
