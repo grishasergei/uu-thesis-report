@@ -126,9 +126,9 @@ Full & Empty & Uncertain \\[6pt]
 \begin{frame}
 \frametitle{The data set of image features}
 
-\begin{definition}
-In computer vision and image processing, a feature is a piece of information which is relevant for solving the computational task related to a certain application. Features may be specific structures in the image such as points, edges or objects. Features may also be the result of a general neighborhood operation or feature detection applied to the image.
-\end{definition}
+\begin{block}{Image Feature}
+It is a piece of information which is relevant for solving the computational task related to a certain application. Features may be specific structures in the image such as points, edges or objects. Features may also be the result of a general neighborhood operation or feature detection applied to the image.
+\end{block}
 
 \begin{itemize}
 \item Maximum width
@@ -148,11 +148,25 @@ In computer vision and image processing, a feature is a piece of information whi
 %
 
 \begin{frame}
-\frametitle{Convolutional neural networks}
-\begin{definition}
+\frametitle{Convolutional neural networks (CNN)}
+\begin{block}{Convolutional neural network (CNN)}
+It is a special kind of neural network for processing data that has a known, grid-like topology. CNN are simply neural networks that use convolution in place of general matrix multiplication in at least one of their layers.
+\end{block}
 
-\end{definition}
+Why CNN?
+\begin{itemize}
+\item Scalability due to the following assumptions:
+\begin{itemize}
+\item Local connectivity
+\item Parameter sharing
+\end{itemize}
+\item CNN operate on raw pixel data, i.e. minimum preprocessing
+\item CNN learn image features themselves, i.e. do not need expert knowledge for selecting feature
+\item Documented success
+\end{itemize}
 \end{frame}
+
+
 
 %
 %	The Class Imbalance Problem
@@ -417,6 +431,31 @@ Three choices:
 \end{frame}
 
 %
+%	Deep learning software
+%
+
+\begin{frame}
+\frametitle{Deep learning software}
+
+\begin{block}{OS and API}
+The path of least resistance:
+\begin{itemize}
+\item Linux
+\item Python
+\end{itemize}
+\end{block}
+
+\begin{block}{Licensing}<2->
+Nearly all libraries are distributed according to some of OSI-approved licenses like Apache, BSD, MIT, etc.
+\end{block}
+
+\begin{block}{GPU}<3->
+All libraries benefit from GPUs. At the moment there is no study that shows superiority of any library in terms of performance.
+\end{block}
+
+\end{frame}
+
+%
 %	Popularity of DL software
 %
 
@@ -454,5 +493,21 @@ Three choices:
 
 \end{figure}
 \end{frame}
+
+\begin{frame}{Conclusion and future work}
+Conclusions:
+\begin{itemize}
+\item Reasonable performance
+\item CNN is an excellent research tool
+\end{itemize}
+\vskip 0.2in
+Future work:
+\begin{itemize}
+\item Fully convolutional networks with input of variable size
+\item Alternative ways to expand the training set
+\item Late fusing
+\end{itemize}
+\end{frame}
+
 
 \end{document}
