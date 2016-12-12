@@ -815,7 +815,7 @@ The best option would be to evaluate all possible combinations of transformation
 
 In this section different LipNet models are evaluated and compared. The average $F_1$ score is recorded for each class.
 
-Results for Lamellarity problem are shown in Figure~\ref{fig:cnn_models_lamellarity}. LipNet-4 is a clear leader that outperforms all other models for all classes. It is interesting to note that multilamellar liposomes are recognized by LipNet-4 with almost no error despite the fact that only $12\%$ of all particles in the data set belong to that class compared to $87\%$ of unilamellar particles. All other models demonstrated more or less similar results regarding recognition of unilamellar and multilamellar liposomes. LipNet-4 and LipNet-6 were the best to recognize particles of the uncertain class clearly outperforming the other models.
+Results for the lamellarity problem are shown in Figure~\ref{fig:cnn_models_lamellarity}. LipNet-4 is a clear leader that outperforms all other models for all classes. It is interesting to note that multilamellar liposomes are recognized by LipNet-4 with almost no error despite the fact that only $12\%$ of all particles in the data set belong to that class compared to $87\%$ of unilamellar particles. All other models demonstrated more or less similar results regarding recognition of unilamellar and multilamellar liposomes. LipNet-4 and LipNet-6 were the best to recognize particles of the uncertain class clearly outperforming the other models.
 
 \begin{figure}[H]
 \centering
@@ -835,26 +835,30 @@ Results for Lamellarity problem are shown in Figure~\ref{fig:cnn_models_lamellar
 	legend style={at={(0.5, -0.1)},anchor=north},
 	xmin=0,
 	xmax=1,
+	every node near coord/.append style={
+    	/pgf/number format/fixed zerofill,
+    	/pgf/number format/precision=4
+	}
     ]
 
-% LipNet-6
-\addplot coordinates{(0.6987,Uncertain) (0.8041,Multilamellar) (0.7250,Unilamellar)};
+% LipNet-6 
+\addplot coordinates{(0.0706,Uncertain) (0.5066,Multilamellar) (0.7379,Unilamellar)};
 \addlegendentry{LipNet-6}
 
 % LipNet-4c
-\addplot coordinates{(0.5057,Uncertain) (0.8240,Multilamellar) (0.7645,Unilamellar)};
+\addplot coordinates{(0.0530,Uncertain) (0.5216,Multilamellar) (0.7670,Unilamellar)};
 \addlegendentry{LipNet-4c}
 
 % LipNet-4
-\addplot coordinates{(0.7367,Uncertain) (0.9762,Multilamellar) (0.9425,Unilamellar)};
+\addplot coordinates{(0.2169,Uncertain) (0.8958,Multilamellar) (0.9444,Unilamellar)};
 \addlegendentry{LipNet-4}
 
-% LipNet-2
-\addplot coordinates{(0.5156,Uncertain) (0.7823,Multilamellar) (0.7065,Unilamellar)};
+% LipNet-2 
+\addplot coordinates{(0.0686,Uncertain) (0.4895,Multilamellar) (0.7074,Unilamellar)};
 \addlegendentry{LipNet-2}
 
-% LipNet-1
-\addplot coordinates{(0.5327,Uncertain) (0.8458,Multilamellar) (0.7641,Unilamellar)};
+% LipNet-1 
+\addplot coordinates{(0.0693,Uncertain) (0.5357,Multilamellar) (0.7651,Unilamellar)};
 \addlegendentry{LipNet-1}
 
 \end{axis}
@@ -863,7 +867,7 @@ Results for Lamellarity problem are shown in Figure~\ref{fig:cnn_models_lamellar
 \caption{\label{fig:cnn_models_lamellarity}Lamellarity problem. $F_1$ scores for different CNN models.}
 \end{figure}
 
-Results for the encapsulation problem are shown in Figure~\ref{fig:cnn_models_encapsulation}. Unlike the lamellarity problem there is no clear leader, so no model outperforms the other for all classes. Simpler models like LipNet-1 and LipNet-2 are superior when it comes to the \textit{empty} class but they are marginally worse than LipNet-4 and LipNet-4c in recognizing the \textit{full} class. LipNet-4 and LipNet-4c are best at recognizing liposomes of the \textit{uncertain} class, but the LipNet-1 result is very close. The only clear pattern is that LipNet-6's ability to generalize is the worst among all tested models. It probably has to many parameters and overfits which leads to poor generalization.
+Results for the encapsulation problem are shown in Figure~\ref{fig:cnn_models_encapsulation}. Unlike the lamellarity problem there is no clear leader, so no model outperforms the other for all classes. Simpler models like LipNet-1 and LipNet-2 are almost as good as their more advanced peers. LipNet-1 and LipNet-2 recognize the \textit{full} class with the same performance as other models but they are marginally worse than LipNet-4 and LipNet-4c when it comes to the \textit{empty} class and the \textit{uncertain} class. LipNet-6 is marginally better than other models in recognizing \textit{empty} and \textit{uncertain} but it is significantly worse when it comes to the \textit{full} class. It probably has too many parameters and overfits which leads to poor generalization.
 
 \begin{figure}[H]
 \centering
@@ -883,26 +887,30 @@ Results for the encapsulation problem are shown in Figure~\ref{fig:cnn_models_en
 	legend style={at={(0.5, -0.1)},anchor=north},
 	xmin=0,
 	xmax=1,
+	every node near coord/.append style={
+    	/pgf/number format/fixed zerofill,
+    	/pgf/number format/precision=4
+	}	
     ]
 
 % LipNet-6
-\addplot coordinates{(0.5935,Empty) (0.7008,Full) (0.6442,Uncertain)};
+\addplot coordinates{(0.2144,Empty) (0.7157,Full) (0.1328,Uncertain)};
 \addlegendentry{LipNet-6}
 
 % LipNet-4c
-\addplot coordinates{(0.7257,Empty) (0.8360,Full) (0.7463,Uncertain)};
+\addplot coordinates{(0.2021,Empty) (0.8556,Full) (0.1300,Uncertain)};
 \addlegendentry{LipNet-4c}
 
 % LipNet-4
-\addplot coordinates{(0.6950,Empty) (0.8172,Full) (0.7514,Uncertain)};
+\addplot coordinates{(0.2043,Empty) (0.8394,Full) (0.1343,Uncertain)};
 \addlegendentry{LipNet-4}
 
 % LipNet-2
-\addplot coordinates{(0.7870,Empty) (0.8250,Full) (0.6843,Uncertain)};
+\addplot coordinates{(0.1492,Empty) (0.8446,Full) (0.1154,Uncertain)};
 \addlegendentry{LipNet-2}
 
-% LipNet-1
-\addplot coordinates{(0.7889,Empty) (0.8222,Full) (0.7301,Uncertain)};
+% LipNet-1 
+\addplot coordinates{(0.1834,Empty) (0.8434,Full) (0.1329,Uncertain)};
 \addlegendentry{LipNet-1}
 
 \end{axis}
@@ -910,55 +918,6 @@ Results for the encapsulation problem are shown in Figure~\ref{fig:cnn_models_en
 
 \caption{\label{fig:cnn_models_encapsulation}Encapsulation problem. $F_1$ scores for different CNN models.}
 \end{figure}
-
-%\begin{landscape}
-%\begin{table}
-%\caption{5-fold cross validation, LipNet--4, Lamellarity problem.} \label{t:kfold-cnn-lamellarity}
-%
-%\smallskip
-%\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-%                                 *{4}{S[table-format=2.1]} @{}}
-%\toprule
-% & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
-%         & \multicolumn{4}{c}{Uncertain}  \\
-%\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-%Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-%\midrule
-%1 & 0.8634 & 0.9972 & 0.9995 & 0.5158 & 0.9797 & 0.9542 & 0.7472 & 0.9971 & 0.5294 & 0.9155 & 0.0364 & 0.9969\\
-%2 & 0.9107 & 0.9917 & 0.9987 & 0.6183 & 0.9913 & 0.9683 & 0.8119 & 0.9988 & 0.4706 & 0.9464 & 0.0503 & 0.9966\\
-%3 & 0.9798 & 0.9945 & 0.9992 & 0.8778 & 1.0000 & 0.9912 & 0.9399 & 1.0000 & 0.4706 & 0.9876 & 0.1860 & 0.9968\\
-%4 & 0.9915 & 0.9945 & 0.9992 & 0.9447 & 0.9884 & 0.9972 & 0.9798 & 0.9984 & 0.8235 & 0.9933 & 0.4242 & 0.9989\\
-%5 & 0.8956 & 0.9972 & 0.9995 & 0.5798 & 0.9707 & 0.9803 & 0.8711 & 0.9959 & 0.7500 & 0.9211 & 0.0513 & 0.9985\\
-%\midrule
-%Avg & 0.9282 & 0.9950 & 0.9992 & 0.7073 & 0.9860 & 0.9782 & 0.8700 & 0.9980 & 0.6088 & 0.9528 & 0.1497 & 0.9975\\ 
-%\bottomrule
-%\end{tabular*}
-%\end{table}
-%
-%\begin{table}
-%\caption{5-fold cross validation, LipNet--4, Encapsulation problem.} \label{t:kfold-cnn-encapsulation}
-%
-%\smallskip
-%\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-%                                 *{4}{S[table-format=2.1]} @{}}
-%\toprule
-% & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
-%         & \multicolumn{4}{c}{Uncertain}  \\
-%\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-%Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-%\midrule
-%1 & 0.3030 & 0.9917 & 0.1961 & 0.9953 & 0.8194 & 0.8358 & 0.9945 & 0.1134 & 0.7624 & 0.8239 & 0.0822 & 0.9941\\
-%2 & 0.3030 & 0.9861 & 0.1266 & 0.9953 & 0.9019 & 0.7761 & 0.9932 & 0.1793 & 0.5149 & 0.9081 & 0.1038 & 0.9891\\
-%3 & 0.4545 & 0.9849 & 0.1667 & 0.9963 & 0.8992 & 0.8955 & 0.9968 & 0.1970 & 0.7030 & 0.9083 & 0.1368 & 0.9933\\
-%4 & 0.6061 & 0.9895 & 0.2778 & 0.9974 & 0.9427 & 0.7836 & 0.9937 & 0.2742 & 0.6139 & 0.9490 & 0.1994 & 0.9917\\
-%5 & 0.8276 & 0.9861 & 0.2581 & 0.9990 & 0.9258 & 0.9291 & 0.9980 & 0.2469 & 0.5510 & 0.9322 & 0.1403 & 0.9904\\
-%\midrule
-%Avg & 0.4989 & 0.9876 & 0.2050 & 0.9967 & 0.8978 & 0.8440 & 0.9952 & 0.2021 & 0.6290 & 0.9043 & 0.1325 & 0.9917\\ 
-%\bottomrule
-%\end{tabular*}
-%\end{table}
-%
-%\end{landscape}
 
 \subsection{SVM}
 SVM is currently used by Vironova for automatic classification and it is included in this project for benchmarking purposes. No additional experiments were performed, just those that were necessary to replicate Vironovas result. 
@@ -1004,58 +963,6 @@ Uncertain & 0.03 & 0.11 & 0.86 \\
 \end{tabular}
 \end{center}
 
-%\begin{landscape}
-%
-%\begin{table}
-%\caption{5-fold cross validation, SVM, Lamellarity problem.} \label{t:kfold-svm-lamellarity}
-%
-%\smallskip
-%\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-%                                 *{4}{S[table-format=2.1]} @{}}
-%\toprule
-% & \multicolumn{4}{c}{Unilamellar} & \multicolumn{4}{c}{Multilamellar} 
-%         & \multicolumn{4}{c}{Uncertain}  \\
-%\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-%Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-%\midrule
-%1 & 0.8659 & 0.9812 & 0.9969 & 0.5157 & 0.9527 & 0.9736 & 0.8326 & 0.9933 & 0.9851 & 0.9021 & 0.0565 & 0.9999 \\
-%2 & 0.8578 & 0.9826 & 0.9971 & 0.5014 & 0.9432 & 0.9719 & 0.8222 & 0.9920 & 0.9701 & 0.8951 & 0.0521 & 0.9998 \\
-%3 & 0.8404 & 0.9806 & 0.9966 & 0.4721 & 0.9432 & 0.9671 & 0.7979 & 0.9920 & 0.9701 & 0.8844 & 0.0475 & 0.9998  \\
-%4 & 0.8742 & 0.9757 & 0.9960 & 0.5302 & 0.9315 & 0.9721 & 0.8215 & 0.9904 & 0.9851 & 0.9088 & 0.0604 & 0.9999\\
-%5 & 0.8651 & 0.9806 & 0.9967 & 0.5147 & 0.9477 & 0.9695 & 0.8109 & 0.9926 & 0.9706 & 0.9045 & 0.0577 & 0.9998\\
-%\midrule
-%Avg & 0.8607 & 0.9801 & 0.9967 & 0.5068 & 0.9436 & 0.9708 & 0.8170 & 0.9921 & 0.9762 & 0.8990 & 0.0548 & 0.9998\\ 
-%\bottomrule
-%\end{tabular*}
-%\end{table}
-%
-%\begin{table}
-%\caption{5-fold cross validation, SVM, Encapsulation problem.} \label{t:kfold-svm-encapsulation}
-%
-%\smallskip
-%\begin{tabular*}{\linewidth}{@{} l @{\extracolsep{\fill}} *{12}{S[table-format=2.1]}
-%                                 *{4}{S[table-format=2.1]} @{}}
-%\toprule
-% & \multicolumn{4}{c}{Empty} & \multicolumn{4}{c}{Full} 
-%         & \multicolumn{4}{c}{Uncertain}  \\
-%\cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}  
-%Fold & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV} & \mcc{TPR} & \mcc{SPC} & \mcc{PPV} & \mcc{NPV}  \\
-%\midrule
-%1 & 0.8750 & 0.9594 & 0.1223 & 0.9992 & 0.8703 & 0.9357 & 0.9980 & 0.1644 & 0.7082 & 0.9073 & 0.1356 & 0.9934\\
-%2 & 0.8984 & 0.9477 & 0.1000 & 0.9993 & 0.8625 & 0.9376 & 0.9980 & 0.1567 & 0.7681 & 0.9126 & 0.1529 & 0.9948\\
-%3 & 0.8828 & 0.9576 & 0.1186 & 0.9992 & 0.8582 & 0.9149 & 0.9973 & 0.1496 & 0.7207 & 0.8979 & 0.1266 & 0.9937\\
-%4 & 0.8516 & 0.9487 & 0.0969 & 0.9990 & 0.8676 & 0.9244 & 0.9976 & 0.1599 & 0.7980 & 0.9174 & 0.1655 & 0.9955\\
-%5 & 0.9318 & 0.9570 & 0.1263 & 0.9995 & 0.8666 & 0.9067 & 0.9970 & 0.1580 & 0.6337 & 0.9056 & 0.1218 & 0.9917\\
-%\midrule
-%Avg & 0.8879 & 0.9541 & 0.1128 & 0.9992 & 0.8650 & 0.9239 & 0.9976 & 0.1577 & 0.7257 & 0.9082 & 0.1405 & 0.9938\\ 
-%\bottomrule
-%\end{tabular*}
-%\end{table}
-%
-%\end{landscape}
-
-%\newpage
-
 \subsection{Impact of surrounding and masking on the input images}
 
 Recall that each image contains a liposome object and its surrounding which goes 50 pixels in each direction. Corresponding particle masks are also available. It is hence a matter of design whether to include surrounding or not  as well as if masks are to be applied. The following three alternatives have been tested:
@@ -1090,18 +997,22 @@ Results of the experiments show that including surrounding to the input images l
 	legend style={at={(0.5, -0.1)},anchor=north},
 	xmin=0,
 	xmax=1,
+	every node near coord/.append style={
+    	/pgf/number format/fixed zerofill,
+    	/pgf/number format/precision=4
+	}	
     ]
 
-% Cropped
-\addplot coordinates{(0.6950,Empty) (0.8172,Full) (0.7514,Uncertain)};
+% Cropped 
+\addplot coordinates{(0.2043,Empty) (0.8394,Full) (0.1343,Uncertain)};
 \addlegendentry{Cropped}
 
 % Cropped with mask
-\addplot coordinates{(0.7515,Empty) (0.8712,Full) (0.7279,Uncertain)};
+\addplot coordinates{(0.2347,Empty) (0.9271,Full) (0.1942,Uncertain)};
 \addlegendentry{Cropped with Mask}
 
 % With surrounding
-\addplot coordinates{(0.5966,Empty) (0.7834,Full) (0.6276,Uncertain)};
+\addplot coordinates{(0.1829,Empty) (0.8887,Full) (0.1116,Uncertain)};
 \addlegendentry{With surrounding}
 
 \end{axis}
@@ -1129,18 +1040,22 @@ Results of the experiments show that including surrounding to the input images l
 	legend style={at={(0.5, -0.1)},anchor=north},
 	xmin=0,
 	xmax=1,
+	every node near coord/.append style={
+    	/pgf/number format/fixed zerofill,
+    	/pgf/number format/precision=4
+	}
     ]
 
-% Cropped
-\addplot coordinates{(0.9425,Unilamellar) (0.9762,Multilamellar) (0.7376,Uncertain)};
+% Cropped 
+\addplot coordinates{(0.9444,Unilamellar) (0.8958,Multilamellar) (0.2169,Uncertain)};
 \addlegendentry{Cropped}
 
 % Cropped with mask
-\addplot coordinates{(0.9599,Unilamellar) (0.9650,Multilamellar) (0.7862,Uncertain)};
+\addplot coordinates{(0.9679,Unilamellar) (0.9431,Multilamellar) (0.2013,Uncertain)};
 \addlegendentry{Cropped with Mask}
 
 % With surrounding
-\addplot coordinates{(0.8734,Unilamellar) (0.9158,Multilamellar) (0.5622,Uncertain)};
+\addplot coordinates{(0.8944,Unilamellar) (0.8002,Multilamellar) (0.1672,Uncertain)};
 \addlegendentry{With surrounding}
 
 \end{axis}
@@ -1153,7 +1068,7 @@ Results of the experiments show that including surrounding to the input images l
 \newpage
 \section{Benchmarking}
 
-In this section selected CNN models are benchmarked against SVM. For each problem the CNN model that performed the best in the previous experiments has been selected for comparison to SVM. For the lamellarity problem, the LipNet-4 model has been selected, for the encapsulation problem --- LipNet-2. In both cases data sets are balanced using oversampling, the input images are cropped, masked and augmented. All performance metrics are presented in Figure~\ref{fig:svm_vs_cnn}. 
+In this section selected CNN models are benchmarked against SVM. The LipNet-4 model has been selected for the final experiment which is comparison to SVM. In both cases data sets are balanced using oversampling, the input images are cropped, masked and augmented. All performance metrics are presented in Figure~\ref{fig:svm_vs_cnn}. 
 
 Unilamellar and multilamellar liposomes are recognized by both LipNet-4 and SVM with reasonably good results. Convolutional neural network slightly outperforms SVM in this case. In particular CNN is better in predicting that a particle is not unilamellar. The CNN's negative predicted value is $0.7$ against $0.5$ for SVM. On the other hand, results are opposite when it comes to the \textit{uncertain} class of the lamellarity problem. Here SVM clearly outperforms CNN in terms of sensitivity: SVM identifies nearly all particles of the \textit{uncertain} class while CNN does so only in $70\%$ of cases. However both methods yield many false positive predictions of the \textit{uncertain} class which results in poor precision. The CNN has almost twice the precision compared to SVM but it is still very poor being slightly above $10\%$. Mainly unilamellar liposomes are confused with uncertain ones by both CNN and SVM. Even if a small fraction of unilamellar liposomes are falsely identified as \textit{uncertain}, it is enough to bring down precision because the data sets are heavily unbalanced. The unnormalised confusion matrix averaged across 5 folds is presented in Table~\ref{table:cnn_lamellarity_cf_not_normalized}. 
 
@@ -1173,7 +1088,7 @@ Uncertain & 2 & 3 & 11 \\
 \end{figure}
 
 
-Particles from the encapsulation problem are generally better classified by the SVM. In this case, SVM outperforms CNN for all three classes however the difference is not very big. The LipNet-2 still demonstrates a reasonable level of performance. Positive predicted values of the \textit{empty} and the \textit{uncertain} classes demonstrate the same pattern as the \textit{uncertain} class from the lamellarity problem. Approximately $10\%$ of the positive \textit{empty} predictions and $15\%$ of the positive \textit{uncertain} predictions are correct because some \textit{full} liposomes are falsely classified as either \textit{empty} or \textit{uncertain}. Once again, even if a small fraction of \textit{full} liposomes are misclassified this reduces precision of the minority classes drastically. Another notable result is the low negative predicted value of the \textit{full} class. It means that classifiers yield more false negative predictions than true negative. On the other hand the positive predicted value of both the CNN and the SVM for the \textit{full} class is almost 1 which means that there are hardly any \textit{empty} or \textit{uncertain} particles that are falsely classified as full. In other words it means that if a classifier says that a particle is \textit{full} then it is most likely \textit{full}. However, when it says the opposite it is most likely to be false. In this way the classifier is very careful in predicting a particle being \textit{full}. It would rather yield a false negative \textit{full} prediction than a false positive. It may be both good and bad depending on the domain. Discussion of risks and potential side effects of under- and overestimating the rate of liposomal encapsulation are beyond the scope of this project. 
+The encapsulation problem is solved by both LipNet-4 and SVM with approximately the same performance. Results for the \textit{full} class are the same for both classifiers. LipNet-4 is marginally better in predicting the \textit{empty} class while SVM is slightly better in predicting the \textit{uncertain} class. Positive predicted values of the \textit{empty} and the \textit{uncertain} classes demonstrate the same pattern as the \textit{uncertain} class from the lamellarity problem. Approximately $15\%$ of the positive \textit{empty} predictions and $10\%$ of the positive \textit{uncertain} predictions are correct because some \textit{full} liposomes are falsely classified as either \textit{empty} or \textit{uncertain}. Once again, even if a small fraction of \textit{full} liposomes are misclassified this reduces precision of the minority classes drastically. Another notable result is the low negative predicted value of the \textit{full} class. It means that classifiers yield more false negative predictions than true negative. On the other hand the positive predicted value of both the CNN and the SVM for the \textit{full} class is almost 1 which means that there are hardly any \textit{empty} or \textit{uncertain} particles that are falsely classified as full. In other words it means that if a classifier says that a particle is \textit{full} then it is most likely \textit{full}. However, when it says the opposite it is most likely to be false. In this way the classifier is very careful in predicting a particle being \textit{full}. It would rather yield a false negative \textit{full} prediction than a false positive. It may be both good and bad depending on the domain. Discussion of risks and potential side effects of under- and overestimating the rate of liposomal encapsulation are beyond the scope of this project. 
 
 The unnormalised confusion matrix averaged across 5 folds  is presented in Table~\ref{table:cnn_encapsulation_cf_not_normalized}.     
 
@@ -1185,9 +1100,9 @@ The unnormalised confusion matrix averaged across 5 folds  is presented in Table
 \toprule
  & Empty & Full & Uncertain \\
 \midrule
-Empty & 24 & 1 & 7 \\
-Full & 272 & 3929 & 660 \\
-Uncertain & 30 & 9 & 61 \\
+Empty & 20 & 1 & 12 \\
+Full & 116 & 4201 & 534 \\
+Uncertain & 22 & 16 & 63 \\
 \bottomrule
 \end{tabular}
 \end{figure}
@@ -1233,45 +1148,45 @@ Uncertain & 30 & 9 & 61 \\
 %
 \nextgroupplot[title={Unilamellar}]
 % lipnet-4 with mask
-\addplot coordinates{(TPR, 0.9403) (TNR, 0.9817) (PPV, 0.9972) (NPV, 0.7365) ($F_1$, 0.9599)};\label{legend:cnn}
+\addplot coordinates{(TPR, 0.9403) (TNR, 0.9817) (PPV, 0.9972) (NPV, 0.7365) ($F_1$, 0.9679)};\label{legend:cnn}
 
 % SVM
-\addplot coordinates{(TPR, 0.8607) (TNR, 0.9801) (PPV, 0.9967) (NPV, 0.5068) ($F_1$, 0.9570)};\label{legend:svm}
+\addplot coordinates{(TPR, 0.8607) (TNR, 0.9801) (PPV, 0.9967) (NPV, 0.5068) ($F_1$, 0.8757)};\label{legend:svm}
 
 
 
 \nextgroupplot[title={Multilamellar}]
 % lipnet-4
-\addplot coordinates{(TPR, 0.9400) (TNR, 0.9921) (PPV, 0.9461) (NPV, 0.9918) ($F_1$, 0.9650)};
+\addplot coordinates{(TPR, 0.9400) (TNR, 0.9921) (PPV, 0.9461) (NPV, 0.9918) ($F_1$, 0.9431)};
 % svm
-\addplot coordinates{(TPR, 0.9436) (TNR, 0.9708) (PPV, 0.8170) (NPV, 0.9921) ($F_1$, 0.9360)};
+\addplot coordinates{(TPR, 0.9436) (TNR, 0.9708) (PPV, 0.8170) (NPV, 0.9921) ($F_1$, 0.9237)};
 
 \nextgroupplot[title={Uncertain}]
 % lipnet-4
-\addplot coordinates{(TPR, 0.6801) (TNR, 0.9477) (PPV, 0.1182) (NPV, 0.9980) ($F_1$, 0.7862)};
+\addplot coordinates{(TPR, 0.6801) (TNR, 0.9477) (PPV, 0.1182) (NPV, 0.9980) ($F_1$, 0.2013)};
 % svm
-\addplot coordinates{(TPR, 0.9762) (TNR, 0.8990) (PPV, 0.0548) (NPV, 0.9998) ($F_1$, 0.9165)};
+\addplot coordinates{(TPR, 0.9762) (TNR, 0.8990) (PPV, 0.0548) (NPV, 0.9998) ($F_1$, 0.1038)};
 
 %
 % Encapsulation
 %
 \nextgroupplot[title={Empty}]
-% lipnet-1
-\addplot coordinates{(TPR, 0.7576) (TNR, 0.9384) (PPV, 0.0978) (NPV, 0.9983) ($F_1$, 0.8326)};
+% lipnet-4
+\addplot coordinates{(TPR, 0.6278) (TNR, 0.9735) (PPV, 0.1443) (NPV, 0.9975) ($F_1$, 0.2347)};
 % svm
-\addplot coordinates{(TPR, 0.8879) (TNR, 0.9541) (PPV, 0.1128) (NPV, 0.9992) ($F_1$, 0.9198)};
+\addplot coordinates{(TPR, 0.8879) (TNR, 0.9541) (PPV, 0.1128) (NPV, 0.9992) ($F_1$, 0.2002)};
 
 \nextgroupplot[title={Full}]
-% lipnet-1
-\addplot coordinates{(TPR, 0.8094) (TNR, 0.9283) (PPV, 0.9976) (NPV, 0.1355) ($F_1$, 0.8598)};
+% lipnet-4
+\addplot coordinates{(TPR, 0.8671) (TNR, 0.8772) (PPV, 0.9961) (NPV, 0.1665) ($F_1$, 0.9271)};
 % svm
-\addplot coordinates{(TPR, 0.8650) (TNR, 0.9239) (PPV, 0.9976) (NPV, 0.1577) ($F_1$, 0.8935)};
+\addplot coordinates{(TPR, 0.8650) (TNR, 0.9239) (PPV, 0.9976) (NPV, 0.1577) ($F_1$, 0.9266)};
 
 \nextgroupplot[title={Uncertain}]
-% lipnet-1
-\addplot coordinates{(TPR, 0.6085) (TNR, 0.8654) (PPV, 0.0968) (NPV, 0.9909) ($F_1$, 0.7017)};
+% lipnet-4
+\addplot coordinates{(TPR, 0.6277) (TNR, 0.8881) (PPV, 0.1149) (NPV, 0.9915) ($F_1$, 0.1942)};
 % svm
-\addplot coordinates{(TPR, 0.7257) (TNR, 0.9082) (PPV, 0.1405) (NPV, 0.9938) ($F_1$, 0.8068)};
+\addplot coordinates{(TPR, 0.7257) (TNR, 0.9082) (PPV, 0.1405) (NPV, 0.9938) ($F_1$, 0.2354)};
 
 \end{groupplot}
 % http://tex.stackexchange.com/questions/192424/pgfplots-single-legend-in-a-group-plot
@@ -1300,9 +1215,9 @@ Uncertain & 30 & 9 & 61 \\
 
 \section{Discussion}
 
-Comparison of different input image modes showed that the best performance is achieved when input images contain only particles. Including surrounding worsens the classifier's performance. The result is intuitive and expected. By excluding all information irrelevant to the particle, we make images less noisy and let the classifier concentrate on the particle. This has one drawback though: masking implies reading the mask files and performing multiplications which requires additional time. Experiments showed that in the encapsulation problem masking improved the 5-fold average $F_1$ score of Full and Empty classes by $6\%$ and $7\%$ respectively and in the lamellarity problem the $F_1$ score of Unilamellar and Uncertain classes went up $2\%$ and $7\%$ respectively. On the other hand $F_1$ score of the Uncertain class in the encapsulation problem went $2\%$ down after applying masking but I still consider masking worth applying given the increase in the performance for other classes.
+Comparison of different input image modes showed that the best performance is achieved when input images contain only particles. Including surrounding worsens the classifier's performance. The result is intuitive and expected. By excluding all information irrelevant to the particle, we make images less noisy and let the classifier concentrate on the particle. This has one drawback though: masking implies reading the mask files and performing multiplications which requires additional time. Experiments showed that in the encapsulation problem masking improved the 5-fold average $F_1$ score of Full and Empty classes by $10\%$ and $15\%$ respectively and in the lamellarity problem the $F_1$ score of Unilamellar and Multilamellar classes went up $2\%$ and $5\%$ respectively. On the other hand $F_1$ score of the Uncertain class in the encapsulation problem went $6\%$ down after applying masking but I still consider masking worth applying given the increase in the performance for other classes.
 
-Comparison of SVM and CNN classifiers has shown that the lamellarity problem can be solved with both methods with approximately the same performance. SVM achieved better performance for the encapsulation problem but CNN still demonstrated reasonable results. Despite such results CNN may still be preferred due to its ability to generalize to almost any classification problem. SVM performed well due to the careful choice of image features that was done by image analysis specialists. However there is no guarantee that with the same features SVM would perform well solving some other problem. On the contrary, CNN does not require such type of expert knowledge. Ability to learn descriptive image features in non-trivial domains is the cornerstone of convolutional neural networks. Given a data set of reasonable size the CNN model can be relatively easy retrained and adopted for almost any kind of classification problem. A rough rule of thumb is that a CNN model will generally achieve acceptable performance with around $5000$ labeled examples per category~\cite{dl_book}. Of course such flexibility has its cost. CNN models are more time consuming than SVM and still require more effort from software engineers to be set up and deployed to production environment. However this is changing rapidly. 
+Comparison of SVM and CNN classifiers has shown that both the lamellarity problem and the encapsulation problem can be solved with both methods with approximately the same performance. CNN is marginally better in predicting all classes of the lamellarity problem and some classes of the encapsulation problem, namely \textit{empty} and \textit{full}. SVM is better in predicting the \textit{uncertain} class of the encapsulation problem. CNN may be preferred due to its ability to generalize to almost any classification problem. SVM performed well due to the careful choice of image features that was done by image analysis specialists. However there is no guarantee that with the same features SVM would perform well solving some other problem. On the contrary, CNN does not require such type of expert knowledge. Ability to learn descriptive image features in non-trivial domains is the cornerstone of convolutional neural networks. Given a data set of reasonable size the CNN model can be relatively easy retrained and adopted for almost any kind of classification problem. A rough rule of thumb is that a CNN model will generally achieve acceptable performance with around $5000$ labeled examples per category~\cite{dl_book}. Of course such flexibility has its cost. CNN models are more time consuming than SVM and still require more effort from software engineers to be set up and deployed to production environment. However this is changing rapidly. 
 
 Deconvolutional neural networks is a powerful visualization tool that can help to understand what kind of image feature the CNN has learned. Unfortunately due to time and software limitations no experiments with deconvolutional networks have been performed. According to~\cite{DBLP:journals/corr/YosinskiCBL14} it is quite common that convolutional neural networks trained on natural images learn features similar to a set of Gabor filters and color blobs on the first layer. By natural images I mean the images that are neither computed generated nor shot in controlled conditions. It is hard to say what kind of features LipNet models have learned by just looking on its filters like on Figure~\ref{fig:lipnet4_filters}. One can not say that LipNet networks learned anything like a set of Gabor filters or any other well known filters. One possible explanation can be that unlike data sets of natural images, Lamellarity and Encapsulation images are very similar to each other and CNN models have to catch differences that can be hardly seen by a human eye. So a CNN model does not need to understand that a particle is round because all particles of all classes are round, this information would be useless in determining whether a liposome is full or empty. However a CNN would most probably learn such kind of features if the task would be to recognize liposomes among other objects of different shapes. 
 
@@ -1317,7 +1232,6 @@ Due to hardware limitations it was impossible to test deeper networks with many 
 
 This project is of research character so experiments were performed in a research environment, not production one. It is possible to replicate results of this project in Windows, but it would require significant amount of effort to adopt presented solutions in production environment.
 
-\newpage
 \section{Conclusion}
 
 The data set imbalance has proven to be a major problem. Unless the imbalance problem is addressed classifiers are heavily biased towards the majority classes and almost ignore the underrepresented classes. It has been shown that oversampling combined with data augmentation can mitigate the imbalance problem and lead to a reasonable level of generalization. Most common image augmentation techniques like rotation, shift, flip, shear and zoom have been compared. Rotation and shift were the most helpful techniques, however it is context-dependent. For example, zoom technique was almost as helpful as rotation for the encapsulation problem, while rotation was far more effective than zoom for the lamellarity problem. An attempt to train CNN models an the artificial data unfortunately did not improve the performance. In fact performance of such models was very poor so the artificial data has not been used in any experiments that are presented in this report. 
@@ -1330,9 +1244,9 @@ Speaking about optimization methods, both ADAM and SGD performed well and no met
 
 Convolutional neural networks trained on cropped and masked images have demonstrated the best performance among all input image modes. Cropping and masking excludes irrelevant information from the image and in that way makes it less noisy. 
 
-Five different network architectures have been tested and compared. A network with two convolutional blocks each of which has two convolutional layers performed best for the lamellarity problem. A simpler one, with two convolutional blocks and one covolutional layer per block was best for the encapsulation problem. 
+Five different network architectures have been tested and compared. A network with two convolutional blocks each of which has two convolutional layers performed best for both the lamellarity problem and the encapsulation problem. 
 
-Overall performance shown by the CNN models was reasonable. CNN performed approximately on the same level as SVM for the lamellarity problem and was slightly worse than the SVM model for the encapsulation problem. Convolutional neural networks offer greater flexibility and generalization compared to SVM because CNN method does not require expert knowledge in order to choose image features. However such flexibility comes at cost of greater computational overhead.
+Overall performance shown by the CNN models was reasonable. CNN performed approximately on the same level as SVM for both problems. CNN was slightly better than the SVM model for the lamellarity problem and achieved almost the same performance as the SVM model for the encapsulation problem. Convolutional neural networks offer greater flexibility and generalization compared to SVM because CNN method does not require expert knowledge in order to choose image features. However such flexibility comes at cost of greater computational overhead.
 
 To sum up, there are hardly any obstacles to use deep learning as a
 research and aid tool. Software tools reviewed in this section are fairly easy

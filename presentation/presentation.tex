@@ -126,10 +126,9 @@ Full & Empty & Uncertain \\[6pt]
 \begin{frame}
 \frametitle{The data set of image features}
 
-\begin{block}{Image Feature}
-It is a piece of information which is relevant for solving the computational task related to a certain application. Features may be specific structures in the image such as points, edges or objects. Features may also be the result of a general neighborhood operation or feature detection applied to the image.
-\end{block}
-
+%\begin{block}{Image Feature}
+%It is a piece of information which is relevant for solving the computational task %related to a certain application. Features may be specific structures in the image such %as points, edges or objects. Features may also be the result of a general neighborhood %operation or feature detection applied to the image.
+%\end{block}
 \begin{itemize}
 \item Maximum width
 \item Diameter
@@ -141,6 +140,9 @@ It is a piece of information which is relevant for solving the computational tas
 \item Signal to noise
 \end{itemize}
 
+\begin{block}{}
+SVM operates on feature representation of the image.
+\end{block}
 \end{frame}
 
 %
@@ -166,8 +168,6 @@ Why CNN?
 \end{itemize}
 \end{frame}
 
-
-
 %
 %	The Class Imbalance Problem
 %
@@ -177,7 +177,7 @@ Why CNN?
 
 Lamellarity and Encapsulation data sets are imbalanced and it is a problem!
 \vskip 0.2in
-How to mitigate the class imbalance problem?
+How to mitigate the class imbalance problem? I tried:
 \begin{itemize}
 \item Oversampling
 \item Undersampling
@@ -214,23 +214,23 @@ How to mitigate the class imbalance problem?
 %	Data augmentation
 %
 
-\section{Data augmentation}
-\begin{frame}
-\frametitle{Data augmentation techniques}
-
-Data augmentation introduces additional diversity in the training set by applying different transformations to the existing examples.
-\vskip 0.2in
-\begin{itemize}
-\item Rotation in the range $[-180, 180]$ degrees with spline interpolation
-\item Shear transformation in the range $[0, 0.2]$
-\item Vertical shift in the range $[-10, 10]$ percent of total height
-\item Horizontal shift in the range $[-10, 10]$ percent of total width
-\item Zoom in the range $[0.8, 1.0]$ which means zoom by a maximum $20\%$
-\item Horizontal flip
-\item Vertical flip
-\end{itemize}
-
-\end{frame}
+%\section{Data augmentation}
+%\begin{frame}
+%\frametitle{Data augmentation techniques}
+%
+%Data augmentation introduces additional diversity in the training set by applying different transformations to the existing examples.
+%\vskip 0.2in
+%\begin{itemize}
+%\item Rotation in the range $[-180, 180]$ degrees with spline interpolation
+%\item Shear transformation in the range $[0, 0.2]$
+%\item Vertical shift in the range $[-10, 10]$ percent of total height
+%\item Horizontal shift in the range $[-10, 10]$ percent of total width
+%\item Zoom in the range $[0.8, 1.0]$ which means zoom by a maximum $20\%$
+%\item Horizontal flip
+%\item Vertical flip
+%\end{itemize}
+%
+%\end{frame}
 
 \begin{frame}
 \frametitle{Data augmentation example}
@@ -250,56 +250,53 @@ Data augmentation introduces additional diversity in the training set by applyin
 \end{frame}
 
 %
+%	Input images modes
+%
+
+\begin{frame}
+\frametitle{Input images: surrounding and masking}
+Each image contains a liposome object and its surrounding which goes 50 pixels in each direction. Corresponding particle masks are also available. 
+\vskip 0.2in
+Three choices:
+\begin{itemize}
+\item Images with surrounding
+\item Cropped images
+\item \alert<2>{Cropped and masked} 
+\end{itemize}
+\end{frame}
+
+%
 %	Performance measures
 %
 
 \begin{frame}
 \frametitle{Performance measures}
 
-\begin{block}{The Accuracy Paradox}
-Models with a given accuracy may have greater predictive power than models with higher accuracy.
+\begin{block}{}
+Accuracy is not enough when the data set is imbalanced.
 \end{block}
 
 \begin{block}{Confusion matrix}
 \begin{table}
 \begin{tabular}{|c|c|c|}
 \hline 
- & Predicted True & Predicted False \\ 
+ & Predicted Positive & Predicted Negative \\ 
 \hline 
-Actual True & True Positive & False Negative \\ 
+Actual Positive & True Positive & False Negative \\ 
 \hline 
-Actual False & False Positive & True Negative \\ 
+Actual Negative & False Positive & True Negative \\ 
 \hline 
 \end{tabular} 
 \end{table}
 \end{block}
 
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Performance measures}
-
-\begin{block}<1->{True positive rate (TPR)}
-AKA sensitivity or recall: $TPR = \frac{TP}{TP + FN}$
-\end{block}
-
-\begin{block}<2->{True negative rate (TNR)}
-AKA specificity: $TNR = \frac{TN}{TN + FP}$
-\end{block}
-
-\begin{block}<3->{Positive predicted value (PPV)}
-AKA precision: $PPV = \frac{TP}{TP + FP}$
-\end{block}
-
-\begin{block}<4->{Negative predicted value (NPV)}
-$NPV = \frac{TN}{TN + FN}$
-\end{block}
-
-\begin{block}<5->{$F_1$ score}
-It is a harmonic mean of TPR and TNR
-\end{block}
-
+\begin{itemize}
+\item True Positive Rate: $TPR = \frac{TP}{TP + FN}$ (sensitivity or recall)
+\item True Negative Rate: $TNR = \frac{TN}{TN + FP}$ (specificity)
+\item Positive Predicted Value: $PPV = \frac{TP}{TP + FP}$ (precision)
+\item Negative Predicted Value: $NPV = \frac{TN}{TN + FN}$
+\item $F_1$ score : harmonic mean of TPR and PPV
+\end{itemize}
 \end{frame}
 
 %
@@ -323,68 +320,7 @@ Five LipNet models are evaluated by recording their 5-fold cross validated $F_1$
 \vskip 0.2in
 \begin{itemize}
 \item<2-> The Lamellarity Problem: \textbf{LipNet-4} is the best
-\item<3-> The Encapsulation Problem: There is no clear leader. \textbf{LipNet-2} is selected for the final experiment. LipNet-6 performed worst. 
-\end{itemize}
-\end{frame}
-
-%
-%	Effect of data augmentation
-%
-
-\begin{frame}
-\frametitle{Effect of the data augmentation}
-
-\begin{figure}
-\centering
-
-\begin{tikzpicture}
-\begin{groupplot}[
-	group style = {group size = 1 by 2, vertical sep=1cm,},
-	width = 12cm,
-	height = 4.5cm,
-	grid=major,
-    ymin=0.0,
-    ymax=1.0,
-    %ylabel=Average normalized true positive rate, 
-    legend pos=south east,
-    symbolic x coords={None, Rotation, Shift, Flip, Shear, Zoom},
-    xtick=data,
-    ]
-
-% lamellarity
-\nextgroupplot
-\addplot+ [mark=*] coordinates{(None, 0.992) (Rotation, 0.966) (Shift, 0.906) (Flip, 0.888) (Shear, 0.896) (Zoom, 0.84)};
-\addplot+ [mark=square*] coordinates{(None, 0.958) (Rotation, 0.99) (Shift, 0.986) (Flip, 0.988) (Shear, 0.988) (Zoom, 0.988)};
-\addplot+ [mark=triangle*] coordinates{(None, 0.0) (Rotation, 0.346) (Shift, 0.618) (Flip, 0.632) (Shear, 0.606) (Zoom, 0.596)};
-
-\legend{Unilamellar, Multilamellar, Uncertain}
-
-% encapsulation
-\nextgroupplot
-\addplot+ [mark=*] coordinates{(None, 0.18) (Rotation, 0.41) (Shift, 0.53) (Flip, 0.57) (Shear, 0.59) (Zoom, 0.54)};
-\addplot+ [mark=square*] coordinates{(None, 0.99) (Rotation, 0.95) (Shift, 0.89) (Flip, 0.89) (Shear, 0.89) (Zoom, 0.73)};
-\addplot+ [mark=triangle*] coordinates{(None, 0.25) (Rotation, 0.55) (Shift, 0.64) (Flip, 0.62) (Shear, 0.6) (Zoom, 0.74)};
-\legend{Empty, Full, Uncertain}
-
-\end{groupplot}
-\end{tikzpicture}
-\end{figure}
-
-\end{frame}
-
-%
-%	Input images modes
-%
-
-\begin{frame}
-\frametitle{Input images: surrounding and masking}
-Each image contains a liposome object and its surrounding which goes 50 pixels in each direction. Corresponding particle masks are also available. 
-\vskip 0.2in
-Three choices:
-\begin{itemize}
-\item Images with surrounding
-\item Cropped images
-\item \alert<2>{Cropped and masked} 
+\item<3-> The Encapsulation Problem: There is no clear leader. LipNet-6 performed worst. 
 \end{itemize}
 \end{frame}
 
@@ -403,7 +339,7 @@ Three choices:
 \end{figure}
 
 \begin{itemize}
-\item CNN is better in predicting \textit{unilamellar} and \textit{multilamellar}.
+\item CNN is slightly better than SVM.
 \item More false negative \textit{unilamellar} by SVM than CNN.
 \item More false positive \textit{multilamellar} by SVM than by CNN.
 \item SVM is better in predicting \textit{uncertain}.
@@ -421,11 +357,13 @@ Three choices:
 \end{figure}
 
 \begin{itemize}
-\item SVM is slightly better than CNN.
-\item Poor precision for \textit{empty} and \textit{uncertain} because some \textit{full} are falsely classified.
-\item Low NPV for \textit{full}, it is a direct consequence of the previous item.
-\item Precision of \textit{full} and NPV of \textit{empty} and \textit{uncertain} are almost 1, so hardly any false positive of \textit{empty}.
-\item Both classifiers underestimate the number of \textit{full}.
+\item Almost the same performance.
+\item Some \textit{full} are falsely classified as \textit{empty} and \textit{uncertain}
+\begin{itemize}
+\item Low NPV for \textit{full}
+\item Poor precision (PPV) for \textit{empty} and \textit{uncertain}
+\end{itemize}
+\item PPV for \textit{full} and NPV for \textit{empty} and \textit{uncertain} are almost 1, so hardly any false positive of \textit{full}.
 \end{itemize}
 
 \end{frame}
