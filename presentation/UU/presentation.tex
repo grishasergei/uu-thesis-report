@@ -13,7 +13,7 @@
 \definecolor{clstackoverflow}{HTML}{FE7A15}  
 \definecolor{clgithub}{HTML}{4078C0} 
 
-\graphicspath{ {../img/} }
+\graphicspath{ {../../img/} }
 
 \title{Convolutional neural networks
 for classification of transmission
@@ -43,6 +43,11 @@ Opponent: Christopher Lagerhult
 \begin{frame}
 \frametitle{Introduction}
 This MSc project is done in cooperation with Vironova AB.
+\begin{itemize}
+\item One of Vironova's services is to classify liposomes
+\item Automatic classification is of great interest
+\item Currently automatic classification is performed by means of SVM
+\end{itemize}
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{vironova_logo.jpg} 
@@ -107,8 +112,8 @@ Determine presence of a liposomal encapsulation.
 There are $24918$ EM images and three classes:
 \begin{itemize}
 \item Full \\ 24255, 97.34\%
-\item Empty \\ 161, 2.01\%
-\item Uncertain \\ 502, 0.65\%
+\item Empty \\ 161, 0.65\%
+\item Uncertain \\ 502, 2.01\%
 \end{itemize}
 \column{0.65\textwidth}
 \begin{figure}[H]
@@ -320,7 +325,7 @@ Five LipNet models are evaluated by recording their 5-fold cross validated $F_1$
 \vskip 0.2in
 \begin{itemize}
 \item<2-> The Lamellarity Problem: \textbf{LipNet-4} is the best
-\item<3-> The Encapsulation Problem: There is no clear leader. LipNet-6 performed worst. 
+\item<3-> The Encapsulation Problem: There is no clear leader. \textbf{LipNet-4} is selected. 
 \end{itemize}
 \end{frame}
 
@@ -340,9 +345,8 @@ Five LipNet models are evaluated by recording their 5-fold cross validated $F_1$
 
 \begin{itemize}
 \item CNN is slightly better than SVM.
-\item More false negative \textit{unilamellar} by SVM than CNN.
-\item More false positive \textit{multilamellar} by SVM than by CNN.
-\item SVM is better in predicting \textit{uncertain}.
+\item Less false negative \textit{unilamellar} by CNN than SVM.
+\item Less false positive \textit{multilamellar} by CNN than SVM.
 \item Many false positive predictions of \textit{uncertain}, mainly \textit{unilamellar} is confused with \textit{uncertain}.
 \end{itemize}
 
@@ -435,15 +439,18 @@ All libraries benefit from GPUs. At the moment there is no study that shows supe
 \begin{frame}{Conclusion and future work}
 Conclusions:
 \begin{itemize}
+\item CNN is a promising tool for research and production
 \item Reasonable performance
-\item CNN is an excellent research tool
+\item CNN does not require feature representation
+\vskip 0.2in
+\item Limited support for Windows and C\#
 \end{itemize}
 \vskip 0.2in
 Future work:
 \begin{itemize}
 \item Fully convolutional networks with input of variable size
 \item Alternative ways to expand the training set
-\item Late fusing
+\item Fusing, i.e. combine LipNet and another neural network trained on image features
 \end{itemize}
 \end{frame}
 

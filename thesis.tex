@@ -382,9 +382,9 @@ PPV = \frac{TP}{TP + FP}
 NPV = \frac{TN}{TN + FN}
 \end{equation*}
 
-The $F_1$ score is a harmonic mean of TPR and TNR, which is a measure of a test's accuracy. It reaches its best value at 1 and worst at 0. 
+The $F_1$ score is a harmonic mean of TPR and PPV, which is a measure of a test's accuracy. It reaches its best value at 1 and worst at 0. 
 \begin{equation*}
-F_1 = \frac{2}{\frac{1}{TPR} + \frac{1}{TNR}}
+F_1 = \frac{2}{\frac{1}{TPR} + \frac{1}{PPV}}
 \end{equation*}
 $F_1$ has been criticized for not taking true negatives into account and a number of alternative measures such as Phi coefficient, Matthews correlation coefficient and Cohen's kappa have been proposed~\cite{powers07evaluation}. However, let us use $F_1$ anyway for the sake of simplicity.   
 
@@ -1261,6 +1261,8 @@ considerable amount of effort to do that.
 Testing fully convolutional neural networks with variable size of input images is one of the possible extensions to this project. The size of a particle might be an important feature so adopting fully convolutional approach may improve classifier's results.
 
 Besides this, the results of the convolutional neural networks can be improved by expanding training data sets. New samples might be difficult to retrieve, so alternative ways to expand the data set are of great interest. Even though an attempt to generate artificial data did not improve performance, it is a question worth to research.
+
+Another question worth research is combining the CNN model with another neural network trained on extracted image features. Two and more models can be joined at the output layer or earlier. Image features are extracted from the non-rescaled images so they can provide additional information that the CNN might have missed. This is potentially another source of improvement for the presented results.
 
 \newpage
 \printbibliography
