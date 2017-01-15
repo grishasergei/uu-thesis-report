@@ -46,10 +46,10 @@ Reviewer: Ida-Maria Sintorn
 
 
 \begin{frame}
-\frametitle{Introduction}
+\frametitle{Agenda}
 \begin{itemize}
 \item<1-> Motivation of applying CNN method for classification of electron microscopy images
-\item<2-> A very short introduction to CNN
+\item<2-> A very short introduction to CNN and what makes them stand out
 \item<3-> Benchmarking of CNN models against the SVM classifier for the selected problems 
 \item<4-> Pitfalls
 \item<5-> Deep Learning software:
@@ -109,14 +109,15 @@ Feed raw pixel data to a model that trains both feature extractor and classifier
 \begin{columns}
 \column{0.475\textwidth}
 \begin{block}{Full Connectivity}
-All nodes (pixels) in input layer are connected to all nodes in the next layer. All weights are unique.
+All nodes in input layer are connected to all nodes in the next layer. All weights are unique.
 \end{block}
 \vskip 0.55in
 \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{cnn/full_connectivity.png}
 \column{0.05\textwidth}
 \column{0.475\textwidth}
 \begin{block}{Local Connectivity}
-Each node in a layer is connected only to a small number of nodes (pixels) from the previous one. Weight are shared within each layer.	
+Each node in a layer is connected only to a small number of nodes from the previous one. All neurons in the convolutional layer share their
+weights.	
 \end{block}
 \vskip 0.2in
 \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{cnn/local_connectivity.png}
