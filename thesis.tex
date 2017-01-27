@@ -195,7 +195,7 @@ Each image depicts exactly one liposome object which is located in the center of
 \begin{tabular}{cc}
 \includegraphics[scale=0.32]{img_size/lamellarity/scatter_plot_width_height.png} & \includegraphics[scale=0.32]{img_size/encapsulation/scatter_plot_width_height.png}
 \end{tabular}
-\caption{Scatter plots of image sizes (best viewed in color): lamellarity data set is shown to the leftand encapsulation to the right. Width and height units are in pixels.}
+\caption{Scatter plots of image sizes (best viewed in color): lamellarity data set is shown to the left and encapsulation to the right. Width and height units are in pixels.}
 \label{fig:img_size_scatter_plot}
 \end{figure}
 
@@ -207,9 +207,9 @@ Both data sets contain the following features:
 
 \item \textbf{Area} expresses the extent of a particle in the plane.
 
-\item \textbf{Maximum width} in nanometres. If the particle is an ellipse, then it is a diameter along the largest axis. If the particle is a polygon, then it is the maximum value of distance transform of particle mask.
+\item \textbf{Maximum width} in nanometres. If the particle is an ellipse, then it is a diameter along the largest axis. If the particle is a polygon, then it is the greatest distance between any two vertices. 
 
-\item \textbf{Diameter} in pixels. If the particle is an ellipse, then it is a diameter along the largest axis. If the particle is a polygon, then it is the greatest distance between any two vertices. 
+\item \textbf{Diameter} in pixels. If the particle is an ellipse, then it is a diameter along the largest axis. If the particle is a polygon, then it is the maximum value of distance transform of particle mask.
 
 \item \textbf{Length} is defined as diameter converted to nanometre units.
 
@@ -577,7 +577,7 @@ The above mentioned software tools together with some other are summarized in Ta
 
 Four deep learning libraries: TensorFlow, Caffe, Torch~\cite{Collobert_NIPSWORKSHOP_2011} and CNTK have been compared and benchmarked in~\cite{DBLP:journals/corr/ShiWXC16}. Authors have concluded that \blockquote{all tested tools can make good use of GPUs to achieve significant speedup over their CPU counterparts. However, there is  no  single  software  tool  that  can  consistently  outperform other.} Their tests of CNN models showed that Caffe and Tensorflow performed best on CPUs with 4 and 16 threads respectively. On GPU, Caffe, Tensorflow and CNTK were the best depending on mini-batch size and GPU type. 
 
-When selecting a deep learning framework, one should also consider user community involvement. This is an important factor as an open-source project cannot be developed and maintained well without appropriate amount of interest from the programmer's community. In order to estimate popularity of a deep learning library I gathered statistics from Stackoverflow~\cite{Mamykina:2011:DLF:1978942.1979366} and GitHub~\cite{Thung:2013:NSS:2495256.2495709}. Stackoverflow is a popular on-line programming question and answer community. Github is one of the largest web-based code repository hosting services. The source code of all deep learning libraries mentioned in this project is hosted on GitHub at the time of writing. The number of questions on Stackoverflow related to each deep learning library and number of subscribers to the corresponding code repositories are compared in Figure~\ref{fig:framework_popularity}. While, according to~\cite{DBLP:journals/corr/ShiWXC16}, there is no clear performance leader, the programmer's community seems to have already selected its favorite deep learning library. There are almost four times more questions about TensorFlow than about its runner up Caffe and Theano and almost three times more people are watching its repository. On the other hand CNTK that showed good performance during tests performed in~\cite{DBLP:journals/corr/ShiWXC16} seems to be almost ignored by the community. As of October 2016 there were only 15 questions about CNTK on Stackoverflow. 
+When selecting a deep learning framework, one should also consider user community involvement. This is an important factor as an open-source project cannot be developed and maintained well without appropriate amount of interest from the programmer's community. In order to estimate popularity of a deep learning library I gathered statistics from Stackoverflow~\cite{Mamykina:2011:DLF:1978942.1979366} and GitHub~\cite{Thung:2013:NSS:2495256.2495709}. Stackoverflow is a popular on-line programming question and answer community. Github is one of the largest web-based code repository hosting services. The source code of all deep learning libraries mentioned in this project is hosted on GitHub at the time of writing. The number of questions on Stackoverflow related to each deep learning library and number of subscribers to the corresponding code repositories are compared in Figure~\ref{fig:framework_popularity}. While, according to~\cite{DBLP:journals/corr/ShiWXC16}, there is no clear performance leader, the programmer's community seems to have already selected its favorite deep learning library. There are almost four times more questions about TensorFlow than about its runner up Caffe and Theano and almost three times more people are watching its repository. On the other hand CNTK that showed good performance during tests performed in~\cite{DBLP:journals/corr/ShiWXC16} seems to be almost ignored by the community. As of January 2017 there were only 51 questions about CNTK on Stackoverflow. 
 
 \begin{figure}[H]
 \centering
@@ -1228,7 +1228,7 @@ Due to time constraints an experiment with fully convolutional neural networks a
 
 Due to hardware limitations it was impossible to test deeper networks with many layers. It is however doubtful that deeper network would have better generalization as the risk for overfitting increases as the network structure becomes more complicated. The LipNet-6 model which has the largest number of convolutional layers performed worse than its simpler counterparts.
 
-This project is of research character so experiments were performed in a research environment, not the production one. It is possible to replicate the results of this project in Windows, but it would s require significant amount of effort to adopt the presented solutions in a production environment.
+This project is of research character so experiments were performed in a research environment, not in a production one. It is possible to replicate the results of this project in Windows, but it would require a significant amount of effort to adopt the presented solutions in a production environment.
 
 \section{Conclusion}
 
@@ -1249,7 +1249,7 @@ Deconvolutional neural networks have been discussed as a promising method to hel
 To sum up, there are hardly any obstacles to use deep learning as a
 research and aid tool. Software tools reviewed in this thesis are fairly easy
 to set up on a Linux machine and are well documented. However it might
-be more difficult to use these tools in a production environment, considering the limited support of Windows operating system and absence of C\#
+be more difficult for Vironova to use these tools in a production environment, considering the limited support of Windows operating system and absence of C\#
 application programming interfaces. It does not mean that it is impossible to
 adopt  solutions presented in this report for production, but it would require a
 considerable amount of effort to do that.
